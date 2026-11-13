@@ -4,8 +4,8 @@
   "data_mode": "live",
   "retrieved_at": "2026-11-13T11:19:43.389070Z",
   "source_max_ts": "2026-11-13T23:59:59Z",
-  "git_commit": "c808ea1a",
-  "sha256_inputs": "bffae0e1cb8660bae56b289235013fa8e1fe653c28806e9645dc19de3311a1c4",
+  "git_commit": "5f22b10d",
+  "sha256_inputs": "ece0dc3a14b35a246dfcc2a595d081fd4c4e54c4e9dbc44e0bd3daee87b1023f",
   "completeness": "complete",
   "warnings": []
  },
