@@ -54,3 +54,58 @@ export interface MetricArtifact {
   meta: ArtifactMeta;
   series: SeriesPoint[];
 }
+
+// Flow ledger types (from pipeline/types/flow_ledger.py)
+export interface FlowNodeModel {
+  id: string;
+  label: string;
+  stage: string;
+  amount: number;
+  unit: string;
+  alt_amount: number | null;
+  alt_unit: string | null;
+  kind: string;
+  status: string;
+  calc: string;
+  sources: string[];
+  price_source: string | null;
+  evidence_refs: string[];
+  completeness_note: string;
+}
+
+export interface FlowEdgeModel {
+  source: string;
+  target: string;
+  amount: number;
+  unit: string;
+  status: string;
+}
+
+export interface ResidualModel {
+  stage: string;
+  amount: number;
+  unit: string;
+  reason: string;
+  sign: string;
+}
+
+export interface ReconciliationEntryModel {
+  source: string;
+  value: string;
+  unit: string;
+  delta_pct: string | null;
+}
+
+export interface FlowLedgerModel {
+  period: string;
+  start: string;
+  end: string;
+  data_mode: string;
+  retrieved_at: string;
+  volume_usd: number | null;
+  effective_gross_take_bps: number | null;
+  nodes: FlowNodeModel[];
+  edges: FlowEdgeModel[];
+  residuals: ResidualModel[];
+  reconciliation: Record<string, ReconciliationEntryModel[]>;
+}

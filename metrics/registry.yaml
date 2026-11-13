@@ -107,3 +107,93 @@ metrics:
     completeness: partial
     limitations: ["Quota-limited to 30 days; price conversion needed for NEAR↔USD; revenue.near.org figures are illustrative"]
     depends_on: ["revenue.net.near_intents.daily", "defillama.revenue.near_intents.daily", "defillama.fees.near_intents.daily"]
+
+  - id: flow_ledger_30d
+    name: Economic Flow Ledger — 30 Days
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/flows/ledger.py"
+    definition: "Economic flow from gross fees through net revenue to buyback destinations for 30-day window"
+    calc_ref: "pipeline/flows/ledger.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
+
+  - id: flow_ledger_7d
+    name: Economic Flow Ledger — 7 Days
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/flows/ledger.py"
+    definition: "Economic flow from gross fees through net revenue to buyback destinations for 7-day window"
+    calc_ref: "pipeline/flows/ledger.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
+
+  - id: flow_ledger_90d
+    name: Economic Flow Ledger — 90 Days
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/flows/ledger.py"
+    definition: "Economic flow from gross fees through net revenue to buyback destinations for 90-day window"
+    calc_ref: "pipeline/flows/ledger.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
+
+  - id: flow_ledger_ytd
+    name: Economic Flow Ledger — Year to Date
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/flows/ledger.py"
+    definition: "Economic flow from gross fees through net revenue to buyback destinations for YTD window"
+    calc_ref: "pipeline/flows/ledger.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
+
+  - id: flow_ledger_all
+    name: Economic Flow Ledger — All Time
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/flows/ledger.py"
+    definition: "Economic flow from gross fees through net revenue to buyback destinations for all-time window"
+    calc_ref: "pipeline/flows/ledger.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
