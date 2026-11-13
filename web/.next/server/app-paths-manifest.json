@@ -1,10 +1,10 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/intents/page": "app/intents/page.js",
   "/flows/page": "app/flows/page.js",
   "/methodology/page": "app/methodology/page.js",
   "/network/page": "app/network/page.js",
   "/page": "app/page.js",
   "/thesis/page": "app/thesis/page.js",
-  "/value/page": "app/value/page.js"
+  "/value/page": "app/value/page.js",
+  "/intents/page": "app/intents/page.js"
 }
