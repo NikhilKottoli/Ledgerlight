@@ -1,0 +1,13 @@
+# Plan 02 task 2.5: Events file (committed)
+# {date, label, kind, source_url}
+- date: "2026-02-23"
+  label: "Buyback programme begins"
+  kind: "protocol_change"
+  source_url: "https://defillama.com/protocol/near-intents"
+  note: "DefiLlama methodology: holders revenue = buybacks from this date (not burned)"
+
+- date: "2026-10-01"
+  label: "Omni infrastructure exploit (~$3.8M)"
+  kind: "exploit"
+  source_url: "https://defillama.com/hacks"
+  note: "Funds to be compensated. Annotate all time series."

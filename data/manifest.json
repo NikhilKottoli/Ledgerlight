@@ -1,0 +1,14 @@
+{
+ "generated_at": "2026-11-13T11:21:30.812053+00:00",
+ "mode": "live",
+ "artifacts": {
+  "defillama.tvl.near_intents.daily.json": {
+   "sha256": "20fffee094e1b5d9c0006ccba99b603465752a529b25e1b207f7d6a2185ad895",
+   "bytes": 28640
+  },
+  "events.json": {
+   "sha256": "9e52b4cf8804fed252b078bf88a00a1d0aa55fadef9720cbc895719caa6e3ac9",
+   "bytes": 293
+  }
+ }
+}

@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: near-value-intelligence
+Version: 0.1.0
+Summary: Evidence-first research platform: Does NEAR's Intents activity turn into value for tokenholders?
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.8
+Requires-Dist: pydantic-settings>=2.3
+Requires-Dist: pandas>=2.2
+Requires-Dist: duckdb>=1.0
+Requires-Dist: pyarrow>=16
+Requires-Dist: requests>=2.31
+Requires-Dist: tenacity>=8.2
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: zstandard>=0.22
+Requires-Dist: polars>=1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+
+# NEAR Value Intelligence — Plan Pack for opencode
+
+Original plan split into 9 sequential, gated plans, plus persistent rules and a decision log.
+
+## Setup
+
+```
+your-repo/
+  AGENTS.md          ← copy from this pack (opencode loads it every session)
+  DECISIONS.md       ← copy from this pack
+  plans/01..09-*.md  ← copy from this pack
+```
+
+## Order and dependencies
+
+```
+01 research & reuse
+  └─ 02 foundation + vertical slice
+        ├─ 03 onchain & market data  ┐  can run in parallel
+        └─ 04 intents ingestion      ┘  (separate branches/worktrees)
+              └─ 05 flow ledger & reconciliation   ← FLAGSHIP
+                    ├─ 06 value capture model
+                    └─ 07 analytics & thesis tests
+                          └─ 08 frontend (shell starts after 02, fills in as data lands)
+                                └─ 09 docs, polish, demo
+```
+
+Plan 08's app shell can start after plan 02 using the committed fixtures. Wire each page to real data as the upstream plan passes its gate.
+
+## How to run each plan
+
+Paste into opencode:
+
+> Read `AGENTS.md` and `DECISIONS.md`. Then execute `plans/0N-….md` task by task. Commit after each task. At the GATE, run every check, print a pass/fail table, append anything unresolved to `BLOCKERS.md`, and stop. Do not begin the next plan.
+
+## Your review at each gate
+
+| After | You check | Why |
+|---|---|---|
+| 01 | `research/` outputs; approve the reuse list and the differentiation statement | Avoids rewriting or illegally copying things; confirms the flagship is still unique |
+| 02 | Open the vertical slice. Click the provenance drawer. Run `make rebuild` twice and confirm identical hashes | Everything else copies this pattern |
+| 03/04 | Reconciliation table: our numbers vs DefiLlama vs revenue.near.org | Catches wrong definitions early |
+| 05 | Sankey: does every stage either reconcile or show an explicit unreconciled amount? Is buyback-vs-burn answered from onchain evidence? | This is the core product |
+| 07 | **Before** analysis runs: confirm thresholds in `thesis/PREREGISTRATION.md` | Pre-registration only works if you approve it first |
+| 09 | Cold-clone test from README on a clean machine | Reproducibility is an acceptance criterion |
+
+## What changed vs the original plan
+
+**Added**
+- `AGENTS.md` with binding integrity rules, so opencode re-reads them every session.
+- `DECISIONS.md` with 18 decisions, each with a reversal trigger, grounded in facts checked against the live sources (rate limits, revenue wallets, buyback-vs-burn conflict, Oct 1 exploit).
+- Gates, blockers protocol and a vertical-slice-first rule.
+- Three-way revenue reconciliation, with onchain revenue reconstruction as ground truth.
+- Pre-registered hypotheses with rule-based verdicts.
+- Concrete statistical method (stationarity, block bootstrap, FDR, market control, structural-break subsamples).
+- Circularity control for H2 (Intents-attributable vs other NEAR activity).
+- Typed units to prevent gross/net, buyback/burn and USD/NEAR conflation.
+- Machine-readable contracts: metrics registry, flow ledger and artifact schemas.
+
+**Changed**
+- Postgres/FastAPI dropped for static-first (DuckDB + Parquet → JSON).
+- "Demo mode" with fake data replaced by a committed real snapshot; synthetic data is test-only.
+- Sankey starts at gross fees; volume becomes a context strip.
+- Transaction explorer is a bounded sample, not a full database.
+- Competitor discovery uses the Gap Intel API as well as the hackathon API.
+- Scope cut line made explicit.
+
+**Observations to test, not assert**
+- Revenue.near.org and DefiLlama disagree on whether buybacks are burned.
+- Monthly gross fees were roughly flat for ~9 months while TVL grew, then stepped up in Sep–Oct 2026. Take-rate may be compressing even as volume grows.
+- Capture rate looks to be rising (cumulative ≈16%, last 30d ≈35% per DefiLlama).
+- NEAR-chain activity may partly be Intents activity itself.

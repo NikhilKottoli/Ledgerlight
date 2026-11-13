@@ -1,0 +1,19 @@
+version: "1"
+metrics:
+  - id: defillama.tvl.near_intents.daily
+    name: DefiLlama TVL — NEAR Intents (Daily)
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: DefiLlama
+      url: "https://api.llama.fi/protocol/near-intents"
+      endpoint_or_table: "protocol/near-intents"
+    definition: "Total Value Locked in NEAR Intents protocol as reported by DefiLlama (totalLiquidityUSD)"
+    calc_ref: "pipeline/connectors/defillama.py → pipeline/normalize/defillama.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: unknown
+    limitations: ["DefiLlama methodology may differ from onchain measurements", "TVL is not a flow of money into fees"]
+    depends_on: []
