@@ -22,7 +22,7 @@ RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 API_BASE = "https://api.llama.fi"
 COINS_BASE = "https://coins.llama.fi"
-HEADERS = {"User-Agent": "near-value-intelligence/0.1"}
+HEADERS = {"Client-Name": "near-value-intelligence/0.1"}
 
 @retry(
     wait=wait_exponential_jitter(initial=1, max=30),

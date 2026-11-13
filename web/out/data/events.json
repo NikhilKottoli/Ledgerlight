@@ -1,0 +1,4 @@
+[
+  {"date": "2026-02-23", "label": "Buyback programme begins", "kind": "protocol_change", "source_url": "https://defillama.com/protocol/near-intents"},
+  {"date": "2026-10-01", "label": "Omni infrastructure exploit (~$3.8M)", "kind": "exploit", "source_url": "https://defillama.com/hacks"}
+]

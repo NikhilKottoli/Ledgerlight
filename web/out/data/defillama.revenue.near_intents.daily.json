@@ -1,0 +1,2774 @@
+{
+ "meta": {
+  "metric_id": "defillama.revenue.near_intents.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-13T19:25:44.796097Z",
+  "source_max_ts": "2026-11-12T23:59:59Z",
+  "git_commit": "5f22b10d",
+  "sha256_inputs": "2383c999959b6439167f27ec14fe00ff665788d6a8632ba5e96889cc479ebf91",
+  "completeness": "complete",
+  "warnings": []
+ },
+ "series": [
+  {
+   "t": "2025-05-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-05-31",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-06-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-07-31",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-08-31",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-22",
+   "v": "18",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-09-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-02",
+   "v": "18",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-10-31",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-07",
+   "v": "423175",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-13",
+   "v": "151339",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-21",
+   "v": "193533",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-11-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-01",
+   "v": "176629",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-15",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2025-12-31",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-01",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-02",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-03",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-04",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-05",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-06",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-07",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-08",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-09",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-10",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-11",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-12",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-13",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-14",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-15",
+   "v": "355826",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-16",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-17",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-18",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-19",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-20",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-21",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-22",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-23",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-24",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-25",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-26",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-27",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-28",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-29",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-30",
+   "v": "0",
+   "null_reason": null
+  },
+  {
+   "t": "2026-01-31",
+   "v": "3414",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-01",
+   "v": "3109",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-02",
+   "v": "274415",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-03",
+   "v": "7492",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-04",
+   "v": "13624",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-05",
+   "v": "8059",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-06",
+   "v": "77249",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-07",
+   "v": "3865",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-08",
+   "v": "2490",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-09",
+   "v": "9593",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-10",
+   "v": "8296",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-11",
+   "v": "10629",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-12",
+   "v": "11312",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-13",
+   "v": "8122",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-14",
+   "v": "7063",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-15",
+   "v": "11845",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-16",
+   "v": "1199",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-17",
+   "v": "1026",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-18",
+   "v": "1976",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-19",
+   "v": "1169",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-20",
+   "v": "1031",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-21",
+   "v": "1309",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-22",
+   "v": "1406",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-23",
+   "v": "6275",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-24",
+   "v": "8053",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-25",
+   "v": "14022",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-26",
+   "v": "151977",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-27",
+   "v": "15284",
+   "null_reason": null
+  },
+  {
+   "t": "2026-02-28",
+   "v": "1237",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-01",
+   "v": "3700",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-02",
+   "v": "20717",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-03",
+   "v": "14843",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-04",
+   "v": "8995",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-05",
+   "v": "2001",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-06",
+   "v": "3548",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-07",
+   "v": "7631",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-08",
+   "v": "4212",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-09",
+   "v": "4269",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-10",
+   "v": "10070",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-11",
+   "v": "11192",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-12",
+   "v": "44350",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-13",
+   "v": "20759",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-14",
+   "v": "6600",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-15",
+   "v": "8896",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-16",
+   "v": "14441",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-17",
+   "v": "12050",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-18",
+   "v": "11787",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-19",
+   "v": "11703",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-20",
+   "v": "7843",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-21",
+   "v": "6740",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-22",
+   "v": "6876",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-23",
+   "v": "15697",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-24",
+   "v": "6477",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-25",
+   "v": "7405",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-26",
+   "v": "6731",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-27",
+   "v": "249361",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-28",
+   "v": "8349",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-29",
+   "v": "4217",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-30",
+   "v": "8269",
+   "null_reason": null
+  },
+  {
+   "t": "2026-03-31",
+   "v": "13731",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-01",
+   "v": "10280",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-02",
+   "v": "11188",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-03",
+   "v": "7575",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-04",
+   "v": "3432",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-05",
+   "v": "4210",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-06",
+   "v": "5689",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-07",
+   "v": "10767",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-08",
+   "v": "12073",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-09",
+   "v": "11028",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-10",
+   "v": "11886",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-11",
+   "v": "2146",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-12",
+   "v": "6796",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-13",
+   "v": "16610",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-14",
+   "v": "10353",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-15",
+   "v": "9655",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-16",
+   "v": "4007",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-17",
+   "v": "9178",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-18",
+   "v": "4653",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-19",
+   "v": "11211",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-20",
+   "v": "8199",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-21",
+   "v": "4552",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-22",
+   "v": "0.05",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-23",
+   "v": "28301",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-24",
+   "v": "5251",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-25",
+   "v": "4481",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-26",
+   "v": "6046",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-27",
+   "v": "10607",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-28",
+   "v": "6321",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-29",
+   "v": "11075",
+   "null_reason": null
+  },
+  {
+   "t": "2026-04-30",
+   "v": "11170",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-01",
+   "v": "13243",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-02",
+   "v": "5635",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-03",
+   "v": "8367",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-04",
+   "v": "9387",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-05",
+   "v": "22234",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-06",
+   "v": "22443",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-07",
+   "v": "12037",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-08",
+   "v": "13748",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-09",
+   "v": "6734",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-10",
+   "v": "7514",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-11",
+   "v": "14360",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-12",
+   "v": "14074",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-13",
+   "v": "6693",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-14",
+   "v": "13953",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-15",
+   "v": "17798",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-16",
+   "v": "13616",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-17",
+   "v": "10759",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-18",
+   "v": "15825",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-19",
+   "v": "13886",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-20",
+   "v": "13757",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-21",
+   "v": "19047",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-22",
+   "v": "28131",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-23",
+   "v": "58520",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-24",
+   "v": "21810",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-25",
+   "v": "41873",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-26",
+   "v": "68154",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-27",
+   "v": "31306",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-28",
+   "v": "15804",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-29",
+   "v": "13852",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-30",
+   "v": "30963",
+   "null_reason": null
+  },
+  {
+   "t": "2026-05-31",
+   "v": "34091",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-01",
+   "v": "32456",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-02",
+   "v": "29401",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-03",
+   "v": "25729",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-04",
+   "v": "44465",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-05",
+   "v": "142586",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-06",
+   "v": "15855",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-07",
+   "v": "21674",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-08",
+   "v": "21467",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-09",
+   "v": "19579",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-10",
+   "v": "18332",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-11",
+   "v": "9681",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-12",
+   "v": "17720",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-13",
+   "v": "7110",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-14",
+   "v": "13143",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-15",
+   "v": "31151",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-16",
+   "v": "16965",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-17",
+   "v": "14968",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-18",
+   "v": "11592",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-19",
+   "v": "6931",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-20",
+   "v": "16708",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-21",
+   "v": "7279",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-22",
+   "v": "12905",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-23",
+   "v": "9400",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-24",
+   "v": "15666",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-25",
+   "v": "10905",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-26",
+   "v": "9781",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-27",
+   "v": "4218",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-28",
+   "v": "9571",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-29",
+   "v": "12034",
+   "null_reason": null
+  },
+  {
+   "t": "2026-06-30",
+   "v": "10203",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-01",
+   "v": "14453",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-02",
+   "v": "16345",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-03",
+   "v": "16289",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-04",
+   "v": "7762",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-05",
+   "v": "10972",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-06",
+   "v": "18685",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-07",
+   "v": "16817",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-08",
+   "v": "24175",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-09",
+   "v": "16791",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-10",
+   "v": "14060",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-11",
+   "v": "7323",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-12",
+   "v": "10580",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-13",
+   "v": "12904",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-14",
+   "v": "34286",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-15",
+   "v": "19489",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-16",
+   "v": "21064",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-17",
+   "v": "17612",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-18",
+   "v": "18400",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-19",
+   "v": "10812",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-20",
+   "v": "13349",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-21",
+   "v": "22589",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-22",
+   "v": "44044",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-23",
+   "v": "14289",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-24",
+   "v": "9704",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-25",
+   "v": "6833",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-26",
+   "v": "11776",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-27",
+   "v": "14181",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-28",
+   "v": "11953",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-29",
+   "v": "14308",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-30",
+   "v": "17473",
+   "null_reason": null
+  },
+  {
+   "t": "2026-07-31",
+   "v": "15546",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-01",
+   "v": "13576",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-02",
+   "v": "5354",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-03",
+   "v": "11733",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-04",
+   "v": "11864",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-05",
+   "v": "15939",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-06",
+   "v": "10715",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-07",
+   "v": "21552",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-08",
+   "v": "13749",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-09",
+   "v": "16602",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-10",
+   "v": "13215",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-11",
+   "v": "18369",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-12",
+   "v": "18006",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-13",
+   "v": "8915",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-14",
+   "v": "15902",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-15",
+   "v": "7223",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-16",
+   "v": "6492",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-17",
+   "v": "25889",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-18",
+   "v": "15352",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-19",
+   "v": "60832",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-20",
+   "v": "39966",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-21",
+   "v": "71250",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-22",
+   "v": "37752",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-23",
+   "v": "32726",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-24",
+   "v": "37127",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-25",
+   "v": "27170",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-26",
+   "v": "36945",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-27",
+   "v": "25295",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-28",
+   "v": "26210",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-29",
+   "v": "26382",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-30",
+   "v": "27238",
+   "null_reason": null
+  },
+  {
+   "t": "2026-08-31",
+   "v": "23922",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-01",
+   "v": "23011",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-02",
+   "v": "29958",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-03",
+   "v": "64906",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-04",
+   "v": "109183",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-05",
+   "v": "28981",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-06",
+   "v": "68915",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-07",
+   "v": "21453",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-08",
+   "v": "26021",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-09",
+   "v": "39358",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-10",
+   "v": "35167",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-11",
+   "v": "37305",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-12",
+   "v": "27755",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-13",
+   "v": "30849",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-14",
+   "v": "34816",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-15",
+   "v": "32832",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-16",
+   "v": "40751",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-17",
+   "v": "102442",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-18",
+   "v": "127733",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-19",
+   "v": "59836",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-20",
+   "v": "47877",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-21",
+   "v": "120972",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-22",
+   "v": "115821",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-23",
+   "v": "107775",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-24",
+   "v": "79756",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-25",
+   "v": "93621",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-26",
+   "v": "41268",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-27",
+   "v": "47489",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-28",
+   "v": "65755",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-29",
+   "v": "74042",
+   "null_reason": null
+  },
+  {
+   "t": "2026-09-30",
+   "v": "103865",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-01",
+   "v": "71388",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-02",
+   "v": "54327",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-03",
+   "v": "25842",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-04",
+   "v": "146154",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-05",
+   "v": "53207",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-06",
+   "v": "61629",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-07",
+   "v": "63423",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-08",
+   "v": "118720",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-09",
+   "v": "113449",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-10",
+   "v": "78515",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-11",
+   "v": "81286",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-12",
+   "v": "62759",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-13",
+   "v": "56520",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-14",
+   "v": "82736",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-15",
+   "v": "162768",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-16",
+   "v": "46209",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-17",
+   "v": "32347",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-18",
+   "v": "46284",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-19",
+   "v": "53083",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-20",
+   "v": "78180",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-21",
+   "v": "63787",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-22",
+   "v": "58819",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-23",
+   "v": "38629",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-24",
+   "v": "47262",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-25",
+   "v": "61742",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-26",
+   "v": "79250",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-27",
+   "v": "76747",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-28",
+   "v": "57359",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-29",
+   "v": "94993",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-30",
+   "v": "75590",
+   "null_reason": null
+  },
+  {
+   "t": "2026-10-31",
+   "v": "46517",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-01",
+   "v": "28867",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-02",
+   "v": "33483",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-03",
+   "v": "42975",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-04",
+   "v": "49088",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-05",
+   "v": "60331",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-06",
+   "v": "87700",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-07",
+   "v": "43279",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-08",
+   "v": "31110",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-09",
+   "v": "58512",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-10",
+   "v": "57833",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-11",
+   "v": "47819",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-12",
+   "v": "99349",
+   "null_reason": null
+  }
+ ]
+}

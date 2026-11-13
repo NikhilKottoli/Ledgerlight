@@ -1,6 +1,6 @@
-import KindBadge from './KindBadge';
 "use client";
 import { useEffect } from "react";
+import KindBadge from './KindBadge';
 import { MetricArtifact } from "@/lib/types";
 
 interface Props {

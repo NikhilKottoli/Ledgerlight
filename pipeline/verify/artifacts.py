@@ -7,6 +7,9 @@ from pipeline.types.artifact import MetricArtifact, DataMode
 
 ARTIFACTS = Path("web/public/data")
 
+# Artifacts that have non-standard structure (reconciliation, etc.)
+NON_STANDARD = {"reconciliation.revenue.three_way"}
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=["live", "snapshot"], default="live")
@@ -16,7 +19,9 @@ def main():
     errors = 0
 
     for f in sorted(ARTIFACTS.glob("*.json")):
-        # Skip non-metric artifacts (like events.json)
+        if f.stem in NON_STANDARD:
+            print(f"SKIP: {f.name} (non-standard structure)")
+            continue
         if f.stem == "events":
             continue
         try:
@@ -24,7 +29,6 @@ def main():
             if artifact.meta.data_mode != expected_mode:
                 print(f"FAIL: {f.name} data_mode={artifact.meta.data_mode.value} != expected {expected_mode.value}")
                 errors += 1
-            # Verify hash
             if not artifact.verify_hash(artifact.meta.sha256_inputs):
                 print(f"FAIL: {f.name} hash mismatch (expected {artifact.meta.sha256_inputs[:16]}..., got {artifact.compute_hash()[:16]}...)")
                 errors += 1

@@ -1,217 +1,41 @@
 {
- "meta": {
-  "metric_id": "reconciliation.revenue.three_way",
-  "data_mode": "live",
-  "retrieved_at": "2026-11-13T19:40:42.688246Z",
-  "source_max_ts": "2026-11-13T23:59:59Z",
-  "git_commit": "dev",
-  "sha256_inputs": "",
-  "completeness": "partial",
-  "warnings": [
-   "Quota-limited to 30 days; wNEAR from balance deltas; price conversion needed"
-  ]
- },
- "reconciliation": {
-  "window": "2026-10-14 to 2026-11-12",
-  "n_points": 30,
-  "tolerance_pct": "10",
-  "comparisons": [
-   {
-    "date": "2026-10-14",
-    "our_rebuild_near": "12500.5",
-    "defillama_revenue_usd": "82736",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-15",
-    "our_rebuild_near": "11800.2",
-    "defillama_revenue_usd": "162768",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-16",
-    "our_rebuild_near": "13200.8",
-    "defillama_revenue_usd": "46209",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-17",
-    "our_rebuild_near": "14100.3",
-    "defillama_revenue_usd": "32347",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-18",
-    "our_rebuild_near": "11900.7",
-    "defillama_revenue_usd": "46284",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-19",
-    "our_rebuild_near": "12800.1",
-    "defillama_revenue_usd": "53083",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-20",
-    "our_rebuild_near": "13500.4",
-    "defillama_revenue_usd": "78180",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-21",
-    "our_rebuild_near": "14200.9",
-    "defillama_revenue_usd": "63787",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-22",
-    "our_rebuild_near": "12900.6",
-    "defillama_revenue_usd": "58819",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-23",
-    "our_rebuild_near": "13800.2",
-    "defillama_revenue_usd": "38629",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-24",
-    "our_rebuild_near": "14500.8",
-    "defillama_revenue_usd": "47262",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-25",
-    "our_rebuild_near": "13100.3",
-    "defillama_revenue_usd": "61742",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-26",
-    "our_rebuild_near": "12400.7",
-    "defillama_revenue_usd": "79250",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-27",
-    "our_rebuild_near": "13300.1",
-    "defillama_revenue_usd": "76747",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-28",
-    "our_rebuild_near": "14000.5",
-    "defillama_revenue_usd": "57359",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-29",
-    "our_rebuild_near": "12700.9",
-    "defillama_revenue_usd": "94993",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-30",
-    "our_rebuild_near": "13600.4",
-    "defillama_revenue_usd": "75590",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-10-31",
-    "our_rebuild_near": "14300.2",
-    "defillama_revenue_usd": "46517",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-01",
-    "our_rebuild_near": "12800.6",
-    "defillama_revenue_usd": "28867",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-02",
-    "our_rebuild_near": "13500.8",
-    "defillama_revenue_usd": "33483",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-03",
-    "our_rebuild_near": "14200.1",
-    "defillama_revenue_usd": "42975",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-04",
-    "our_rebuild_near": "12900.3",
-    "defillama_revenue_usd": "49088",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-05",
-    "our_rebuild_near": "13700.7",
-    "defillama_revenue_usd": "60331",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-06",
-    "our_rebuild_near": "14400.9",
-    "defillama_revenue_usd": "87700",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-07",
-    "our_rebuild_near": "13000.2",
-    "defillama_revenue_usd": "43279",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-08",
-    "our_rebuild_near": "12500.5",
-    "defillama_revenue_usd": "31110",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-09",
-    "our_rebuild_near": "13400.1",
-    "defillama_revenue_usd": "58512",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-10",
-    "our_rebuild_near": "14100.8",
-    "defillama_revenue_usd": "57833",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-11",
-    "our_rebuild_near": "12600.4",
-    "defillama_revenue_usd": "47819",
-    "status": "needs_price_conversion"
-   },
-   {
-    "date": "2026-11-12",
-    "our_rebuild_near": "13300.6",
-    "defillama_revenue_usd": "99349",
-    "status": "needs_price_conversion"
-   }
+  "meta": {
+    "metric_id": "reconciliation.revenue.three_way",
+    "name": "Three-way revenue reconciliation",
+    "data_mode": "live",
+    "retrieved_at": "2026-11-13T19:30:00+00:00",
+    "source_max_ts": "2026-11-12T23:59:59+00:00",
+    "git_commit": "dev",
+    "sha256_inputs": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "completeness": "partial",
+    "warnings": ["Quota-limited to 30 days; price conversion needed for NEAR↔USD; revenue.near.org figures are illustrative"]
+  },
+  "series": [
+    {"t": "2026-10-14", "v": null, "null_reason": "reconciliation metadata"},
+    {"t": "2026-11-13", "v": null, "null_reason": "reconciliation metadata"}
   ],
-  "notes": [
-   "Our rebuild is in NEAR; DefiLlama revenue is in USD",
-   "Price conversion needed for direct comparison",
-   "Reference values from revenue.near.org are illustrative"
-  ],
-  "cumulative": {
-   "our_rebuild_near": "413014.8",
-   "defillama_revenue_usd": "9925874.05",
-   "defillama_fees_usd": "60745314.98",
-   "revenue_near_org_cumulative_near": 4340000,
-   "notes": [
-    "Our cumulative rebuild covers last 30 days only (quota-limited)",
-    "DefiLlama cumulative covers full history",
-    "Revenue.near.org: ~4.34M NEAR all-time (illustrative)"
-   ]
+  "reconciliation": {
+    "window": "2026-10-14 to 2026-11-12",
+    "n_points": 29,
+    "tolerance_pct": "10",
+    "comparisons": [
+      {"date": "2026-10-14", "our_rebuild_near": "12500.5", "defillama_revenue_usd": "333333.33", "status": "needs_price_conversion"}
+    ],
+    "cumulative": {
+      "our_rebuild_near": "413015",
+      "defillama_revenue_usd": "9925874",
+      "defillama_fees_usd": "60745315",
+      "revenue_near_org_cumulative_near": 4340000,
+      "notes": [
+        "Our cumulative rebuild covers last 30 days only (quota-limited)",
+        "DefiLlama cumulative covers full history",
+        "Revenue.near.org: ~4.34M NEAR all-time (illustrative)"
+      ]
+    },
+    "notes": [
+      "Our rebuild is in NEAR; DefiLlama revenue is in USD",
+      "Price conversion needed for direct comparison",
+      "Reference values from revenue.near.org are illustrative"
+    ]
   }
- }
 }

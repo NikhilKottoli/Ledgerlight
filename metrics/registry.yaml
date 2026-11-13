@@ -17,3 +17,93 @@ metrics:
     completeness: unknown
     limitations: ["DefiLlama methodology may differ from onchain measurements", "TVL is not a flow of money into fees"]
     depends_on: []
+
+  - id: defillama.fees.near_intents.daily
+    name: DefiLlama Fees — NEAR Intents (Daily)
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: DefiLlama
+      url: "https://api.llama.fi/summary/fees/near-intents?dataType=dailyFees"
+      endpoint_or_table: "summary/fees/near-intents"
+    definition: "Gross fees charged on NEAR Intents swaps - protocol fee plus affiliate fee each frontend collects, summed across all integrators"
+    calc_ref: "pipeline/connectors/defillama_fees.py → pipeline/normalize/defillama_fees.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: unknown
+    limitations: ["DefiLlama methodology; may not match onchain exactly"]
+    depends_on: []
+
+  - id: defillama.revenue.near_intents.daily
+    name: DefiLlama Revenue — NEAR Intents (Daily)
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: DefiLlama
+      url: "https://api.llama.fi/summary/fees/near-intents?dataType=dailyRevenue"
+      endpoint_or_table: "summary/fees/near-intents"
+    definition: "NEAR's net captured revenue, measured as NEAR/wNEAR swept into its revenue wallets (reconciles with revenue.near.org and onchain buyback). Split by destination wallet."
+    calc_ref: "pipeline/connectors/defillama_fees.py → pipeline/normalize/defillama_fees.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: unknown
+    limitations: ["DefiLlama methodology; may not match onchain exactly"]
+    depends_on: []
+
+  - id: defillama.holders_revenue.near_intents.daily
+    name: DefiLlama Holders Revenue — NEAR Intents (Daily)
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: DefiLlama
+      url: "https://api.llama.fi/summary/fees/near-intents?dataType=dailyHoldersRevenue"
+      endpoint_or_table: "summary/fees/near-intents"
+    definition: "Since 2026-02-23, NEAR's captured Intents revenue used to buy back NEAR on the open market (not burned), returning value to holders"
+    calc_ref: "pipeline/connectors/defillama_fees.py → pipeline/normalize/defillama_fees.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: unknown
+    limitations: ["DefiLlama methodology; may not match onchain exactly"]
+    depends_on: []
+
+  - id: revenue.net.near_intents.daily
+    name: Net Revenue (NEAR) — NEAR Intents (Onchain Rebuild)
+    kind: derived
+    unit: NEAR
+    entity: near
+    source:
+      name: BigQuery (crypto_near_mainnet_us)
+      url: "https://console.cloud.google.com/bigquery?project=bigquery-public-data&p=crypto_near_mainnet_us"
+      endpoint_or_table: "receipt_actions, ft_balances_daily"
+    definition: "Native NEAR + wNEAR transfers into revenue wallets (fefundsadmin, buybacks, 1csfundsadmin), excluding inter-wallet hops. Quota-limited to 30 days."
+    calc_ref: "pipeline/metrics/revenue_wallets.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Quota-limited to 30 days; wNEAR from ft_balances_daily balance deltas; outflows not yet included"]
+    depends_on: ["defillama.fees.near_intents.daily"]
+
+  - id: reconciliation.revenue.three_way
+    name: Three-Way Revenue Reconciliation
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/reconcile/revenue.py"
+    definition: "Comparison of onchain rebuild vs DefiLlama revenue vs revenue.near.org reference values"
+    calc_ref: "pipeline/reconcile/revenue.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Quota-limited to 30 days; price conversion needed for NEAR↔USD; revenue.near.org figures are illustrative"]
+    depends_on: ["revenue.net.near_intents.daily", "defillama.revenue.near_intents.daily", "defillama.fees.near_intents.daily"]

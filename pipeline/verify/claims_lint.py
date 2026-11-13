@@ -17,14 +17,13 @@ BANNED = [
 
 # Allow-list for paths that document the rules themselves (meta-documentation)
 ALLOW_PATHS = {
-    "web/src/app/page.tsx",
     "AGENTS.md", "DECISIONS.md", "plans/", "research/", "THIRD_PARTY_NOTICES.md",
     "pipeline/verify/claims_lint.py",
-    "README.md", "pipeline/types/units.py",
+    "README.md", "pipeline/types/units.py", "web/src/app/page.tsx",
 }
 
-# Exclude patterns
-EXCLUDE_DIRS = {".venv", "node_modules", ".git", "__pycache__", ".next", "data", "raw"}
+# Exclude patterns - exact directory names
+EXCLUDE_DIRS = {".venv", "node_modules", ".git", "__pycache__", ".next", "data", "raw", "out"}
 
 def should_scan(path: Path) -> bool:
     rel = str(path.relative_to(Path.cwd()))

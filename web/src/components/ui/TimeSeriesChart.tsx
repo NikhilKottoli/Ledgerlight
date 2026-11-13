@@ -6,6 +6,13 @@ import {
 import { MetricArtifact, SeriesPoint } from "@/lib/types";
 import { EventMarker } from "./EventMarkers";
 import KindBadge from "./KindBadge";
+import ProvenanceButton from "./ProvenanceButton";
+
+const kindStyles = {
+  measured: { stroke: "#10b981", strokeDasharray: "0", strokeWidth: 2 },
+  derived: { stroke: "#3b82f6", strokeDasharray: "6 4", strokeWidth: 2 },
+  modeled: { stroke: "#f59e0b", strokeDasharray: "2 4", strokeWidth: 2, opacity: 0.85 },
+};
 
 interface Props {
   artifact: MetricArtifact;
@@ -14,12 +21,6 @@ interface Props {
   showBrush?: boolean;
   kindOverride?: "measured" | "derived" | "modeled";
 }
-
-const kindStyles = {
-  measured: { stroke: "#10b981", strokeDasharray: "0", strokeWidth: 2 },
-  derived: { stroke: "#3b82f6", strokeDasharray: "6 4", strokeWidth: 2 },
-  modeled: { stroke: "#f59e0b", strokeDasharray: "2 4", strokeWidth: 2, opacity: 0.85 },
-};
 
 export default function TimeSeriesChart({ artifact, registryEntry, height = 300, showBrush = true, kindOverride }: Props) {
   const data = artifact.series.map(s => ({
@@ -65,7 +66,7 @@ export default function TimeSeriesChart({ artifact, registryEntry, height = 300,
           />
           <Tooltip
             content={({ active, payload, label }) => {
-              if (!active || !payload.length) return null;
+              if (!active || !payload || !payload.length) return null;
               const point = payload[0].payload as SeriesPoint;
               return (
                 <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
