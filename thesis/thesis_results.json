@@ -1,11 +1,11 @@
 {
- "evaluated_at": "2026-11-13T20:38:23.694278+00:00",
+ "evaluated_at": "2026-11-13T20:43:06.201276+00:00",
  "prereg_tag": "prereg-v1",
  "hypotheses": {
   "H1": {
    "id": "H1",
    "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-13T20:38:23.694238+00:00",
+   "evaluated_at": "2026-11-13T20:43:06.201232+00:00",
    "prereg_tag": "prereg-v1",
    "tests": [],
    "supporting": [],
@@ -21,7 +21,7 @@
   "H2": {
    "id": "H2",
    "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-13T20:38:23.694258+00:00",
+   "evaluated_at": "2026-11-13T20:43:06.201254+00:00",
    "prereg_tag": "prereg-v1",
    "tests": [],
    "supporting": [],
@@ -37,7 +37,7 @@
   "H3": {
    "id": "H3",
    "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-13T20:38:23.694265+00:00",
+   "evaluated_at": "2026-11-13T20:43:06.201259+00:00",
    "prereg_tag": "prereg-v1",
    "tests": [],
    "supporting": [],
@@ -53,7 +53,7 @@
   "H4": {
    "id": "H4",
    "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-13T20:38:23.694269+00:00",
+   "evaluated_at": "2026-11-13T20:43:06.201264+00:00",
    "prereg_tag": "prereg-v1",
    "tests": [],
    "supporting": [],
@@ -69,7 +69,7 @@
   "H5": {
    "id": "H5",
    "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-13T20:38:23.694273+00:00",
+   "evaluated_at": "2026-11-13T20:43:06.201268+00:00",
    "prereg_tag": "prereg-v1",
    "tests": [],
    "supporting": [],
