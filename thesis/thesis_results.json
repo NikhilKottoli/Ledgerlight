@@ -1,0 +1,86 @@
+{
+ "evaluated_at": "2026-11-13T20:38:23.694278+00:00",
+ "prereg_tag": "prereg-v1",
+ "hypotheses": {
+  "H1": {
+   "id": "H1",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-13T20:38:23.694238+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "intents daily metrics",
+     "reason": "Requires Intents JWT"
+    }
+   ]
+  },
+  "H2": {
+   "id": "H2",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-13T20:38:23.694258+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "non-Intents NEAR activity",
+     "reason": "Requires BigQuery quota"
+    }
+   ]
+  },
+  "H3": {
+   "id": "H3",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-13T20:38:23.694265+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "onchain revenue rebuild",
+     "reason": "BigQuery quota limited"
+    }
+   ]
+  },
+  "H4": {
+   "id": "H4",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-13T20:38:23.694269+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "buyback/burn data",
+     "reason": "BigQuery quota limited"
+    }
+   ]
+  },
+  "H5": {
+   "id": "H5",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-13T20:38:23.694273+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "concentration metrics",
+     "reason": "Requires Intents/BigQuery data"
+    }
+   ]
+  }
+ }
+}

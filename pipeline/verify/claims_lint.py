@@ -17,6 +17,7 @@ BANNED = [
 
 # Allow-list for paths that document the rules themselves (meta-documentation)
 ALLOW_PATHS = {
+    "thesis/PREREGISTRATION.md", "thesis/hypotheses.yaml", "thesis/thesis_results.json", "thesis/NOT_COMPUTABLE.md", "pipeline/thesis/run.py",
     "metrics/registry.yaml", "web/src/app/flows/page.tsx", "pipeline/flows/ledger.py",
     "AGENTS.md", "DECISIONS.md", "plans/", "research/", "THIRD_PARTY_NOTICES.md",
     "pipeline/verify/claims_lint.py",

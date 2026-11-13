@@ -1,0 +1,235 @@
+# Hypotheses configuration for Plan 07
+# Frozen at tag prereg-v1. Changes only via Amendments in PREREGISTRATION.md
+
+version: "1"
+frozen_tag: "prereg-v1"
+hypotheses:
+
+  - id: H1
+    claim: "Intents adoption is growing sustainably"
+    hypothesis: "Intents volume, unique senders, and returning share show genuine growth; concentration not excessive; take rate stable"
+    tests:
+      - id: vol_growth_90d
+        metric: intents.volume_usd.daily
+        transform: "trailing_90d_growth"
+        threshold: "> 0"
+        kind: derived
+      - id: sender_growth_90d
+        metric: intents.unique_sender_addresses.daily
+        transform: "trailing_90d_growth"
+        threshold: "> 0"
+        kind: derived
+      - id: returning_sender_share
+        metric: intents.returning_sender_share.daily
+        transform: "trailing_90d_mean"
+        threshold: ">= 0.30"
+        kind: derived
+      - id: top10_sender_share
+        metric: intents.top10_sender_share.daily
+        transform: "trailing_90d_mean"
+        threshold: "< 0.50"
+        kind: derived
+      - id: take_rate_trend
+        metric: intents.observed_take_rate_bps.daily
+        transform: "slope_365d"
+        threshold: "> -0.25"
+        kind: derived
+    kill_criteria:
+      - "vol_growth_90d <= 0 for two consecutive 90d windows"
+      - "sender_growth_90d < 0 AND vol_growth_90d > 0"
+      - "top10_sender_share > 0.50"
+      - "take_rate falls > 25% over window with flat fees"
+    robustness:
+      - "exclude_14d_post_2026-10-01"
+    data_required:
+      - intents.volume_usd.daily
+      - intents.unique_sender_addresses.daily
+      - intents.returning_sender_share.daily
+      - intents.top10_sender_share.daily
+      - intents.observed_take_rate_bps.daily
+    verdict_rule: "SUPPORTED if no kill_criteria hit; CONTRADICTED if any hit; MIXED if mixed; INSUFFICIENT_DATA if n < 2"
+
+  - id: H2
+    claim: "Intents activity predicts NEAR network activity"
+    hypothesis: "Intents volume changes precede non-Intents NEAR active accounts/transactions changes"
+    tests:
+      - id: corr_pearson
+        metric_x: intents.volume_usd.weekly
+        metric_y: network.active_accounts_non_intents.weekly
+        transform: "log_diff"
+        method: "pearson"
+        lags: [-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+        threshold: "|rho| >= 0.3"
+        ci: "bootstrap_95"
+        fdr: "bh"
+        kind: derived
+      - id: corr_spearman
+        metric_x: intents.volume_usd.weekly
+        metric_y: network.active_accounts_non_intents.weekly
+        transform: "log_diff"
+        method: "spearman"
+        lags: [-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+        threshold: "|rho| >= 0.3"
+        ci: "bootstrap_95"
+        fdr: "bh"
+        kind: derived
+      - id: partial_corr_market
+        metric_x: intents.volume_usd.weekly
+        metric_y: network.active_accounts_non_intents.weekly
+        control: market.returns.weekly
+        transform: "log_diff"
+        threshold: "|rho| >= 0.3"
+        kind: derived
+      - id: rolling_corr
+        metric_x: intents.volume_usd.weekly
+        metric_y: network.active_accounts_non_intents.weekly
+        window: 26
+        transform: "log_diff"
+        kind: derived
+    kill_criteria:
+      - "no lag >= 0 meets |rho| >= 0.3 with FDR-adjusted CI excluding 0"
+      - "n_weekly < 52"
+    robustness:
+      - "exclude_14d_post_2026-10-01"
+      - "daily_vs_weekly"
+      - "pre_post_buyback_split"
+      - "alternative_market_control"
+    data_required:
+      - intents.volume_usd.weekly
+      - network.active_accounts_non_intents.weekly
+      - network.transactions_non_intents.weekly
+      - market.returns.weekly
+    verdict_rule: "SUPPORTED if any lag >= 0 has |rho| >= 0.3, FDR CI excludes 0, survives market control; CONTRADICTED if no lag meets with n>=52; INSUFFICIENT_DATA if n < 52"
+
+  - id: H3
+    claim: "NEAR captures meaningful value from Intents"
+    hypothesis: "Capture rate and net revenue show sustainable value accrual"
+    tests:
+      - id: capture_rate_trend
+        metric: defillama.holders_revenue.near_intents.daily / defillama.fees.near_intents.daily
+        transform: "trailing_90d_mean"
+        threshold: ">= 0.10"
+        kind: derived
+      - id: net_rev_near_growth
+        metric: revenue.net.near_intents.daily
+        transform: "trailing_90d_growth"
+        threshold: "> 0"
+        kind: derived
+      - id: take_rate_compression
+        metric: intents.observed_take_rate_bps.daily
+        transform: "slope_365d"
+        threshold: "not < -0.25 with flat fees"
+        kind: derived
+      - id: revenue_reconciliation
+        metric: reconciliation.revenue.three_way
+        transform: "delta_pct"
+        threshold: "<= 0.25 or explained"
+        kind: derived
+    kill_criteria:
+      - "capture_rate < 0.10 over trailing 90d"
+      - "capture_rate falls in 3 consecutive months"
+      - "net_revenue_near falls while volume rises"
+      - "onchain_rebuild disagrees with DefiLlama by > 25% and unexplained"
+    robustness:
+      - "exclude_14d_post_2026-10-01"
+    data_required:
+      - revenue.net.near_intents.daily
+      - defillama.fees.near_intents.daily
+      - defillama.holders_revenue.near_intents.daily
+      - intents.observed_take_rate_bps.daily
+      - reconciliation.revenue.three_way
+    verdict_rule: "SUPPORTED if no kill_criteria; CONTRADICTED if any hit; MIXED if mixed; INSUFFICIENT_DATA if n < 2"
+
+  - id: H4
+    claim: "Protocol growth benefits tokenholders"
+    hypothesis: "Post-buyback, value capture translates to tokenholder benefit via buybacks/burns reducing supply"
+    tests:
+      - id: buyback_to_issuance
+        metric: revenue.net.near_intents.daily / supply.net_issuance.weekly
+        transform: "trailing_90d_sum_ratio"
+        threshold: ">= 0.10"
+        kind: derived
+      - id: burn_to_issuance
+        metric: buyback.burned_near / supply.net_issuance.weekly
+        transform: "trailing_90d_sum_ratio"
+        threshold: "> 0"
+        kind: derived
+      - id: net_supply_change
+        metric: supply.net_supply_change.daily
+        transform: "trailing_90d_sum"
+        threshold: "not rising"
+        kind: derived
+      - id: rev_to_market_cap
+        metric: revenue.net.near_intents.daily / market.cap.daily
+        transform: "trailing_90d_mean"
+        threshold: "> 0"
+        kind: derived
+      - id: rev_to_emissions
+        metric: revenue.net.near_intents.daily / supply.net_issuance.weekly
+        transform: "trailing_90d_sum_ratio"
+        threshold: "> 0"
+        kind: derived
+    kill_criteria:
+      - "buyback_near < 0.10 * net_issuance over trailing 90d"
+      - "burned_near == 0 or unobserved"
+      - "net_supply still rising"
+    structural_break: "2026-02-23"
+    data_required:
+      - revenue.net.near_intents.daily
+      - buyback.burned_near
+      - supply.net_issuance.weekly
+      - supply.net_supply_change.daily
+      - market.cap.daily
+    verdict_rule: "SUPPORTED if no kill_criteria; CONTRADICTED if any hit; MIXED if buyback>=0.10 but burn=0; INSUFFICIENT_DATA if n < 2"
+
+  - id: H5
+    claim: "Adoption is becoming less concentrated"
+    hypothesis: "Usage distribution flattening across addresses, contracts, chains, tokens"
+    tests:
+      - id: intents_sender_gini
+        metric: intents.sender_gini.daily
+        transform: "quarterly_trend"
+        threshold: "not rising 2 consecutive quarters"
+        kind: derived
+      - id: intents_top10_share
+        metric: intents.top10_sender_share.daily
+        transform: "quarterly_change"
+        threshold: "<= 0.10"
+        kind: derived
+      - id: near_account_hhi
+        metric: network.account_hhi.daily
+        transform: "quarterly_trend"
+        threshold: "not rising 2 consecutive quarters"
+        kind: derived
+      - id: contract_hhi
+        metric: network.contract_hhi.daily
+        transform: "quarterly_trend"
+        threshold: "not rising 2 consecutive quarters"
+        kind: derived
+      - id: chain_hhi
+        metric: intents.chain_hhi.daily
+        transform: "quarterly_trend"
+        threshold: "not rising 2 consecutive quarters"
+        kind: derived
+      - id: token_hhi
+        metric: intents.token_hhi.daily
+        transform: "quarterly_trend"
+        threshold: "not rising 2 consecutive quarters"
+        kind: derived
+      - id: returning_sender_trend
+        metric: intents.returning_sender_share.daily
+        transform: "quarterly_trend"
+        threshold: "not falling"
+        kind: derived
+    kill_criteria:
+      - "HHI rises in 2 consecutive quarters on >= 2 of 4 dimensions"
+      - "top-10 share rises > 10 percentage points"
+    data_required:
+      - intents.sender_gini.daily
+      - intents.top10_sender_share.daily
+      - network.account_hhi.daily
+      - network.contract_hhi.daily
+      - intents.chain_hhi.daily
+      - intents.token_hhi.daily
+      - intents.returning_sender_share.daily
+    verdict_rule: "SUPPORTED if no kill_criteria; CONTRADICTED if any hit; INSUFFICIENT_DATA if n < 2"
