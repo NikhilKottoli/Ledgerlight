@@ -24,13 +24,7 @@ All outputs are deterministic, static-exported, and inspectable — every chart 
 
 ## Screenshots
 
-| Network | Flows | Thesis Lab |
-|---------|-------|------------|
-| ![Network](docs/screenshots/network.png) | ![Flows](docs/screenshots/flows.png) | ![Thesis](docs/screenshots/thesis.png) |
-
-| Value Capture Model | Intents | Methodology |
-|---------------------|---------|-------------|
-| ![Value](docs/screenshots/value.png) | ![Intents](docs/screenshots/intents.png) | ![Methodology](docs/screenshots/methodology.png) |
+*Screenshots will be added after demo recording. See `demo/SCRIPT.md` for the recording walkthrough.*
 
 ---
 
@@ -38,7 +32,7 @@ All outputs are deterministic, static-exported, and inspectable — every chart 
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/your-org/near-value-intelligence
+git clone https://github.com/NikhilKottoli/Ledgerlight.git
 cd near-value-intelligence
 
 # 2. Install Python dependencies
