@@ -131,7 +131,7 @@ not assigned a directional conclusion without sender-census evidence.
 ```
 pipeline/    connectors · normalize · metrics · flows · stats · thesis · export · verify
 web/         Next.js app (src/app: 7 routes) · public/data: metric and flow JSON
-sql/         verified BigQuery SQL (bytes scanned + date in each header)
+sql/         cost-controlled BigQuery SQL (dry-run bytes/date recorded before use)
 thesis/      PREREGISTRATION.md · hypotheses.yaml · thesis_results.json
 metrics/     registry.yaml
 data/        raw/ and processed/ (gitignored) · snapshot/ (committed) · reference/ (manual, sourced)

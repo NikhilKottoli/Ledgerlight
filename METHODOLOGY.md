@@ -59,17 +59,19 @@ All 11 registered metrics with source, definition, calculation, unit, kind, cove
 
 ---
 
-## SQL Index (Verified BigQuery Queries)
+## SQL Index (Authored BigQuery Queries)
 
 | File | Metric | Bytes Scanned | Date Verified | Status |
 |------|--------|---------------|---------------|--------|
-| sql/daily_active_accounts.sql | network.active_accounts.daily | 2.3 GB | 2026-11-10 | ✅ |
-| sql/daily_transactions.sql | network.transactions.daily | 1.8 GB | 2026-11-10 | ✅ |
-| sql/revenue_wallet_inflows.sql | revenue.net.near_intents.daily | 450 MB | 2026-11-10 | ✅ |
-| sql/revenue_wallet_outflows.sql | buyback.outflows | 890 MB | — | ⏳ Quota |
-| sql/supply_changes.sql | supply.net_supply_change.daily | 120 MB | 2026-11-10 | ✅ |
+| sql/daily_active_accounts.sql | network.active_accounts.daily | Pending dry-run | Pending | ⏳ Credentials |
+| sql/daily_transactions.sql | network.transactions.daily | Pending dry-run | Pending | ⏳ Credentials |
+| sql/revenue_wallet_inflows.sql | revenue.net.near_intents.daily | Pending dry-run | Pending | ⏳ Schema/credentials |
+| sql/revenue_wallet_outflows.sql | buyback.outflows | Pending dry-run | Pending | ⏳ Schema/credentials |
+| sql/supply_changes.sql | supply.net_supply_change.daily | Pending dry-run | Pending | ⏳ Schema/credentials |
 
-*Each SQL file has a header comment with bytes scanned and verification date.*
+Each SQL file has a header comment identifying its metric, source, partition
+filter, and verification state. Byte counts and dates are populated only after
+the BigQuery dry-run succeeds; no estimate is presented as a verified result.
 
 ---
 
