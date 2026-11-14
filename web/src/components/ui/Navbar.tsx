@@ -22,9 +22,6 @@ export default function Navbar() {
         <div className="flex h-14 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl font-bold tracking-tight">NEAR Value Intelligence</span>
-            <span className="px-1.5 py-0.5 text-xs font-mono rounded bg-neutral-800 text-amber-400 border border-amber-800">
-              SNAPSHOT
-            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">

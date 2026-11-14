@@ -21,6 +21,7 @@ const METRICS = [
   { id: "defillama.fees.near_intints.daily", label: "Fees (Gross)", unit: "USD" },
   { id: "defillama.revenue.near_intents.daily", label: "Revenue (Protocol)", unit: "USD" },
   { id: "defillama.holders_revenue.near_intents.daily", label: "Holders Revenue (Buybacks)", unit: "USD" },
+  { id: "defillama.chain_tvl_near.daily", label: "NEAR Chain TVL (DefiLlama)", unit: "USD" },
   // NearBlocks onchain revenue (NEAR-denominated)
   { id: "nearblocks.revenue_near.daily", label: "Revenue Wallet Inflows", unit: "NEAR" },
   { id: "nearblocks.buyback_outflows.daily", label: "Buyback Outflows", unit: "NEAR" },
@@ -28,11 +29,10 @@ const METRICS = [
 ] as const;
 
 const UNAVAILABLE_METRICS = [
-  { label: "Daily Active Accounts", unit: "", reason: "BigQuery quota — network-wide active signer addresses" },
-  { label: "Daily Transactions", unit: "", reason: "BigQuery quota — network-wide tx count" },
-  { label: "Intents-Attributable Activity", unit: "", reason: "BigQuery quota — requires Intents contract receipts" },
-  { label: "Net Supply Change (NEAR)", unit: "NEAR", reason: "BigQuery quota — requires blocks.total_supply" },
-  { label: "NEAR Chain TVL", unit: "USD", reason: "Not yet implemented — requires DefiLlama chain endpoint" },
+  { label: "Daily Active Accounts", unit: "", reason: "Requires Flipside/Pikespeak API key — network-wide active signer addresses" },
+  { label: "Daily Transactions", unit: "", reason: "Requires Flipside/Pikespeak API key — network-wide tx count" },
+  { label: "Intents-Attributable Activity", unit: "", reason: "Requires Flipside/Pikespeak API key — Intents contract receipts" },
+  { label: "Net Supply Change (NEAR)", unit: "NEAR", reason: "Requires Flipside/Pikespeak API key — blocks.total_supply" },
 ] as const;
 
 export default function NetworkPage() {

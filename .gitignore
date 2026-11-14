@@ -6,3 +6,4 @@ research/data/raw/
 __pycache__/
 .venv/
 node_modules/
+data/cache/

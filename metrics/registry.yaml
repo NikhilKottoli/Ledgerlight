@@ -413,3 +413,21 @@ metrics:
     completeness: partial
     limitations: ["Derived; assumes buyback outflows are the only outflows from revenue wallets"]
     depends_on: ["nearblocks.revenue_near.daily", "nearblocks.buyback_outflows.daily"]
+
+  - id: defillama.chain_tvl_near.daily
+    name: NEAR Chain TVL (DefiLlama) — Daily
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: DefiLlama
+      url: "https://api.llama.fi/v2/historicalChainTvl/NEAR"
+      endpoint_or_table: "historicalChainTvl/NEAR"
+    definition: "Total Value Locked across all NEAR protocols as reported by DefiLlama"
+    calc_ref: "pipeline/connectors/defillama_chain.py → pipeline/normalize/defillama_chain.py"
+    granularity: day
+    coverage: {since: "2021-12", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: complete
+    limitations: ["DefiLlama methodology may differ from onchain measurements"]
+    depends_on: []

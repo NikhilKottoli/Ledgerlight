@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen">
         <DateRangeProvider>
           <Navbar />
-          <ModeBanner mode="snapshot" snapshotDate="2026-11-13" />
+          <ModeBanner mode="live" />
           <div className="pt-12 pb-8 px-4 md:px-8">
             <div className="mx-auto max-w-7xl">{children}</div>
           </div>
