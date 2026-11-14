@@ -23,6 +23,7 @@ It traces gross fees through to tokenholder-relevant outcomes and shows, at ever
 - **Buyback vs burn.** Outflows from the buyback wallet are classified (burn, treasury, staking, exchange, unknown).
 - **Honest flows.** Each Sankey stage reconciles or shows an explicit unreconciled amount. Nothing is forced to balance.
 - **Pre-registered tests.** H1–H5 and their kill criteria were frozen at tag `prereg-v1` before any analysis ran. Verdicts come from rules: `SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`.
+- **Snapshot scorecard.** The thesis page reads the deterministic `thesis_results.json` export and shows the latest verdict, data mode, and evidence status for each hypothesis.
 - **Typed units.** `GrossFeesUSD`, `NetRevenueNEAR`, `BuybackNEAR` and `BurnNEAR` are separate types. Mixing them fails.
 - **Provenance on every chart.** Click a chart to see its source, definition, SQL, registry entry and raw data.
 
@@ -35,7 +36,7 @@ It traces gross fees through to tokenholder-relevant outcomes and shows, at ever
 | `/value` | Value capture model with a burn-fraction (φ) slider and breakeven |
 | `/intents` | Volume, status mix, chain and token distribution |
 | `/network` | NEAR activity excluding Intents |
-| `/thesis` | H1–H5 results, kill criteria, robustness |
+| `/thesis` | H1–H5 scorecard, test definitions, kill criteria, robustness |
 | `/methodology` | Metric registry, sources, unit policy, statistical method |
 
 ## Architecture
@@ -62,11 +63,12 @@ git clone https://github.com/NikhilKottoli/LedgerLight.git
 cd LedgerLight
 
 uv venv --python 3.11 && uv sync --frozen      # or: pip install -e .
-cd web && pnpm install --frozen-lockfile && pnpm build
-pnpm preview                                   # http://localhost:4173
+cd web && pnpm install --frozen-lockfile
+pnpm dev                                       # http://localhost:3000
 ```
 
-Snapshot mode serves the committed `data/snapshot/`: real, aggregated data from an earlier live run, shown with an amber banner and its date.
+Open [http://localhost:3000/thesis](http://localhost:3000/thesis) to see the scorecard.
+Snapshot mode serves real, aggregated data from an earlier live run, shown with an amber banner and its date.
 
 ## Live mode
 
@@ -109,6 +111,16 @@ The pipeline refuses to combine artifacts from different modes.
 
 Hypotheses and thresholds are frozen at `prereg-v1`.
 
+### Current conclusion
+
+The current snapshot is **mixed, with meaningful value capture but incomplete
+tokenholder benefit**. H1 is partial/mixed because proxy volume grows while the
+take rate compresses; H2 is contradicted because no tested lag clears the
+pre-registered statistical threshold; H3 is supported because trailing capture
+exceeds 10%; and H4 is mixed because observed buybacks are held rather than
+burned (`φ = 0`). H5 is the only hypothesis without a directional conclusion:
+sender concentration is unobserved until the Explorer JWT census is available.
+
 ```bash
 git show prereg-v1:thesis/PREREGISTRATION.md
 make thesis MODE=snapshot && cat thesis/thesis_results.json
@@ -116,13 +128,18 @@ make thesis MODE=snapshot && cat thesis/thesis_results.json
 
 | ID | Claim | Verdict | Blocked by |
 |---|---|---|---|
-| H1 | Intents adoption is growing sustainably | INSUFFICIENT_DATA | Intents JWT |
-| H2 | Intents predicts non-Intents NEAR activity | INSUFFICIENT_DATA | BigQuery quota |
-| H3 | NEAR captures meaningful value from Intents | INSUFFICIENT_DATA | BigQuery quota |
-| H4 | Protocol growth benefits tokenholders | INSUFFICIENT_DATA | BigQuery quota |
-| H5 | Adoption is becoming less concentrated | INSUFFICIENT_DATA | Intents / BigQuery data |
+| H1 | Intents adoption is growing sustainably | `PARTIAL / MIXED` | Sender and concentration tests require Intents JWT |
+| H2 | Intents predicts non-Intents NEAR activity | `CONTRADICTED` | 52 weekly observations; no qualifying lag |
+| H3 | NEAR captures meaningful value from Intents | `SUPPORTED` | Three-way reconciliation remains partial |
+| H4 | Protocol growth benefits tokenholders | `MIXED` | Buyback is not burn (`φ = 0` observed) |
+| H5 | Adoption is becoming less concentrated | `INSUFFICIENT_DATA` | Explorer JWT sender census |
 
-All five are `INSUFFICIENT_DATA` for now because of the blockers above, not because the tests are missing. Live mode with credentials and quota fills them in.
+H1 volume may use the DefiLlama DEX summary as a clearly labelled proxy while the
+Explorer JWT is rate-limited. Sender, concentration, and other per-transaction
+tests remain unavailable rather than estimated. H4 permits the Sluice
+supply/burn series as an issuance proxy, while preserving the observed
+buyback-versus-burn distinction. These verdicts are snapshot results, not a
+claim that correlation is causation.
 
 ## Repo layout
 
@@ -147,9 +164,16 @@ Also: `THESIS.md`, `METHODOLOGY.md`.
 - **Price conversion.** NEAR↔USD conversion adds noise, so NEAR-denominated revenue is primary.
 - **Timing.** Fees accrue per swap, but sweeps to protocol wallets happen later, with variable lag.
 - **BigQuery quota.** Revenue-wallet outflow analysis is limited by the free tier.
+- **Proxy coverage.** DefiLlama volume and Sluice network/supply series are proxies
+  when primary Explorer or BigQuery data is unavailable; proxy provenance is
+  recorded separately and never presented as Explorer measurements.
 
 ## License and sources
 
 MIT.
 
-Data from DefiLlama, the NEAR Intents Explorer API, BigQuery public datasets (`crypto_near_mainnet_us`), NearBlocks, Pikespeak, and revenue.near.org as a reference cross-check.
+Data from DefiLlama, the NEAR Intents Explorer API, BigQuery public datasets
+(`crypto_near_mainnet_us`), NearBlocks, Pikespeak, and revenue.near.org as a
+reference cross-check. The current thesis-only branch intentionally excludes
+competitor ingestion scripts; their proxy outputs are not treated as primary
+measurements.
