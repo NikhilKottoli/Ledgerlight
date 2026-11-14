@@ -11,25 +11,26 @@ interface Props {
   previousPeriodLabel?: string;
 }
 
-function getLatestCompletePoint(series: Array<{ t: string; v: number | null }>) {
+function getLatestCompletePoint(series: Array<{ t: string; v: number | string | null }>) {
   const today = new Date().toISOString().split("T")[0];
   // Find the last point that's not today and has a value
   for (let i = series.length - 1; i >= 0; i--) {
     if (series[i].v !== null && series[i].t !== today) {
-      return series[i];
+      return { ...series[i], v: Number(series[i].v) };
     }
   }
   // Fallback: last point with value (even if today)
-  return series.findLast(s => s.v !== null) ?? null;
+  const last = series.findLast(s => s.v !== null);
+  return last ? { ...last, v: Number(last.v) } : null;
 }
 
-function getPrevPoint(series: Array<{ t: string; v: number | null }>, latest: { t: string; v: number | null } | null) {
+function getPrevPoint(series: Array<{ t: string; v: number | string | null }>, latest: { t: string; v: number | null } | null) {
   if (!latest) return null;
   const latestIdx = series.findIndex(s => s.t === latest.t);
   if (latestIdx <= 0) return null;
   for (let i = latestIdx - 1; i >= 0; i--) {
     if (series[i].v !== null) {
-      return series[i];
+      return { ...series[i], v: Number(series[i].v) };
     }
   }
   return null;

@@ -25,7 +25,7 @@ interface Props {
 export default function TimeSeriesChart({ artifact, registryEntry, height = 300, showBrush = true, kindOverride }: Props) {
   const data = artifact.series.map(s => ({
     t: s.t,
-    v: s.v,
+    v: s.v !== null ? Number(s.v) : null,
     null_reason: s.null_reason,
   }));
 
