@@ -42,7 +42,7 @@ export default function TimeSeriesChart({ artifact, registryEntry, height = 300,
   const style = kindStyles[kind];
 
   return (
-    <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 h-[{height}px]">
+    <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <KindBadge kind={kind} />
@@ -57,8 +57,9 @@ export default function TimeSeriesChart({ artifact, registryEntry, height = 300,
         )}
       </div>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: showBrush ? 50 : 5 }}>
+      <div style={{ width: "100%", height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: showBrush ? 50 : 5 }}>
           <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
           <XAxis
             dataKey="t"
@@ -97,9 +98,10 @@ export default function TimeSeriesChart({ artifact, registryEntry, height = 300,
             activeDot={{ r: 4, strokeWidth: 2 }}
           />
           <EventMarker eventsPath="/data/events.json" />
-          {showBrush && <Brush dataKey="v" height={30} stroke="#3b82f6" />}
+          {showBrush && <Brush dataKey="v" height={24} stroke="#3b82f6" fill="#1f2937" travellerWidth={8} />}
         </LineChart>
-      </ResponsiveContainer>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

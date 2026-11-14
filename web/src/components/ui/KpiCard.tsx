@@ -3,14 +3,6 @@ import { MetricArtifact } from "@/lib/types";
 import KindBadge from "./KindBadge";
 import ProvenanceButton from "./ProvenanceButton";
 
-interface Props {
-  artifact: MetricArtifact;
-  registryEntry?: any;
-  label: string;
-  unit: string;
-  previousPeriodLabel?: string;
-}
-
 function getLatestCompletePoint(series: Array<{ t: string; v: number | string | null }>, todayOverride?: string) {
   const today = todayOverride || new Date().toISOString().split("T")[0];
   // Find the last point that's not today and has a value
@@ -50,7 +42,8 @@ export default function KpiCard({ artifact, registryEntry, label, unit, previous
   const prev = getPrevPoint(artifact.series, latest);
   const value = latest?.v ?? null;
   const prevValue = prev?.v ?? null;
-  const delta = value !== null && prevValue !== null ? ((Number(value) - Number(prevValue)) / Number(prevValue)) * 100 : null;
+  const delta = value !== null && prevValue !== null && prevValue !== 0 ? ((Number(value) - Number(prevValue)) / Number(prevValue)) * 100 : null;
+  const hasData = artifact.series.some(s => s.v !== null);
 
   const format = (n: number | null) => n === null ? "—" : new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n);
 
@@ -59,7 +52,11 @@ export default function KpiCard({ artifact, registryEntry, label, unit, previous
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-sm text-muted truncate">{label}</p>
-          <p className="mt-1 text-2xl font-mono tabular-nums font-semibold">{format(value)} <span className="text-base font-normal text-muted">{unit}</span></p>
+          {hasData ? (
+            <p className="mt-1 text-2xl font-mono tabular-nums font-semibold">{format(value)} <span className="text-base font-normal text-muted">{unit}</span></p>
+          ) : (
+            <p className="mt-1 text-base text-muted">No data reported</p>
+          )}
           {delta !== null && (
             <p className="mt-1 text-xs flex items-center gap-1">
               <span className={delta >= 0 ? "text-green-400" : "text-red-400"}>
