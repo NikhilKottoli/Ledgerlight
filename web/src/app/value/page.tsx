@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Legend, AreaChart, Area
-} from "recharts";
+import dynamic from "next/dynamic";
 import KpiCard from "@/components/ui/KpiCard";
 import { useMetrics } from "@/hooks/useMetric";
 
@@ -135,14 +132,10 @@ function formatCurrencyFull(n: number): string {
   return "$" + new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n);
 }
 
-const CHART_COLORS = {
-  volume: "#10b981",
-  fees: "#3b82f6",
-  netRev: "#8b5cf6",
-  buyback: "#f59e0b",
-  issuance: "#ef4444",
-  yield: "#06b6d4",
-};
+// Dynamically import chart components (client-side only)
+const ProjectionChart = dynamic(() => import("@/components/charts/ProjectionChart"), { ssr: false });
+const BuybackVsIssuanceChart = dynamic(() => import("@/components/charts/BuybackVsIssuanceChart"), { ssr: false });
+const KeyRatiosChart = dynamic(() => import("@/components/charts/KeyRatiosChart"), { ssr: false });
 
 export default function ValuePage() {
   const metricIds = METRICS.map(m => m.id);
@@ -158,7 +151,7 @@ export default function ValuePage() {
       <div className="space-y-6">
         <header className="mb-4">
           <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">Interactive breakeven analysis</p>
+          <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
         </header>
         <div className="text-center py-12 text-muted">Loading live data...</div>
       </div>
@@ -356,114 +349,13 @@ export default function ValuePage() {
           <h2 className="text-lg font-semibold">Projections (5 Years)</h2>
 
           {/* Projection Chart */}
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={CHART_COLORS.volume} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={CHART_COLORS.volume} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorFees" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={CHART_COLORS.fees} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={CHART_COLORS.fees} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorNetRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={CHART_COLORS.netRev} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={CHART_COLORS.netRev} stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
-                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
-                  tickFormatter={v => formatCurrency(v)} />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    return (
-                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
-                        <p className="font-mono text-white">{label}</p>
-                        {payload.map(p => (
-                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
-                            <span>{p.name}: </span>
-                            <span className="font-mono">{(p.dataKey === "buybackRatio" || p.dataKey === "revYield")
-                              ? formatPct(Number(p.value) / 100)
-                              : formatCurrency(Number(p.value))}</span>
-                          </p>
-                        ))}
-                      </div>
-                    );
-                  }}
-                />
-                <Legend />
-                <Area type="monotone" dataKey="volume" name="Volume (USD)" stroke={CHART_COLORS.volume} fillOpacity={1} fill="url(#colorVolume)" />
-                <Area type="monotone" dataKey="grossFees" name="Gross Fees (USD)" stroke={CHART_COLORS.fees} fillOpacity={1} fill="url(#colorFees)" />
-                <Area type="monotone" dataKey="netRev" name="Net Revenue (USD)" stroke={CHART_COLORS.netRev} fillOpacity={1} fill="url(#colorNetRev)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <ProjectionChart chartData={chartData} />
 
           {/* Buyback vs Issuance Chart */}
-          <div className="h-56 mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
-                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
-                  tickFormatter={v => formatCurrency(v)} />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    return (
-                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
-                        <p className="font-mono text-white">{label}</p>
-                        {payload.map(p => (
-                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
-                            <span>{p.name}: </span>
-                            <span className="font-mono">{formatCurrency(Number(p.value))}</span>
-                          </p>
-                        ))}
-                      </div>
-                    );
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="buybackNEAR" name="Buyback (NEAR)" fill={CHART_COLORS.buyback} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="issuance" name="Issuance (NEAR)" fill={CHART_COLORS.issuance} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <BuybackVsIssuanceChart chartData={chartData} />
 
           {/* Key Ratios Chart */}
-          <div className="h-56 mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
-                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
-                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
-                  tickFormatter={v => v.toFixed(1) + "%"} />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    return (
-                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
-                        <p className="font-mono text-white">{label}</p>
-                        {payload.map(p => (
-                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
-                            <span>{p.name}: </span>
-                            <span className="font-mono">{Number(p.value).toFixed(1)}%</span>
-                          </p>
-                        ))}
-                      </div>
-                    );
-                  }}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="buybackRatio" name="Buyback / Issuance" stroke={CHART_COLORS.buyback} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
-                <Line type="monotone" dataKey="revYield" name="Revenue Yield" stroke={CHART_COLORS.yield} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <KeyRatiosChart chartData={chartData} />
         </section>
 
         {/* Right: Breakeven Analysis & Scenario Compare */}
@@ -594,3 +486,4 @@ export default function ValuePage() {
     </div>
   );
 }
+

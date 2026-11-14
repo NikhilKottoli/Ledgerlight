@@ -5,8 +5,8 @@
   "/flows/page": "/flows",
   "/intents/page": "/intents",
   "/methodology/page": "/methodology",
-  "/network/page": "/network",
   "/page": "/",
+  "/network/page": "/network",
   "/thesis/page": "/thesis",
   "/value/page": "/value"
 }
