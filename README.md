@@ -15,6 +15,8 @@ revenue.near.org says buybacks "permanently remove NEAR from circulation." DefiL
 
 Under that observation, the burn breakeven in the value model is unreachable. The buyback breakeven (buybacks offsetting net issuance) needs about 13.5× current Intents volume at current parameters. That figure is **modeled**, not measured.
 
+Deployed site: https://ledgerlight-jl1f.onrender.com/
+
 ## What it does
 
 It traces gross fees through to tokenholder-relevant outcomes and shows, at every stage, whether the numbers reconcile.
