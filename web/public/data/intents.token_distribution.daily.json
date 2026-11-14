@@ -1,0 +1,31 @@
+{
+ "meta": {
+  "metric_id": "intents.token_distribution.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "source_max_ts": "2026-11-14T23:59:59Z",
+  "git_commit": "625c0ef5",
+  "sha256_inputs": "4071659c8939e714a7c619b7de848d63fcc2b3633b50f7d47cb87fcd7d76c63a",
+  "completeness": "complete",
+  "warnings": [
+   "Quota-limited window; confidential flows not fully visible"
+  ]
+ },
+ "series": [
+  {
+   "t": "2026-11-12",
+   "v": "0",
+   "null_reason": "conversion_error"
+  },
+  {
+   "t": "2026-11-13",
+   "v": "0",
+   "null_reason": "conversion_error"
+  },
+  {
+   "t": "2026-11-14",
+   "v": "0",
+   "null_reason": "conversion_error"
+  }
+ ]
+}

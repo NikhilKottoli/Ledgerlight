@@ -1,0 +1,15 @@
+{
+ "meta": {
+  "metric_id": "intents.concentration.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "source_max_ts": null,
+  "git_commit": "625c0ef5",
+  "sha256_inputs": "4a59c092f28df27de80aab17d35f4e8368925066a3c8ea9bfc9df7eb9785279c",
+  "completeness": "empty",
+  "warnings": [
+   "Quota-limited window; confidential flows not fully visible"
+  ]
+ },
+ "series": []
+}

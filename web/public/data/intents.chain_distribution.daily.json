@@ -1,0 +1,31 @@
+{
+ "meta": {
+  "metric_id": "intents.chain_distribution.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "source_max_ts": "2026-11-14T23:59:59Z",
+  "git_commit": "625c0ef5",
+  "sha256_inputs": "417eda0cd7c47b82da16e6956b0b9dc43041f4d97539cbcc5038818f2ba2bd0d",
+  "completeness": "complete",
+  "warnings": [
+   "Quota-limited window; confidential flows not fully visible"
+  ]
+ },
+ "series": [
+  {
+   "t": "2026-11-12",
+   "v": "0",
+   "null_reason": "conversion_error"
+  },
+  {
+   "t": "2026-11-13",
+   "v": "0",
+   "null_reason": "conversion_error"
+  },
+  {
+   "t": "2026-11-14",
+   "v": "0",
+   "null_reason": "conversion_error"
+  }
+ ]
+}

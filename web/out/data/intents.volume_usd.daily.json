@@ -1,0 +1,31 @@
+{
+ "meta": {
+  "metric_id": "intents.volume_usd.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "source_max_ts": "2026-11-14T23:59:59Z",
+  "git_commit": "625c0ef5",
+  "sha256_inputs": "a6c34f1eba7365510412bc9204dcbe1a499963f219fe69162d245ee8393b80ba",
+  "completeness": "complete",
+  "warnings": [
+   "Quota-limited window; confidential flows not fully visible"
+  ]
+ },
+ "series": [
+  {
+   "t": "2026-11-12",
+   "v": "1465.331903597315",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-13",
+   "v": "688.776736149357",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-14",
+   "v": "0",
+   "null_reason": null
+  }
+ ]
+}

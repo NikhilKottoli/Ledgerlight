@@ -1,9 +1,9 @@
 {
  "period": "7d",
- "start": "2026-11-06",
- "end": "2026-11-13",
+ "start": "2026-11-07",
+ "end": "2026-11-14",
  "data_mode": "live",
- "retrieved_at": "2026-11-13T20:23:40.374129+00:00",
+ "retrieved_at": "2026-11-14T05:41:59.895649+00:00",
  "volume_usd": null,
  "effective_gross_take_bps": null,
  "nodes": [
@@ -11,7 +11,7 @@
    "id": "gross_fees",
    "label": "Gross fees (USD)",
    "stage": "gross_fees",
-   "amount": "1687694",
+   "amount": "1434829",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -23,7 +23,6 @@
    ],
    "price_source": null,
    "evidence_refs": [
-    "defillama.fees.near_intents.daily:2026-11-06",
     "defillama.fees.near_intents.daily:2026-11-07",
     "defillama.fees.near_intents.daily:2026-11-08",
     "defillama.fees.near_intents.daily:2026-11-09",
@@ -37,7 +36,7 @@
    "id": "partner_payout",
    "label": "Partner / affiliate payouts",
    "stage": "partner_payout",
-   "amount": "1262092",
+   "amount": "1096927",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -56,7 +55,7 @@
    "id": "net_revenue_swept",
    "label": "Net revenue swept to protocol wallets",
    "stage": "net_revenue_swept",
-   "amount": "425602",
+   "amount": "337902",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -68,7 +67,6 @@
    ],
    "price_source": null,
    "evidence_refs": [
-    "defillama.holders_revenue.near_intents.daily:2026-11-06",
     "defillama.holders_revenue.near_intents.daily:2026-11-07",
     "defillama.holders_revenue.near_intents.daily:2026-11-08",
     "defillama.holders_revenue.near_intents.daily:2026-11-09",
@@ -82,9 +80,9 @@
    "id": "net_revenue_near",
    "label": "Net revenue swept (NEAR)",
    "stage": "net_revenue_near",
-   "amount": "107303.7",
+   "amount": "92902.8",
    "unit": "NEAR",
-   "alt_amount": "375562.95",
+   "alt_amount": "325159.80",
    "alt_unit": "USD",
    "kind": "measured",
    "status": "reconciled",
@@ -94,7 +92,6 @@
    ],
    "price_source": "placeholder",
    "evidence_refs": [
-    "revenue.net.near_intents.daily:2026-11-06",
     "revenue.net.near_intents.daily:2026-11-07",
     "revenue.net.near_intents.daily:2026-11-08",
     "revenue.net.near_intents.daily:2026-11-09",
@@ -109,7 +106,7 @@
    "id": "buyback",
    "label": "Buyback (NEAR acquired by buybacks wallet)",
    "stage": "buyback",
-   "amount": "42921.48",
+   "amount": "37161.12",
    "unit": "NEAR",
    "alt_amount": null,
    "alt_unit": null,
@@ -127,7 +124,7 @@
    "id": "held",
    "label": "Held in revenue wallets",
    "stage": "held",
-   "amount": "32191.11",
+   "amount": "27870.84",
    "unit": "NEAR",
    "alt_amount": null,
    "alt_unit": null,
@@ -143,7 +140,7 @@
    "id": "spent",
    "label": "Spent / transferred out (treasury, ops)",
    "stage": "spent",
-   "amount": "21460.74",
+   "amount": "18580.56",
    "unit": "NEAR",
    "alt_amount": null,
    "alt_unit": null,
@@ -159,7 +156,7 @@
    "id": "unknown_dest",
    "label": "Unknown destination",
    "stage": "unknown_dest",
-   "amount": "10730.37",
+   "amount": "9290.28",
    "unit": "NEAR",
    "alt_amount": null,
    "alt_unit": null,
@@ -193,7 +190,7 @@
    "id": "held_buyback",
    "label": "Held in buyback wallet",
    "stage": "held_buyback",
-   "amount": "42921.48",
+   "amount": "37161.12",
    "unit": "NEAR",
    "alt_amount": null,
    "alt_unit": null,
@@ -244,56 +241,56 @@
   {
    "source": "gross_fees",
    "target": "partner_payout",
-   "amount": "1262092",
+   "amount": "1096927",
    "unit": "USD",
    "status": "reconciled"
   },
   {
    "source": "gross_fees",
    "target": "net_revenue_swept",
-   "amount": "425602",
+   "amount": "337902",
    "unit": "USD",
    "status": "reconciled"
   },
   {
    "source": "net_revenue_swept",
    "target": "net_revenue_near",
-   "amount": "107303.7",
+   "amount": "92902.8",
    "unit": "NEAR",
    "status": "reconciled"
   },
   {
    "source": "net_revenue_near",
    "target": "buyback",
-   "amount": "42921.48",
+   "amount": "37161.12",
    "unit": "NEAR",
    "status": "reconciled"
   },
   {
    "source": "net_revenue_near",
    "target": "held",
-   "amount": "32191.11",
+   "amount": "27870.84",
    "unit": "NEAR",
    "status": "reconciled"
   },
   {
    "source": "net_revenue_near",
    "target": "spent",
-   "amount": "21460.74",
+   "amount": "18580.56",
    "unit": "NEAR",
    "status": "reconciled"
   },
   {
    "source": "net_revenue_near",
    "target": "unknown_dest",
-   "amount": "10730.37",
+   "amount": "9290.28",
    "unit": "NEAR",
    "status": "reconciled"
   },
   {
    "source": "buyback",
    "target": "held_buyback",
-   "amount": "42921.48",
+   "amount": "37161.12",
    "unit": "NEAR",
    "status": "reconciled"
   }
@@ -303,13 +300,13 @@
   "gross_fees": [
    {
     "source": "defillama_fees",
-    "value": "1687694",
+    "value": "1434829",
     "unit": "USD",
     "delta_pct": ""
    },
    {
     "source": "defillama_revenue_plus_holders",
-    "value": "851204",
+    "value": "675804",
     "unit": "USD",
     "delta_pct": ""
    }
@@ -317,15 +314,15 @@
   "net_revenue": [
    {
     "source": "onchain_rebuild",
-    "value": "107303.7",
+    "value": "92902.8",
     "unit": "NEAR",
     "delta_pct": ""
    },
    {
     "source": "defillama_revenue_usd_converted",
-    "value": "121600.5714285714285714285714",
+    "value": "96543.42857142857142857142857",
     "unit": "NEAR",
-    "delta_pct": "-11.75724033251723441149242718"
+    "delta_pct": "-3.770975016424880586678977927"
    }
   ],
   "buyback_vs_burn": [

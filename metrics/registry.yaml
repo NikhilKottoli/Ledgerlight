@@ -197,3 +197,147 @@ metrics:
     completeness: partial
     limitations: ["Placeholder split estimates; needs BigQuery outflows and buyback trace"]
     depends_on: ["revenue.net.near_intents.daily", "defillama.fees.near_intents.daily", "defillama.holders_revenue.near_intents.daily"]
+
+  - id: intents.volume_usd.daily
+    name: Intents Volume (USD) — Daily
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Total USD volume of successful Intents swaps per day (amountInUsd)"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; only 1Click integrator coverage"]
+    depends_on: []
+
+  - id: intents.swaps.daily
+    name: Intents Swaps — Daily
+    kind: measured
+    unit: count
+    entity: count
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Number of successful Intents swaps per day"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; only 1Click integrator coverage"]
+    depends_on: []
+
+  - id: intents.unique_sender_addresses.daily
+    name: Unique Sender Addresses — Daily
+    kind: measured
+    unit: count
+    entity: count
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Distinct signer addresses with ≥1 successful swap per day"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; addresses ≠ humans"]
+    depends_on: []
+
+  - id: intents.avg_swap_usd.daily
+    name: Avg Swap Size (USD) — Daily
+    kind: derived
+    unit: USD
+    entity: usd
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/normalize/intents.py"
+    definition: "Volume USD / Swaps per day"
+    calc_ref: "pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Derived from volume and swaps; same limitations apply"]
+    depends_on: ["intents.volume_usd.daily", "intents.swaps.daily"]
+
+  - id: intents.status_mix.daily
+    name: Intents Status Mix — Daily
+    kind: measured
+    unit: ratio
+    entity: ratio
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Share of swaps by status (SUCCESS, FAILED, REFUNDED, PROCESSING, PENDING_DEPOSIT, INCOMPLETE_DEPOSIT)"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit"]
+    depends_on: []
+
+  - id: intents.chain_distribution.daily
+    name: Intents Chain Distribution — Daily
+    kind: derived
+    unit: USD
+    entity: usd
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/normalize/intents.py"
+    definition: "Volume USD by origin_chain->dest_chain per day"
+    calc_ref: "pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Derived; requires Intents JWT; unknown chains mapped to 'unknown'"]
+    depends_on: ["intents.volume_usd.daily"]
+
+  - id: intents.token_distribution.daily
+    name: Intents Token Distribution — Daily
+    kind: derived
+    unit: USD
+    entity: usd
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/normalize/intents.py"
+    definition: "Volume USD by origin_symbol->dest_symbol per day"
+    calc_ref: "pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Derived; requires Intents JWT; unknown tokens mapped to 'unknown'"]
+    depends_on: ["intents.volume_usd.daily"]
+
+  - id: intents.concentration.daily
+    name: Intents Concentration (Top-10 Share) — Daily
+    kind: derived
+    unit: ratio
+    entity: ratio
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/normalize/intents.py"
+    definition: "Share of daily volume USD from top 10 sender addresses"
+    calc_ref: "pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Derived; requires Intents JWT; addresses ≠ humans; confidential flows excluded"]
+    depends_on: ["intents.volume_usd.daily"]

@@ -1,14 +1,86 @@
 {
- "generated_at": "2026-11-13T11:21:30.812053+00:00",
+ "generated_at": "2026-11-14T05:42:17.319052+00:00",
  "mode": "live",
  "artifacts": {
+  "defillama.fees.near_intents.daily.json": {
+   "sha256": "65b3f8b61d15240d0ad46237013174e207b48e96cdab6a931ef8bdf76c744aac",
+   "bytes": 39661
+  },
+  "defillama.holders_revenue.near_intents.daily.json": {
+   "sha256": "4b81eb357d7495e6f290e52d64b2cedc23dc1a0d928a60b4c2ccd232fa5580e3",
+   "bytes": 38363
+  },
+  "defillama.revenue.near_intents.daily.json": {
+   "sha256": "acd74b862c9c324c00474b6ba061cbcb8203cf0dee426f385a9a702cf63caf18",
+   "bytes": 38458
+  },
   "defillama.tvl.near_intents.daily.json": {
-   "sha256": "20fffee094e1b5d9c0006ccba99b603465752a529b25e1b207f7d6a2185ad895",
+   "sha256": "035585593910bfd5a915d66bcd5d5e4056535a35fd0e0752a872eaa7b0007af3",
    "bytes": 28640
   },
   "events.json": {
    "sha256": "9e52b4cf8804fed252b078bf88a00a1d0aa55fadef9720cbc895719caa6e3ac9",
    "bytes": 293
+  },
+  "flow_ledger_30d.json": {
+   "sha256": "0e03d3c0a2a7b208e31116192cdad0cdaea13b869960911970780385519c5261",
+   "bytes": 12563
+  },
+  "flow_ledger_7d.json": {
+   "sha256": "0950b15cca66c4c3a121155f19955f994f2c63fae3f235cc30ebec487db1da74",
+   "bytes": 8798
+  },
+  "flow_ledger_90d.json": {
+   "sha256": "7c771b281ca55c91616d89e3e4a1e1e8fae414cc6eb24021b63db2427ad02608",
+   "bytes": 19540
+  },
+  "flow_ledger_all.json": {
+   "sha256": "20e53126bce363c93a006b2135579ac8e4f1998e6ffab3681cd852d15dec603b",
+   "bytes": 72806
+  },
+  "flow_ledger_ytd.json": {
+   "sha256": "3fd93675e788133db907866a309f43c50c60dbe8eaef683ceec9420fb902b47b",
+   "bytes": 45660
+  },
+  "intents.avg_swap_usd.daily.json": {
+   "sha256": "23496fed6c3f21b219d518f4503b730c73ab55cbc20c170d7e4085137b340748",
+   "bytes": 679
+  },
+  "intents.chain_distribution.daily.json": {
+   "sha256": "9e34c72afdeaf165e1085da9a69c7385bb67d8281b148eb9e4d6dc80d1783e31",
+   "bytes": 671
+  },
+  "intents.concentration.daily.json": {
+   "sha256": "49e51637bea17421a19404b9922ba1b61a5db703740fc68bff40b24aaa6e94cc",
+   "bytes": 401
+  },
+  "intents.status_mix.daily.json": {
+   "sha256": "c670913abda3cab90d369622f2b211ffd961864fa9150a72a24d1f56e5aec45f",
+   "bytes": 663
+  },
+  "intents.swaps.daily.json": {
+   "sha256": "9686c947eb085283d1cb97f9a56b848300a8f3274074e79022653c3858a6c518",
+   "bytes": 616
+  },
+  "intents.token_distribution.daily.json": {
+   "sha256": "69096ca8d08c0a26763941b0dd0f07fc0512f8bdd238a1a0e963e256d868ea25",
+   "bytes": 671
+  },
+  "intents.unique_sender_addresses.daily.json": {
+   "sha256": "9806b3fd643fc8e3064423261d6845f16d3abda60a7a7d0d5ad9470975dd4a8a",
+   "bytes": 634
+  },
+  "intents.volume_usd.daily.json": {
+   "sha256": "4cd684bc441de9059192975e409bf3cd18985438ccfd53bf4596a66b4d55ad18",
+   "bytes": 652
+  },
+  "reconciliation.revenue.three_way.json": {
+   "sha256": "39a8f62d3f43d5a36f9a66e5c1500e64fe748087cb5dda26723d639b8e2269db",
+   "bytes": 1583
+  },
+  "revenue.net.near_intents.daily.json": {
+   "sha256": "842726905303b82f542f4c663dc0285c5945f0e9d3e29ec0a5c0a6a8f6fbe47a",
+   "bytes": 2708
   }
  }
 }

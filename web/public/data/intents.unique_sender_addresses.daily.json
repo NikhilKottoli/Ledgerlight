@@ -1,0 +1,31 @@
+{
+ "meta": {
+  "metric_id": "intents.unique_sender_addresses.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "source_max_ts": "2026-11-14T23:59:59Z",
+  "git_commit": "625c0ef5",
+  "sha256_inputs": "14460855cf10541f51c96c25460df60f5394907bdd94802b631b65e7172f6f9a",
+  "completeness": "complete",
+  "warnings": [
+   "Quota-limited window; confidential flows not fully visible"
+  ]
+ },
+ "series": [
+  {
+   "t": "2026-11-12",
+   "v": "8",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-13",
+   "v": "7",
+   "null_reason": null
+  },
+  {
+   "t": "2026-11-14",
+   "v": "0",
+   "null_reason": null
+  }
+ ]
+}

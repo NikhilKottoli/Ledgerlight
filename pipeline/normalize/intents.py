@@ -78,10 +78,21 @@ def normalize_txs(txs: list[dict]) -> list[dict[str, Any]]:
         app_fees = tx.get("appFees", [])
         total_app_fees_usd = sum(Decimal(str(f.get("fee", 0))) for f in app_fees) if app_fees else Decimal("0")
 
+        created_at_str = tx.get("createdAt")
+        created_at_ts = None
+        if created_at_str:
+            if isinstance(created_at_str, (int, float)):
+                created_at_ts = created_at_str
+            else:
+                try:
+                    created_at_ts = datetime.fromisoformat(created_at_str.replace("Z", "+00:00")).timestamp()
+                except Exception:
+                    created_at_ts = None
+
         n = {
             "tx_key": f"{tx.get('depositAddress')}:{tx.get('depositMemo')}",
-            "created_at": tx.get("createdAt"),
-            "date": datetime.fromtimestamp(tx.get("createdAt", 0), tz=timezone.utc).strftime("%Y-%m-%d") if tx.get("createdAt") else None,
+            "created_at": created_at_str,
+            "date": datetime.fromtimestamp(created_at_ts, tz=timezone.utc).strftime("%Y-%m-%d") if created_at_ts else None,
             "status": tx.get("status"),
             "origin_chain": origin_chain,
             "origin_symbol": origin_symbol,
@@ -191,7 +202,14 @@ def write_artifacts(series: dict, mode: DataMode, git_commit: str, retrieved_at:
         for date in sorted(series.keys()):
             val = series[date].get(field)
             if val is not None:
-                points.append(SeriesPoint(t=date, v=Decimal(str(val)), null_reason=None))
+                try:
+                    d_val = Decimal(str(val))
+                    if d_val.is_finite():
+                        points.append(SeriesPoint(t=date, v=d_val, null_reason=None))
+                    else:
+                        points.append(SeriesPoint(t=date, v=Decimal("0"), null_reason="non_finite_value"))
+                except Exception:
+                    points.append(SeriesPoint(t=date, v=Decimal("0"), null_reason="conversion_error"))
 
         meta = ArtifactMeta(
             metric_id=metric_id,

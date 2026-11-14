@@ -78,7 +78,11 @@ def fetch_day_window(jwt: str, start_ts: int, end_ts: int, statuses: list[str] =
             params["lastDepositMemo"] = cursor["memo"]
 
         data = _fetch_page(f"{API_BASE}/transactions", params, jwt)
-        txs = data.get("transactions", [])
+        # API returns list directly, not wrapped in {"transactions": [...]}
+        if isinstance(data, list):
+            txs = data
+        else:
+            txs = data.get("transactions", [])
         all_txs.extend(txs)
 
         # Check for next page

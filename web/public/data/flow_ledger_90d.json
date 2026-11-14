@@ -1,9 +1,9 @@
 {
  "period": "90d",
- "start": "2026-08-15",
- "end": "2026-11-13",
+ "start": "2026-08-16",
+ "end": "2026-11-14",
  "data_mode": "live",
- "retrieved_at": "2026-11-13T20:23:40.383059+00:00",
+ "retrieved_at": "2026-11-14T05:41:59.904620+00:00",
  "volume_usd": null,
  "effective_gross_take_bps": null,
  "nodes": [
@@ -11,7 +11,7 @@
    "id": "gross_fees",
    "label": "Gross fees (USD)",
    "stage": "gross_fees",
-   "amount": "19099853",
+   "amount": "19069255",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -23,7 +23,6 @@
    ],
    "price_source": null,
    "evidence_refs": [
-    "defillama.fees.near_intents.daily:2026-08-15",
     "defillama.fees.near_intents.daily:2026-08-16",
     "defillama.fees.near_intents.daily:2026-08-17",
     "defillama.fees.near_intents.daily:2026-08-18",
@@ -120,7 +119,7 @@
    "id": "partner_payout",
    "label": "Partner / affiliate payouts",
    "stage": "partner_payout",
-   "amount": "13902702",
+   "amount": "13879327",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -139,7 +138,7 @@
    "id": "net_revenue_swept",
    "label": "Net revenue swept to protocol wallets",
    "stage": "net_revenue_swept",
-   "amount": "5197151",
+   "amount": "5189928",
    "unit": "USD",
    "alt_amount": null,
    "alt_unit": null,
@@ -151,7 +150,6 @@
    ],
    "price_source": null,
    "evidence_refs": [
-    "defillama.holders_revenue.near_intents.daily:2026-08-15",
     "defillama.holders_revenue.near_intents.daily:2026-08-16",
     "defillama.holders_revenue.near_intents.daily:2026-08-17",
     "defillama.holders_revenue.near_intents.daily:2026-08-18",
@@ -433,14 +431,14 @@
   {
    "source": "gross_fees",
    "target": "partner_payout",
-   "amount": "13902702",
+   "amount": "13879327",
    "unit": "USD",
    "status": "reconciled"
   },
   {
    "source": "gross_fees",
    "target": "net_revenue_swept",
-   "amount": "5197151",
+   "amount": "5189928",
    "unit": "USD",
    "status": "reconciled"
   },
@@ -492,13 +490,13 @@
   "gross_fees": [
    {
     "source": "defillama_fees",
-    "value": "19099853",
+    "value": "19069255",
     "unit": "USD",
     "delta_pct": ""
    },
    {
     "source": "defillama_revenue_plus_holders",
-    "value": "10394302",
+    "value": "10379856",
     "unit": "USD",
     "delta_pct": ""
    }
@@ -512,9 +510,9 @@
    },
    {
     "source": "defillama_revenue_usd_converted",
-    "value": "1484900.285714285714285714286",
+    "value": "1482836.571428571428571428571",
     "unit": "NEAR",
-    "delta_pct": "-72.18568788938401058579979686"
+    "delta_pct": "-72.14697776154120057156862291"
    }
   ],
   "buyback_vs_burn": [
