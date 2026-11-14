@@ -23,6 +23,7 @@ It traces gross fees through to tokenholder-relevant outcomes and shows, at ever
 - **Buyback vs burn.** Outflows from the buyback wallet are classified (burn, treasury, staking, exchange, unknown).
 - **Honest flows.** Each Sankey stage reconciles or shows an explicit unreconciled amount. Nothing is forced to balance.
 - **Pre-registered tests.** H1–H5 and their kill criteria were frozen at tag `prereg-v1` before any analysis ran. Verdicts come from rules: `SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`.
+- **Current conclusion.** The current evidence is mixed: H1 is partial/mixed, H2 is contradicted, H3 is supported, H4 is mixed, and H5 remains unobserved until sender-census data is available.
 - **Typed units.** `GrossFeesUSD`, `NetRevenueNEAR`, `BuybackNEAR` and `BurnNEAR` are separate types. Mixing them fails.
 - **Provenance on every chart.** Click a chart to see its source, definition, SQL, registry entry and raw data.
 
@@ -116,13 +117,14 @@ make thesis MODE=snapshot && cat thesis/thesis_results.json
 
 | ID | Claim | Verdict | Blocked by |
 |---|---|---|---|
-| H1 | Intents adoption is growing sustainably | INSUFFICIENT_DATA | Intents JWT |
-| H2 | Intents predicts non-Intents NEAR activity | INSUFFICIENT_DATA | BigQuery quota |
-| H3 | NEAR captures meaningful value from Intents | INSUFFICIENT_DATA | BigQuery quota |
-| H4 | Protocol growth benefits tokenholders | INSUFFICIENT_DATA | BigQuery quota |
-| H5 | Adoption is becoming less concentrated | INSUFFICIENT_DATA | Intents / BigQuery data |
+| H1 | Intents adoption is growing sustainably | `PARTIAL / MIXED` | Sender and concentration tests require Intents JWT |
+| H2 | Intents predicts non-Intents NEAR activity | `CONTRADICTED` | No qualifying lag at n = 52 |
+| H3 | NEAR captures meaningful value from Intents | `SUPPORTED` | Three-way reconciliation remains partial |
+| H4 | Protocol growth benefits tokenholders | `MIXED` | Buyback is not burn (`φ = 0` observed) |
+| H5 | Adoption is becoming less concentrated | `INSUFFICIENT_DATA` | Explorer JWT sender census |
 
-All five are `INSUFFICIENT_DATA` for now because of the blockers above, not because the tests are missing. Live mode with credentials and quota fills them in.
+H5 stays in the scorecard and is explicitly marked `INSUFFICIENT_DATA`; it is
+not assigned a directional conclusion without sender-census evidence.
 
 ## Repo layout
 

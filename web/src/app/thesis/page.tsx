@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import PageHeader from "@/components/ui/PageHeader";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { IconAlert, IconArrowUpRight, IconCheck, IconShield, IconX } from "@/components/ui/icons";
@@ -98,6 +100,44 @@ interface TestItem {
   threshold: string;
 }
 
+interface ThesisResults {
+  hypotheses: Record<string, { verdict: string }>;
+  data_mode: string;
+}
+
+function VerdictScorecard() {
+  const [results, setResults] = useState<ThesisResults | null>(null);
+
+  useEffect(() => {
+    fetch("/data/thesis_results.json")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((value: ThesisResults | null) => setResults(value))
+      .catch(() => setResults(null));
+  }, []);
+
+  if (!results) return null;
+
+  return (
+    <section className="card p-4 sm:p-5" aria-labelledby="scorecard-heading">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="micro-label">Computed results</p>
+          <h2 id="scorecard-heading" className="mt-1 section-title">Hypothesis scorecard</h2>
+        </div>
+        <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">{results.data_mode}</span>
+      </div>
+      <div className="mt-3 grid gap-2 sm:grid-cols-5">
+        {Object.entries(results.hypotheses).map(([id, hypothesis]) => (
+          <div key={id} className="rounded-lg border border-line bg-surface-subtle/60 p-3">
+            <p className="font-mono text-[11px] font-semibold text-accent">{id}</p>
+            <p className="mt-1 text-[11px] font-medium text-ink">{hypothesis.verdict}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function TestRows({ tests }: { tests: readonly TestItem[] }) {
   return (
     <>
@@ -177,6 +217,8 @@ export default function ThesisPage() {
           ))}
         </div>
       </section>
+
+      <VerdictScorecard />
 
       <div className="space-y-4">
         {HYPOTHESES.map((h) => (

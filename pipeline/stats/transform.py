@@ -1,9 +1,11 @@
 """Data transforms for thesis tests."""
+
 from __future__ import annotations
+
+from decimal import Decimal
+
 import numpy as np
 import pandas as pd
-from decimal import Decimal
-from typing import Optional
 
 
 def log_diff(series: pd.Series) -> pd.Series:
@@ -11,11 +13,7 @@ def log_diff(series: pd.Series) -> pd.Series:
     return np.log(series).diff()
 
 
-def weekly_aggregate(
-    daily: pd.Series,
-    how: str = "sum",
-    min_days: int = 5
-) -> pd.Series:
+def weekly_aggregate(daily: pd.Series, how: str = "sum", min_days: int = 5) -> pd.Series:
     """Aggregate daily series to ISO weeks.
 
     Args:
@@ -29,7 +27,9 @@ def weekly_aggregate(
     if how == "sum":
         weekly = daily.resample("W-SUN").sum(min_count=min_days)
     elif how == "mean":
-        weekly = daily.resample("W-SUN").mean(min_count=min_days)
+        grouped = daily.resample("W-SUN")
+        weekly = grouped.mean()
+        weekly[grouped.count() < min_days] = np.nan
     elif how == "last":
         weekly = daily.resample("W-SUN").last()
     else:

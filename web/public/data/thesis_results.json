@@ -1,0 +1,314 @@
+{
+ "evaluated_at": "2026-11-14T19:48:50.215154+00:00",
+ "data_mode": "snapshot",
+ "prereg_tag": "prereg-v1",
+ "hypotheses": {
+  "H1": {
+   "id": "H1",
+   "verdict": "PARTIAL / MIXED",
+   "evaluated_at": "2026-11-14T19:48:47.442866+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [
+    {
+     "id": "vol_growth_90d",
+     "current": 12380044411.0,
+     "prior": 6607618262.0,
+     "growth": 0.8736016398218496,
+     "kind": "proxy"
+    },
+    {
+     "id": "take_rate_trend",
+     "n": 365,
+     "slope_per_day": -1.7182292469913967e-06,
+     "normalized_window_change": -0.37915322893843656,
+     "threshold": -0.25,
+     "unit": "fraction of take rate per trailing window",
+     "kind": "proxy volume + measured fees"
+    }
+   ],
+   "supporting": [
+    "vol_growth_90d > 0"
+   ],
+   "contradicting": [
+    "take_rate_trend below -25% threshold"
+   ],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "unique sender address growth",
+     "reason": "UNAVAILABLE (JWT required)"
+    },
+    {
+     "item": "returning sender share",
+     "reason": "UNAVAILABLE (JWT required)"
+    },
+    {
+     "item": "top-10 sender concentration",
+     "reason": "UNAVAILABLE (JWT required)"
+    }
+   ]
+  },
+  "H2": {
+   "id": "H2",
+   "verdict": "CONTRADICTED",
+   "evaluated_at": "2026-11-14T19:48:50.196599+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [
+    {
+     "id": "weekly_log_diff_lag_scan",
+     "n": 52,
+     "lags": [
+      {
+       "lag": -8,
+       "rho": -0.15015831481543085,
+       "p_value": 0.3306059706599544,
+       "n": 44,
+       "ci_low": -0.4102590618076249,
+       "ci_high": 0.07710134891255147,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -7,
+       "rho": -0.009352449447974281,
+       "p_value": 0.9513799506180499,
+       "n": 45,
+       "ci_low": -0.24933306592856186,
+       "ci_high": 0.19904729114066855,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -6,
+       "rho": 0.015754014667990243,
+       "p_value": 0.9172369982908076,
+       "n": 46,
+       "ci_low": -0.2661778319661601,
+       "ci_high": 0.34687039756717525,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -5,
+       "rho": 0.00525595424753518,
+       "p_value": 0.9720295553500613,
+       "n": 47,
+       "ci_low": -0.1324340853813687,
+       "ci_high": 0.1450351790676816,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -4,
+       "rho": 0.1254020600368518,
+       "p_value": 0.3957315790475923,
+       "n": 48,
+       "ci_low": -0.17418236149747443,
+       "ci_high": 0.37855695773200804,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -3,
+       "rho": -0.20024259286726204,
+       "p_value": 0.16773109159518065,
+       "n": 49,
+       "ci_low": -0.33406262550466687,
+       "ci_high": -0.05992424928896287,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -2,
+       "rho": 0.22350611879358076,
+       "p_value": 0.11869741158944515,
+       "n": 50,
+       "ci_low": 0.025251767048564244,
+       "ci_high": 0.34633588998565595,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": -1,
+       "rho": 0.2175269427537931,
+       "p_value": 0.12518533635469845,
+       "n": 51,
+       "ci_low": -0.08462328842633202,
+       "ci_high": 0.5083229404009866,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 0,
+       "rho": -0.07306086821661607,
+       "p_value": 0.6067410045333115,
+       "n": 52,
+       "ci_low": -0.2614463200892804,
+       "ci_high": 0.13354956731897308,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 1,
+       "rho": -0.1409736132452572,
+       "p_value": 0.3237733746103331,
+       "n": 51,
+       "ci_low": -0.44913558710026547,
+       "ci_high": 0.16561395498697193,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 2,
+       "rho": -0.11427762931793671,
+       "p_value": 0.4293990636405137,
+       "n": 50,
+       "ci_low": -0.31885970719731965,
+       "ci_high": 0.18769938856588192,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 3,
+       "rho": -0.03534713516574735,
+       "p_value": 0.809463842150817,
+       "n": 49,
+       "ci_low": -0.23699189094296855,
+       "ci_high": 0.1745496877715287,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 4,
+       "rho": -0.008778883669961698,
+       "p_value": 0.952777088439337,
+       "n": 48,
+       "ci_low": -0.1420050532135099,
+       "ci_high": 0.183142453681264,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 5,
+       "rho": 0.0253089827942599,
+       "p_value": 0.8659033039543326,
+       "n": 47,
+       "ci_low": -0.15438827337588734,
+       "ci_high": 0.15287399446079838,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 6,
+       "rho": 0.004463461201996574,
+       "p_value": 0.9765139364729724,
+       "n": 46,
+       "ci_low": -0.11750946477268462,
+       "ci_high": 0.0852885051110712,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 7,
+       "rho": 0.17192602851860347,
+       "p_value": 0.2587738265641615,
+       "n": 45,
+       "ci_low": -0.14781878114485497,
+       "ci_high": 0.3242508628949338,
+       "fdr_significant": false,
+       "method": "pearson"
+      },
+      {
+       "lag": 8,
+       "rho": 0.12423593319638684,
+       "p_value": 0.4216951996721764,
+       "n": 44,
+       "ci_low": -0.06263661223967244,
+       "ci_high": 0.2595265181033499,
+       "fdr_significant": false,
+       "method": "pearson"
+      }
+     ],
+     "method": "stationary block bootstrap + BH-FDR"
+    }
+   ],
+   "supporting": [],
+   "contradicting": [
+    "No non-negative lag meets preregistered correlation criteria"
+   ],
+   "kill_criteria_hit": [],
+   "unavailable": []
+  },
+  "H3": {
+   "id": "H3",
+   "verdict": "SUPPORTED",
+   "evaluated_at": "2026-11-14T19:48:50.209454+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [
+    {
+     "id": "capture_rate_trend",
+     "trailing_90d": 0.27210424080227213,
+     "threshold": 0.1
+    },
+    {
+     "id": "net_rev_near_growth",
+     "value": null
+    },
+    {
+     "id": "three_way_reconciliation",
+     "status": "partial",
+     "note": "USD/NEAR conversion and comparable windows are required"
+    }
+   ],
+   "supporting": [
+    "capture rate >= 10%"
+   ],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": []
+  },
+  "H4": {
+   "id": "H4",
+   "verdict": "MIXED",
+   "evaluated_at": "2026-11-14T19:48:50.215085+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [
+    {
+     "id": "burn_to_issuance",
+     "burn_near": 0.0,
+     "threshold": "> 0",
+     "phi": 0
+    }
+   ],
+   "supporting": [],
+   "contradicting": [
+    "buyback != burn (phi=0; buybacks held in multisig, not burned)"
+   ],
+   "kill_criteria_hit": [
+    "burned NEAR = 0; preregistered buyback != burn condition"
+   ],
+   "unavailable": [
+    {
+     "item": "buyback_to_issuance",
+     "reason": "Buyback NEAR proxy or issuance denominator unavailable"
+    }
+   ]
+  },
+  "H5": {
+   "id": "H5",
+   "verdict": "INSUFFICIENT_DATA",
+   "evaluated_at": "2026-11-14T19:48:50.215144+00:00",
+   "prereg_tag": "prereg-v1",
+   "tests": [],
+   "supporting": [],
+   "contradicting": [],
+   "kill_criteria_hit": [],
+   "unavailable": [
+    {
+     "item": "sender concentration metrics",
+     "reason": "Requires Explorer JWT sender census"
+    }
+   ]
+  }
+ }
+}
