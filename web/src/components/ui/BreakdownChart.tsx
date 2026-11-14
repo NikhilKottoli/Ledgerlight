@@ -3,6 +3,7 @@
 import { MetricArtifact } from "@/lib/types";
 import KindBadge from "./KindBadge";
 import ProvenanceButton from "./ProvenanceButton";
+import { chart } from "@/lib/chartTheme";
 
 interface Props {
   artifact: MetricArtifact;
@@ -10,100 +11,120 @@ interface Props {
   height?: number;
   topN?: number;
   unit?: string;
+  title?: string;
+  subtitle?: string;
+  labelFormatter?: (key: string) => string;
+  /** Optional observation date. Falls back to the latest non-null point. */
+  date?: string;
 }
 
-export default function BreakdownChart({ artifact, registryEntry, height = 300, topN = 10, unit }: Props) {
-  // Process series: each point has an object value { key: value }
-  // We'll show the latest point as a horizontal bar chart
-  const latestPoint = [...artifact.series].reverse().find(s => s.v !== null);
-  
-  if (!latestPoint || typeof latestPoint.v !== 'object' || latestPoint.v === null) {
+function formatBreakdownValue(value: number, unit?: string): string {
+  const formatted = new Intl.NumberFormat("en-US", {
+    notation: Math.abs(value) >= 1000 ? "compact" : "standard",
+    maximumFractionDigits: 2,
+  }).format(value);
+  if (!unit) return formatted;
+  if (unit.toUpperCase() === "USD") return `$${formatted}`;
+  return `${formatted} ${unit}`;
+}
+
+export default function BreakdownChart({
+  artifact,
+  registryEntry,
+  height = 300,
+  topN = 10,
+  unit,
+  title,
+  subtitle,
+  labelFormatter,
+  date,
+}: Props) {
+  const latestPoint =
+    (date ? artifact.series.find((point) => point.t === date && point.v !== null) : undefined) ||
+    [...artifact.series].reverse().find((point) => point.v !== null);
+
+  if (!latestPoint || typeof latestPoint.v !== "object" || latestPoint.v === null) {
     return (
-      <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <div className="flex items-center justify-between mb-2">
+      <div className="card p-5">
+        <div className="flex items-center justify-between">
+          <h3 className="section-title">{title || "Breakdown"}</h3>
           <KindBadge kind={artifact.meta.data_mode === "live" ? "measured" : artifact.meta.data_mode === "snapshot" ? "derived" : "modeled"} />
         </div>
-        <div className="text-center py-8 text-muted">No breakdown data available</div>
+        <div className="empty-state mt-4">
+          <p className="text-[12.5px] font-medium text-ink-muted">No breakdown data available</p>
+        </div>
       </div>
     );
   }
 
   const breakdown = latestPoint.v as Record<string, number | string>;
-  const entries = Object.entries(breakdown)
+  const allEntries = Object.entries(breakdown)
     .map(([key, value]) => ({ key, value: Number(value) }))
-    .filter(e => !isNaN(e.value))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, topN);
-
-  const total = entries.reduce((sum, e) => sum + e.value, 0);
+    .filter((entry) => !Number.isNaN(entry.value))
+    .sort((a, b) => b.value - a.value);
+  const entries = allEntries.slice(0, topN);
+  const total = allEntries.reduce((sum, entry) => sum + entry.value, 0);
   const maxValue = entries[0]?.value || 1;
-
   const kind = artifact.meta.data_mode === "live" ? "measured" : artifact.meta.data_mode === "snapshot" ? "derived" : "modeled";
-  const kindStyles = {
-    measured: { bg: "bg-green-900/30", text: "text-green-300", border: "border-green-700" },
-    derived: { bg: "bg-blue-900/30", text: "text-blue-300", border: "border-blue-700" },
-    modeled: { bg: "bg-amber-900/30", text: "text-amber-300", border: "border-amber-700" },
-  };
-  const s = kindStyles[kind];
 
   return (
-    <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 overflow-y-auto" style={{ maxHeight: height }}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <KindBadge kind={kind} />
-          {artifact.meta.data_mode !== "live" && (
-            <span className="text-xs text-muted">
-              {artifact.meta.data_mode === "snapshot" ? `Snapshot: ${artifact.meta.retrieved_at.split("T")[0]}` : "Synthetic"}
-            </span>
-          )}
+    <div className="card overflow-hidden">
+      <div className="flex items-start justify-between gap-3 px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
+        <div className="min-w-0">
+          <h3 className="section-title">{title || "Breakdown"}</h3>
+          <p className="mt-0.5 text-[11px] text-ink-faint">
+            {subtitle || `${allEntries.length} categories · ${latestPoint.t}`}
+          </p>
         </div>
-        {registryEntry && (
+        <div className="flex shrink-0 items-center gap-1.5">
+          <KindBadge kind={kind} />
           <ProvenanceButton artifact={artifact} registryEntry={registryEntry} />
-        )}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        {entries.map((entry, i) => {
-          const pct = total > 0 ? (entry.value / total) * 100 : 0;
-          const width = maxValue > 0 ? (entry.value / maxValue) * 100 : 0;
-          
-          // Truncate long keys for display
-          const displayKey = entry.key.length > 40 ? entry.key.substring(0, 37) + "..." : entry.key;
-          
-          return (
-            <div key={`${i}-${entry.key}`} className="group">
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-xs text-muted truncate max-w-[200px]" title={entry.key}>
-                  {displayKey}
-                </span>
-                <span className="text-xs font-mono text-right text-white whitespace-nowrap">
-                  {new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 }).format(entry.value)}
-                  {total > 0 && ` (${pct.toFixed(1)}%)`}
-                </span>
+      <div className="overflow-y-auto px-4 pb-3 sm:px-5" style={{ maxHeight: height }}>
+        <div className="space-y-2.5">
+          {entries.map((entry, index) => {
+            const pct = total > 0 ? (entry.value / total) * 100 : 0;
+            const width = maxValue > 0 ? Math.max(1.5, (entry.value / maxValue) * 100) : 0;
+            const displayKey = labelFormatter ? labelFormatter(entry.key) : entry.key;
+            return (
+              <div key={`${index}-${entry.key}`} className="group">
+                <div className="mb-1 flex items-baseline justify-between gap-3">
+                  <span
+                    className="min-w-0 truncate font-mono text-[10.5px] text-ink-muted"
+                    title={entry.key}
+                  >
+                    {displayKey}
+                  </span>
+                  <span className="tnum shrink-0 text-[11px] font-medium text-ink">
+                    {formatBreakdownValue(entry.value, unit)}
+                    <span className="ml-1.5 text-[10px] font-normal text-ink-faint">{pct.toFixed(1)}%</span>
+                  </span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-surface-muted">
+                  <div
+                    className="h-full rounded-full transition-[width] duration-500"
+                    style={{
+                      width: `${width}%`,
+                      backgroundColor: chart.accent,
+                      opacity: Math.max(0.42, 0.95 - index * 0.055),
+                    }}
+                  />
+                </div>
               </div>
-              <div className="h-3 bg-neutral-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-300 bg-blue-500/80 group-hover:bg-blue-500"
-                  style={{ width: `${width}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-        
-        {total > 0 && (
-          <div className="pt-2 border-t border-neutral-700 flex justify-between text-xs">
-            <span className="text-muted">Total</span>
-            <span className="font-mono text-white">
-              {new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 }).format(total)}
-              {unit && ` ${unit}`}
-            </span>
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-4 text-xs text-muted">
-        Latest: {latestPoint.t}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line/70 px-4 py-2.5 sm:px-5">
+        <span className="text-[10.5px] text-ink-faint">
+          Showing {entries.length} of {allEntries.length} categories
+        </span>
+        <span className="tnum text-[11px] text-ink-muted">
+          Total <span className="ml-1 font-medium text-ink">{formatBreakdownValue(total, unit)}</span>
+        </span>
       </div>
     </div>
   );

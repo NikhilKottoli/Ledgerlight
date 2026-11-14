@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useMetrics } from "@/hooks/useMetric";
+import Link from "next/link";
 import KpiCard from "@/components/ui/KpiCard";
+import PageHeader from "@/components/ui/PageHeader";
+import SectionHeading from "@/components/ui/SectionHeading";
 import SimpleChart from "@/components/charts/SimpleChart";
 import SimpleBarChart from "@/components/charts/SimpleBarChart";
 import SimpleLineChart from "@/components/charts/SimpleLineChart";
+import { IconAlert, IconArrowUpRight, IconScale } from "@/components/ui/icons";
+import { formatLongDate } from "@/lib/chartTheme";
 
 const METRICS = [
   { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
@@ -138,11 +142,10 @@ export default function ValuePage() {
   const [metrics, setMetrics] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch metrics on mount
   useEffect(() => {
-    const metricIds = METRICS.map(m => m.id);
-    Promise.all(metricIds.map(id => fetch(`/api/data/${id}`).then(r => r.json())))
-      .then(data => {
+    const metricIds = METRICS.map((m) => m.id);
+    Promise.all(metricIds.map((id) => fetch(`/api/data/${id}`).then((r) => r.json())))
+      .then((data) => {
         setMetrics(data);
         setIsLoading(false);
       })
@@ -159,32 +162,40 @@ export default function ValuePage() {
 
   if (!mounted) {
     return (
-      <div className="space-y-6">
-        <header className="mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">Interactive breakeven analysis</p>
-        </header>
-        <div className="text-center py-12 text-muted">Loading live data...</div>
+      <div className="space-y-7">
+        <PageHeader
+          eyebrow="Analysis · Value"
+          title="Value Capture Model"
+          description="Interactive breakeven analysis. Modeled outputs depend on explicit human assumptions."
+        />
+        <div className="card-pad animate-pulse">
+          <div className="h-3 w-48 rounded bg-surface-muted" />
+          <div className="mt-4 h-40 rounded-xl bg-surface-muted/70" />
+        </div>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <header className="mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">Interactive breakeven analysis</p>
-        </header>
-        <div className="text-center py-12 text-muted">Loading live data...</div>
+      <div className="space-y-7">
+        <PageHeader
+          eyebrow="Analysis · Value"
+          title="Value Capture Model"
+          description="Interactive breakeven analysis. Modeled outputs depend on explicit human assumptions."
+        />
+        <div className="card-pad animate-pulse">
+          <div className="h-3 w-48 rounded bg-surface-muted" />
+          <div className="mt-4 h-40 rounded-xl bg-surface-muted/70" />
+        </div>
       </div>
     );
   }
 
-  const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: metrics[i] })).filter(m => m.artifact);
+  const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: metrics[i] })).filter((m) => m.artifact);
 
   const latestDates = validMetrics
-    .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
+    .map((a) => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
     .filter(Boolean);
   const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
 
@@ -193,12 +204,11 @@ export default function ValuePage() {
   const handleScenario = (scenario: keyof typeof SCENARIOS) => {
     const s = SCENARIOS[scenario];
     const { label, ...values } = s;
-    setInputs(prev => ({ ...prev, ...values }));
+    setInputs((prev) => ({ ...prev, ...values }));
     setActiveScenario(scenario);
   };
 
-  // Chart data
-  const chartData = results.years.map(y => ({
+  const chartData = results.years.map((y) => ({
     year: `Year ${y.year}`,
     volume: y.V_t,
     grossFees: y.GrossFees_t,
@@ -210,12 +220,14 @@ export default function ValuePage() {
     deltaSupply: y.DeltaSupply_t,
   }));
 
-  const breakevenData = results.breakeven_volume_buyback ? [
-    { label: "Current Volume", value: inputs.V0, type: "current" },
-    { label: "Breakeven Volume", value: results.breakeven_volume_buyback, type: "breakeven" },
-  ] : [];
+  const breakevenData = results.breakeven_volume_buyback
+    ? [
+        { label: "Current Volume", value: inputs.V0, type: "current" },
+        { label: "Breakeven Volume", value: results.breakeven_volume_buyback, type: "breakeven" },
+      ]
+    : [];
 
-  const scenarioComparison = (["bear", "base", "bull"] as const).map(s => {
+  const scenarioComparison = (["bear", "base", "bull"] as const).map((s) => {
     const scen = SCENARIOS[s];
     const { label, ...scenValues } = scen;
     const scenInputs = { ...inputs, ...scenValues };
@@ -230,275 +242,362 @@ export default function ValuePage() {
   });
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <header className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">What Intents volume is needed for buybacks to offset emissions?</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-muted">Data as of {dataAsOf}</span>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showAdvanced}
-              onChange={e => setShowAdvanced(e.target.checked)}
-              className="w-4 h-4 rounded border-neutral-700 bg-neutral-800 text-blue-500 focus:ring-blue-500"
-            />
-            Show advanced inputs
-          </label>
-        </div>
-      </header>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Analysis · Value"
+        title="Value Capture Model"
+        description="What Intents volume is needed for buybacks to offset emissions? Modeled outputs are scenario-dependent and are not presented as forecasts."
+        meta={
+          <>
+            <span>
+              Measured anchors as of <span className="font-medium text-ink-muted">{dataAsOf}</span>
+            </span>
+            <span className="badge border-ochre/30 bg-ochre-soft font-mono uppercase tracking-[0.08em] text-ochre-deep">
+              Modeled
+            </span>
+            <span>Assumptions are explicit and editable</span>
+          </>
+        }
+        actions={
+          <>
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-soft transition-colors hover:border-line-strong">
+              <input
+                type="checkbox"
+                checked={showAdvanced}
+                onChange={(e) => setShowAdvanced(e.target.checked)}
+                className="h-3.5 w-3.5 rounded border-line-strong accent-accent"
+              />
+              Show advanced inputs
+            </label>
+            <Link href="/methodology" className="btn-ghost">
+              Model method
+              <IconArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </>
+        }
+      />
 
-      {/* KPI Row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
-        {validMetrics.map(({ artifact, label, unit }) => (
-          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
-        ))}
-      </div>
+      <section aria-label="Measured inputs from DefiLlama">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {validMetrics.map(({ artifact, label, unit }) =>
+            artifact ? (
+              <KpiCard
+                key={artifact.meta.metric_id}
+                artifact={artifact}
+                label={label}
+                unit={unit}
+                previousPeriodLabel="vs prior day"
+                preferLatest
+              />
+            ) : null
+          )}
+        </div>
+      </section>
 
-      {/* Key Output Cards - Prominent */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <div className="bg-amber-900/30 border border-amber-800 rounded-xl p-5">
-          <div className="text-xs text-amber-400 font-medium mb-1">Buyback Breakeven</div>
-          <div className="text-3xl font-mono font-bold text-amber-300">
-            {results.breakeven_volume_buyback
-              ? formatCurrency(results.breakeven_volume_buyback)
-              : "N/A (φ=0)"}
-          </div>
-          <div className="text-sm text-muted mt-1">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Model outputs">
+        <article className="card relative overflow-hidden p-4">
+          <span className="absolute inset-x-0 top-0 h-[2px] bg-accent" />
+          <p className="text-[11.5px] font-medium text-ink-muted">Buyback breakeven</p>
+          <p className="tnum mt-2 text-[24px] font-semibold tracking-[-0.035em] text-ink">
+            {results.breakeven_volume_buyback ? formatCurrency(results.breakeven_volume_buyback) : "N/A (φ=0)"}
+          </p>
+          <p className="mt-1 text-[10.5px] leading-relaxed text-ink-faint">
             {results.breakeven_multiple_buyback
               ? `${results.breakeven_multiple_buyback.toFixed(1)}× current volume`
               : "Burn fraction is 0%"}
-          </div>
-        </div>
-        <div className="bg-green-900/30 border border-green-800 rounded-xl p-5">
-          <div className="text-xs text-green-400 font-medium mb-1">Year 0 Buyback / Issuance</div>
-          <div className="text-3xl font-mono font-bold text-green-300">
+          </p>
+        </article>
+        <article className="card relative overflow-hidden p-4">
+          <span className="absolute inset-x-0 top-0 h-[2px] bg-sage" />
+          <p className="text-[11.5px] font-medium text-ink-muted">Year 0 buyback / issuance</p>
+          <p className="tnum mt-2 text-[24px] font-semibold tracking-[-0.035em] text-ink">
             {formatPct(results.years[0]?.BuybackToIssuance_t || 0)}
-          </div>
-          <div className="text-sm text-muted mt-1">Target: ≥100%</div>
-        </div>
-        <div className="bg-blue-900/30 border border-blue-800 rounded-xl p-5">
-          <div className="text-xs text-blue-400 font-medium mb-1">Year 0 Revenue Yield</div>
-          <div className="text-3xl font-mono font-bold text-blue-300">
+          </p>
+          <p className="mt-1 text-[10.5px] leading-relaxed text-ink-faint">Target: ≥100%</p>
+        </article>
+        <article className="card relative overflow-hidden p-4">
+          <span className="absolute inset-x-0 top-0 h-[2px] bg-info" />
+          <p className="text-[11.5px] font-medium text-ink-muted">Year 0 revenue yield</p>
+          <p className="tnum mt-2 text-[24px] font-semibold tracking-[-0.035em] text-ink">
             {formatPct(results.years[0]?.RevYield_t || 0)}
-          </div>
-          <div className="text-sm text-muted mt-1">Net Rev / Market Cap</div>
-        </div>
-        <div className="bg-purple-900/30 border border-purple-800 rounded-xl p-5">
-          <div className="text-xs text-purple-400 font-medium mb-1">Year 0 Rev / Emissions</div>
-          <div className="text-3xl font-mono font-bold text-purple-300">
+          </p>
+          <p className="mt-1 text-[10.5px] leading-relaxed text-ink-faint">Net revenue / market cap</p>
+        </article>
+        <article className="card relative overflow-hidden p-4">
+          <span className="absolute inset-x-0 top-0 h-[2px] bg-ochre" />
+          <p className="text-[11.5px] font-medium text-ink-muted">Year 0 revenue / emissions</p>
+          <p className="tnum mt-2 text-[24px] font-semibold tracking-[-0.035em] text-ink">
             {formatPct(results.years[0]?.RevToEmissions_t || 0)}
-          </div>
-          <div className="text-sm text-muted mt-1">NEAR Revenue / NEAR Issued</div>
-        </div>
-      </div>
+          </p>
+          <p className="mt-1 text-[10.5px] leading-relaxed text-ink-faint">NEAR revenue / NEAR issued</p>
+        </article>
+      </section>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_1fr_1fr]">
-        {/* Left: Inputs */}
-        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Inputs</h2>
-            <div className="flex gap-2">
-              {(["bear", "base", "bull"] as const).map(s => (
+      <section className="grid gap-4 xl:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.38fr)]" aria-label="Model inputs and projections">
+        <div className="card self-start p-4 sm:p-5 xl:sticky xl:top-8">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="micro-label">Model assumptions</p>
+              <h2 className="mt-1 section-title">Inputs</h2>
+            </div>
+            <div className="segmented" role="group" aria-label="Scenario preset">
+              {(["bear", "base", "bull"] as const).map((s) => (
                 <button
                   key={s}
+                  type="button"
                   onClick={() => handleScenario(s)}
-                  className={`px-3 py-1.5 text-xs rounded font-mono transition-colors border ${
-                    activeScenario === s
-                      ? "bg-blue-900/30 text-blue-300 border-blue-700"
-                      : "bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"
-                  }`}
+                  aria-pressed={activeScenario === s}
+                  className={`segmented-item uppercase ${activeScenario === s ? "segmented-item-active" : ""}`}
                 >
-                  {s.toUpperCase()}
+                  {s}
                 </button>
               ))}
             </div>
           </div>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-faint">
+            Scenario buttons replace every assumption below. Manual edits are allowed; the preset label stays selected.
+          </p>
 
-          <div className="space-y-3">
+          <div className="mt-4 space-y-3">
             {INITIAL_INPUTS
-              .filter(input => showAdvanced || ["V0", "g", "r", "c", "b", "phi", "P0"].includes(input.key))
-              .map(input => (
-                <div key={input.key} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <label className="font-medium cursor-help" title={input.measuredLabel}>
+              .filter((input) => showAdvanced || ["V0", "g", "r", "c", "b", "phi", "P0"].includes(input.key))
+              .map((input) => (
+                <div key={input.key} className="rounded-xl border border-line bg-surface-subtle/60 p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <label htmlFor={`input-${input.key}`} className="text-[12px] font-medium leading-snug text-ink-soft">
                       {input.label}
                     </label>
-                    {input.anchor !== undefined && (
-                      <span className="text-xs text-muted px-1.5 py-0.5 bg-neutral-800 rounded">
-                        Measured: {input.format ? input.format(input.anchor) : input.anchor}
-                      </span>
-                    )}
+                    <span className="tnum shrink-0 text-[11px] font-medium text-ink">
+                      {input.format ? input.format(inputs[input.key] ?? input.value) : inputs[input.key] ?? input.value}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="mt-2 flex items-center gap-2.5">
                     <input
+                      id={`input-${input.key}`}
                       type="range"
                       min={input.min}
                       max={input.max}
                       step={input.step}
-                      value={inputs[input.key]}
-                      onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
-                      className="flex-1 h-2 bg-neutral-800 rounded-lg appearance-none accent-blue-500"
+                      value={inputs[input.key] ?? input.value}
+                      onChange={(e) => setInputs((prev) => ({ ...prev, [input.key]: Number(e.target.value) }))}
+                      className="range flex-1"
+                      aria-label={`${input.label} slider`}
                     />
                     <input
                       type="number"
                       min={input.min}
                       max={input.max}
                       step={input.step}
-                      value={inputs[input.key]}
-                      onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
-                      className="w-28 bg-neutral-800 border border-neutral-700 rounded px-2 py-1 text-sm font-mono text-right"
+                      value={inputs[input.key] ?? input.value}
+                      onChange={(e) => setInputs((prev) => ({ ...prev, [input.key]: Number(e.target.value) }))}
+                      className="field tnum w-[104px] text-right"
+                      aria-label={input.label}
                     />
-                    <span className="text-xs text-muted w-20 text-right">{input.unit}</span>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-ink-faint">
+                    <span>{input.measuredLabel ? `Measured / assumption: ${input.measuredLabel}` : ""}</span>
+                    <span className="shrink-0 font-mono">{input.unit}</span>
                   </div>
                 </div>
               ))}
           </div>
-        </section>
+        </div>
 
-        {/* Middle: Live Charts */}
-        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
-          <h2 className="text-lg font-semibold">Projections (5 Years)</h2>
+        <div className="space-y-4">
+          <div className="card overflow-hidden">
+            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-line px-4 py-3.5 sm:px-5">
+              <div>
+                <h2 className="section-title">Projections · 5 years</h2>
+                <p className="mt-0.5 text-[11px] text-ink-faint">Volume area on the left axis; fees and net revenue on the right</p>
+              </div>
+              <span className="badge border-ochre/30 bg-ochre-soft font-mono text-ochre-deep">Modeled</span>
+            </div>
+            <div className="px-2 pb-2 pt-3 sm:px-3">
+              <SimpleChart data={chartData} height={290} />
+            </div>
+          </div>
 
-          {/* Projection Chart */}
-          <SimpleChart data={chartData} height={300} />
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="card overflow-hidden">
+              <div className="border-b border-line px-4 py-3">
+                <h3 className="section-title">Buyback vs issuance</h3>
+                <p className="mt-0.5 text-[10.5px] text-ink-faint">NEAR per year</p>
+              </div>
+              <div className="px-2 pb-2 pt-3">
+                <SimpleBarChart data={chartData} height={236} />
+              </div>
+            </div>
+            <div className="card overflow-hidden">
+              <div className="border-b border-line px-4 py-3">
+                <h3 className="section-title">Key ratios</h3>
+                <p className="mt-0.5 text-[10.5px] text-ink-faint">Percent per year</p>
+              </div>
+              <div className="px-2 pb-2 pt-3">
+                <SimpleLineChart data={chartData} height={236} />
+              </div>
+            </div>
+          </div>
 
-          {/* Buyback vs Issuance Chart */}
-          <SimpleBarChart data={chartData} height={224} />
-
-          {/* Key Ratios Chart */}
-          <SimpleLineChart data={chartData} height={224} />
-        </section>
-
-        {/* Right: Breakeven Analysis & Scenario Compare */}
-        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
-          <h2 className="text-lg font-semibold">Breakeven Analysis</h2>
-
-          {/* Breakeven Volume Visual */}
-          <div className="bg-amber-900/20 border border-amber-800 rounded-xl p-5">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <span className="text-amber-400">⚖</span> Volume Required for Buyback = Issuance
-            </h3>
-            <div className="space-y-3">
-              {breakevenData.map((d, i) => (
-                <div key={d.label} className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                    d.type === "current" ? "bg-blue-500 text-white" : "bg-amber-500 text-white"
-                  }`}>
-                    {i + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{d.label}</div>
-                    <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          d.type === "current" ? "bg-blue-500" : "bg-amber-500"
-                        }`}
-                        style={{ width: `${Math.min(100, (d.value / results.breakeven_volume_buyback!) * 100)}%` }}
-                      />
+          <div className="grid gap-4">
+            <div className="card p-4 sm:p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="section-title">Volume required for buyback = issuance</h3>
+                  <p className="mt-0.5 text-[10.5px] text-ink-faint">Buyback allocation path, excluding burn</p>
+                </div>
+                <span className="rounded-lg border border-line bg-surface-subtle p-1.5 text-ochre">
+                  <IconScale className="h-4 w-4" />
+                </span>
+              </div>
+              <div className="mt-4 space-y-3">
+                {breakevenData.map((d, i) => (
+                  <div key={d.label} className="flex items-center gap-3">
+                    <span
+                      className={`tnum flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
+                        d.type === "current" ? "bg-info-soft text-info-deep" : "bg-ochre-soft text-ochre-deep"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-[11.5px] text-ink-muted">{d.label}</span>
+                        <span className="tnum text-[12px] font-medium text-ink">{formatCurrency(d.value)}</span>
+                      </div>
+                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-muted">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            d.type === "current" ? "bg-info" : "bg-ochre"
+                          }`}
+                          style={{ width: `${Math.min(100, (d.value / results.breakeven_volume_buyback!) * 100)}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="w-40 text-right font-mono text-lg">
-                    {formatCurrency(d.value)}
-                  </div>
-                </div>
-              ))}
-              <div className="pt-2 border-t border-amber-800 text-sm text-muted">
-                {results.breakeven_multiple_buyback
-                  ? `Need ${results.breakeven_multiple_buyback.toFixed(1)}× current volume`
-                  : "Not reachable (φ=0)"}
-              </div>
-            </div>
-          </div>
-
-          {/* Scenario Comparison */}
-          <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4">
-            <h3 className="font-semibold mb-3">Scenario Comparison</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-muted border-b border-neutral-700">
-                    <th className="pb-2">Scenario</th>
-                    <th className="pb-2 text-right">Breakeven Vol</th>
-                    <th className="pb-2 text-right">Multiple</th>
-                    <th className="pb-2 text-right">Y0 Buyback/Iss</th>
-                    <th className="pb-2 text-right">Y0 Rev Yield</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {scenarioComparison.map(s => (
-                    <tr key={s.scenario} className={`border-b border-neutral-800 ${activeScenario === s.scenario ? "bg-blue-900/20" : ""}`}>
-                      <td className="py-2 font-medium capitalize">{s.scenario}</td>
-                      <td className="py-2 text-right font-mono">{s.breakeven ? formatCurrency(s.breakeven) : "N/A"}</td>
-                      <td className="py-2 text-right font-mono">{s.multiple ? s.multiple.toFixed(1) + "×" : "N/A"}</td>
-                      <td className="py-2 text-right font-mono">{formatPct(s.year0BuybackRatio / 100)}</td>
-                      <td className="py-2 text-right font-mono">{formatPct(s.year0RevYield / 100)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Yearly Detail Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-muted border-b border-neutral-700">
-                  <th className="pb-2">Year</th>
-                  <th className="pb-2 text-right">Volume</th>
-                  <th className="pb-2 text-right">Gross Fees</th>
-                  <th className="pb-2 text-right">Net Rev</th>
-                  <th className="pb-2 text-right">Buyback (NEAR)</th>
-                  <th className="pb-2 text-right">ΔSupply</th>
-                  <th className="pb-2 text-right">Buyback/Iss</th>
-                  <th className="pb-2 text-right">Rev Yield</th>
-                </tr>
-              </thead>
-              <tbody>
-                {results.years.map(y => (
-                  <tr key={y.year} className="border-b border-neutral-800">
-                    <td className="py-2 font-mono">{y.year}</td>
-                    <td className="py-2 text-right font-mono">{formatCurrency(y.V_t)}</td>
-                    <td className="py-2 text-right font-mono">{formatCurrency(y.GrossFees_t)}</td>
-                    <td className="py-2 text-right font-mono">{formatCurrency(y.NetRev_t)}</td>
-                    <td className="py-2 text-right font-mono">{formatNumber(y.Buyback_NEAR_t)} NEAR</td>
-                    <td className="py-2 text-right font-mono">{formatNumber(y.DeltaSupply_t)} NEAR</td>
-                    <td className="py-2 text-right font-mono">{formatPct(y.BuybackToIssuance_t)}</td>
-                    <td className="py-2 text-right font-mono">{formatPct(y.RevYield_t)}</td>
-                  </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-
-      {/* Measured Anchors - Compact */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Measured Anchors</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {VALUE_MEASURED_ANCHORS.map(a => (
-            <div key={a.label} className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">{a.label}</span>
-                <span className="font-mono text-lg text-green-400">{a.value}</span>
+                <div className="border-t border-line pt-2.5 text-[11px] text-ink-muted">
+                  {results.breakeven_multiple_buyback
+                    ? `Need ${results.breakeven_multiple_buyback.toFixed(1)}× current volume`
+                    : "Not reachable (φ=0)"}
+                </div>
               </div>
-              <div className="text-xs text-muted mt-1">{a.source}</div>
+            </div>
+
+            <div className="card overflow-hidden">
+              <div className="border-b border-line px-4 py-3.5">
+                <h3 className="section-title">Scenario comparison</h3>
+                <p className="mt-0.5 text-[10.5px] text-ink-faint">Each scenario re-runs the same model with preset assumptions</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="data-table min-w-[520px]">
+                  <thead>
+                    <tr>
+                      <th>Scenario</th>
+                      <th className="text-right">Breakeven vol</th>
+                      <th className="text-right">Multiple</th>
+                      <th className="text-right">Y0 buyback/iss</th>
+                      <th className="text-right">Y0 rev yield</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scenarioComparison.map((s) => (
+                      <tr key={s.scenario} className={activeScenario === s.scenario ? "bg-accent-soft/45" : ""}>
+                        <td className="font-medium capitalize text-ink">{s.scenario}</td>
+                        <td className="tnum text-right">{s.breakeven ? formatCurrency(s.breakeven) : "N/A"}</td>
+                        <td className="tnum text-right">{s.multiple ? s.multiple.toFixed(1) + "×" : "N/A"}</td>
+                        <td className="tnum text-right">{formatPct(s.year0BuybackRatio / 100)}</td>
+                        <td className="tnum text-right">{formatPct(s.year0RevYield / 100)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="card overflow-hidden" aria-labelledby="yearly-detail-heading">
+        <div className="border-b border-line px-4 py-3.5 sm:px-5">
+          <h2 id="yearly-detail-heading" className="section-title">
+            Yearly detail
+          </h2>
+          <p className="mt-0.5 text-[10.5px] text-ink-faint">All modeled outputs for the current assumption set</p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="data-table min-w-[820px]">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th className="text-right">Volume</th>
+                <th className="text-right">Gross fees</th>
+                <th className="text-right">Net revenue</th>
+                <th className="text-right">Buyback (NEAR)</th>
+                <th className="text-right">Δ supply</th>
+                <th className="text-right">Buyback / iss</th>
+                <th className="text-right">Rev yield</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.years.map((y) => (
+                <tr key={y.year}>
+                  <td className="font-mono font-medium text-ink">{y.year}</td>
+                  <td className="tnum text-right">{formatCurrency(y.V_t)}</td>
+                  <td className="tnum text-right">{formatCurrency(y.GrossFees_t)}</td>
+                  <td className="tnum text-right">{formatCurrency(y.NetRev_t)}</td>
+                  <td className="tnum text-right">{formatNumber(y.Buyback_NEAR_t)} NEAR</td>
+                  <td className="tnum text-right">{formatNumber(y.DeltaSupply_t)} NEAR</td>
+                  <td className="tnum text-right">{formatPct(y.BuybackToIssuance_t)}</td>
+                  <td className="tnum text-right">{formatPct(y.RevYield_t)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="anchors-heading">
+        <SectionHeading
+          title="Measured anchors"
+          description="Reference values behind the starting assumptions. These are observations, not model outputs."
+          className="mb-3"
+        />
+        <h2 id="anchors-heading" className="sr-only">
+          Measured anchors
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {VALUE_MEASURED_ANCHORS.map((anchor) => (
+            <div key={anchor.label} className="card flex items-start justify-between gap-3 p-3.5">
+              <div className="min-w-0">
+                <p className="text-[11.5px] font-medium leading-snug text-ink-soft">{anchor.label}</p>
+                <p className="mt-1 text-[10.5px] leading-relaxed text-ink-faint">{anchor.source}</p>
+              </div>
+              <span className="tnum shrink-0 text-[15px] font-semibold text-sage-deep">{anchor.value}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Formula Reference */}
-      <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
-        <p className="font-mono"><strong>Breakeven:</strong> V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ) [burned] | without φ [buyback]</p>
-        <p className="mt-1"><strong>Key finding:</strong> With φ=0 (buybacks held, not burned), burned breakeven is unreachable. Buyback breakeven requires ~{results.breakeven_multiple_buyback?.toFixed(1) || "13.5"}× current volume.</p>
-      </div>
+      <section className="card card-pad" aria-labelledby="formula-heading">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 rounded-lg border border-line bg-surface-subtle p-1.5 text-ink-muted">
+            <IconAlert className="h-4 w-4" />
+          </span>
+          <div className="min-w-0">
+            <h2 id="formula-heading" className="section-title">
+              Formula reference
+            </h2>
+            <p className="mt-2 overflow-x-auto whitespace-pre-wrap rounded-lg border border-line bg-surface-subtle px-3 py-2 font-mono text-[10.5px] leading-relaxed text-ink-muted">
+              Breakeven: V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ) [burned] | without φ [buyback]
+            </p>
+            <p className="mt-2 text-[11.5px] leading-relaxed text-ink-muted">
+              <span className="font-medium text-ink">Key finding.</span> With φ=0 (buybacks held, not burned), burned
+              breakeven is unreachable. Buyback breakeven requires ~
+              {results.breakeven_multiple_buyback?.toFixed(1) || "13.5"}× current volume.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

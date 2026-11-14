@@ -99,7 +99,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/home/azureuser/NEAR/near-value-intelligence/web",
+    "outputFileTracingRoot": "/home/azureuser",
     "experimental": {
       "useSkewCookie": false,
       "cacheLife": {
@@ -288,11 +288,11 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts",
     "turbopack": {
-      "root": "/home/azureuser/NEAR/near-value-intelligence/web"
+      "root": "/home/azureuser"
     }
   },
   "appDir": "/home/azureuser/NEAR/near-value-intelligence/web",
-  "relativeAppDir": "",
+  "relativeAppDir": "NEAR/near-value-intelligence/web",
   "files": [
     ".next/routes-manifest.json",
     ".next/server/pages-manifest.json",

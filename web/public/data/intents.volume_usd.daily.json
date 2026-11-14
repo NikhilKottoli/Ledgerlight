@@ -2,10 +2,10 @@
  "meta": {
   "metric_id": "intents.volume_usd.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T13:08:57.189225Z",
+  "retrieved_at": "2026-11-14T19:10:02.277658Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "fb6a42fa",
-  "sha256_inputs": "f72735a5396cff77f98cc7cdde8323935b2c59f89db7d577c2a476b01824e9aa",
+  "git_commit": "0603a677",
+  "sha256_inputs": "0b155c34d198ba16c553aeeb5fe323397ba20a3acb9288cb213acba8eab8b684",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
@@ -29,7 +29,7 @@
   },
   {
    "t": "2026-11-14",
-   "v": "99.922900000000",
+   "v": "80050.799804557551",
    "null_reason": null
   }
  ]

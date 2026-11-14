@@ -3,9 +3,9 @@
   "metric_id": "intents.chain_distribution.daily",
   "name": "Intents Chain_Distribution Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T13:08:57.189225Z",
+  "retrieved_at": "2026-11-14T19:10:02.277658Z",
   "source_max_ts": "2026-11-14T23:59:59+00:00",
-  "git_commit": "fb6a42fa",
+  "git_commit": "0603a677",
   "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
@@ -39,7 +39,7 @@
   {
    "t": "2026-11-14",
    "v": {
-    "nep141->nep141": "99.922900000000"
+    "nep141->nep141": "80050.799804557551"
    }
   }
  ]

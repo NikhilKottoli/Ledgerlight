@@ -1,18 +1,28 @@
 "use client";
+import { useMemo } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Brush, Legend,
+  Area,
+  AreaChart,
+  Brush,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
-import { MetricArtifact, SeriesPoint } from "@/lib/types";
+import { MetricArtifact } from "@/lib/types";
 import { EventMarker } from "./EventMarkers";
 import KindBadge from "./KindBadge";
 import ProvenanceButton from "./ProvenanceButton";
-
-const kindStyles = {
-  measured: { stroke: "#10b981", strokeDasharray: "0", strokeWidth: 2 },
-  derived: { stroke: "#3b82f6", strokeDasharray: "6 4", strokeWidth: 2 },
-  modeled: { stroke: "#f59e0b", strokeDasharray: "2 4", strokeWidth: 2, opacity: 0.85 },
-};
+import {
+  chart,
+  daysBetween,
+  formatAxisValue,
+  formatChartValue,
+  formatDateTick,
+  formatLongDate,
+  tooltipStyle,
+} from "@/lib/chartTheme";
 
 interface Props {
   artifact: MetricArtifact;
@@ -20,87 +30,177 @@ interface Props {
   height?: number;
   showBrush?: boolean;
   kindOverride?: "measured" | "derived" | "modeled";
+  /** Optional card heading. When omitted, the metric id is shown. */
+  title?: string;
+  subtitle?: string;
+  className?: string;
 }
 
-export default function TimeSeriesChart({ artifact, registryEntry, height = 300, showBrush = true, kindOverride }: Props) {
-  const data = (() => {
+interface ChartPoint {
+  t: string;
+  v: number | null;
+  null_reason: string | null;
+}
+
+export default function TimeSeriesChart({
+  artifact,
+  registryEntry,
+  height = 300,
+  showBrush = true,
+  kindOverride,
+  title,
+  subtitle,
+  className = "",
+}: Props) {
+  const data = useMemo(() => {
     const seen = new Set<string>();
     return artifact.series
-      .map(s => ({
+      .map<ChartPoint>((s) => ({
         t: s.t,
         v: s.v !== null ? Number(s.v) : null,
         null_reason: s.null_reason,
       }))
-      .filter(s => {
+      .filter((s) => {
         if (seen.has(s.t)) return false;
         seen.add(s.t);
         return true;
       });
-  })();
+  }, [artifact.series]);
 
   const kind = kindOverride || (artifact.meta.data_mode === "live" ? "measured" : artifact.meta.data_mode === "snapshot" ? "derived" : "modeled");
-  const style = kindStyles[kind];
+  const hasData = data.some((point) => point.v !== null);
+  const first = data.find((p) => p.v !== null)?.t || data[0]?.t || "";
+  const last = [...data].reverse().find((p) => p.v !== null)?.t || data[data.length - 1]?.t || "";
+  const span = first && last ? daysBetween(first, last) : 0;
+  const gradientId = `series-${artifact.meta.metric_id.replace(/[^a-zA-Z0-9]/g, "-")}`;
+  const strokeDasharray = kind === "modeled" ? "5 4" : kind === "derived" ? "6 3" : undefined;
+  const showDots = data.filter((p) => p.v !== null).length <= 16;
 
   return (
-    <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <KindBadge kind={kind} />
+    <div className={`card overflow-hidden ${className}`}>
+      <div className="flex flex-wrap items-start justify-between gap-3 px-4 pb-2 pt-4 sm:px-5 sm:pt-5">
+        <div className="min-w-0">
+          <h3 className="section-title truncate" title={title || artifact.meta.metric_id}>
+            {title || artifact.meta.metric_id}
+          </h3>
+          <p className="mt-0.5 truncate font-mono text-[10.5px] text-ink-faint">
+            {subtitle || `${data.length} daily observations`}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
           {artifact.meta.data_mode !== "live" && (
-            <span className="text-xs text-muted">
-              {artifact.meta.data_mode === "snapshot" ? `Snapshot: ${artifact.meta.retrieved_at.split("T")[0]}` : "Synthetic"}
+            <span className="badge border-line bg-surface-subtle text-ink-muted">
+              {artifact.meta.data_mode === "snapshot" ? `Snapshot ${artifact.meta.retrieved_at.split("T")[0]}` : "Synthetic"}
             </span>
           )}
-        </div>
-        {registryEntry && (
+          <KindBadge kind={kind} />
           <ProvenanceButton artifact={artifact} registryEntry={registryEntry} />
-        )}
+        </div>
       </div>
 
-      <div style={{ width: "100%", height }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: showBrush ? 50 : 5 }}>
-          <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
-          <XAxis
-            dataKey="t"
-            tick={{ fill: "#9ca3af", fontSize: 11 }}
-            tickLine={false}
-            axisLine={{ stroke: "#374151" }}
-            interval="preserveStartEnd"
-          />
-          <YAxis
-            tick={{ fill: "#9ca3af", fontSize: 11 }}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(v) => new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(v)}
-          />
-          <Tooltip
-            content={({ active, payload, label }) => {
-              if (!active || !payload || !payload.length) return null;
-              const point = payload[0].payload as SeriesPoint;
-              return (
-                <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
-                  <p className="font-mono text-white">{label}</p>
-                  <p className="text-green-300">{new Intl.NumberFormat().format(point.v ?? 0)}</p>
-                  {point.null_reason && <p className="text-amber-300 mt-1">Gap: {point.null_reason}</p>}
-                </div>
-              );
-            }}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="v"
-            name={artifact.meta.metric_id}
-            connectNulls={false}
-            {...style}
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 2 }}
-          />
-          <EventMarker eventsPath="/data/events.json" />
-          {showBrush && <Brush dataKey="v" height={24} stroke="#3b82f6" fill="#1f2937" travellerWidth={8} />}
-        </LineChart>
-        </ResponsiveContainer>
+      {!hasData ? (
+        <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+          <div className="empty-state">
+            <p className="text-[12.5px] font-medium text-ink-muted">No observations reported</p>
+            <p className="mt-1 max-w-sm text-[11.5px] leading-relaxed text-ink-faint">
+              The source returned an empty series for this metric. It stays visible so the gap is explicit.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div style={{ width: "100%", height }} className="px-1 sm:px-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 12, right: 14, left: 2, bottom: showBrush ? 0 : 8 }}>
+              <defs>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={chart.accent} stopOpacity={0.16} />
+                  <stop offset="85%" stopColor={chart.accent} stopOpacity={0.01} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke={chart.grid} strokeDasharray="3 4" vertical={false} />
+              <XAxis
+                dataKey="t"
+                tick={{ fill: chart.faint, fontSize: 10.5 }}
+                tickLine={false}
+                axisLine={{ stroke: chart.axis }}
+                tickMargin={8}
+                minTickGap={40}
+                interval="preserveStartEnd"
+                tickFormatter={(value: string) => formatDateTick(value, span)}
+              />
+              <YAxis
+                tick={{ fill: chart.faint, fontSize: 10.5 }}
+                tickLine={false}
+                axisLine={false}
+                width={52}
+                tickMargin={4}
+                tickFormatter={(value: number) => formatAxisValue(artifact.meta.metric_id, value)}
+              />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload || !payload.length) return null;
+                  const point = payload[0].payload as ChartPoint;
+                  return (
+                    <div style={tooltipStyle}>
+                      <p className="font-mono text-[10.5px] text-ink-faint">{formatLongDate(String(label))}</p>
+                      {point.v === null ? (
+                        <p className="mt-1 text-[12px] text-ochre-deep">No observation</p>
+                      ) : (
+                        <p className="mt-1 text-[13px] font-semibold tabular-nums text-ink">
+                          {formatChartValue(artifact.meta.metric_id, point.v)}
+                        </p>
+                      )}
+                      {point.null_reason && (
+                        <p className="mt-1 max-w-[220px] text-[10.5px] leading-relaxed text-ochre-deep">
+                          Gap: {point.null_reason}
+                        </p>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="v"
+                name={artifact.meta.metric_id}
+                stroke={chart.accent}
+                strokeWidth={2}
+                strokeDasharray={strokeDasharray}
+                fill={`url(#${gradientId})`}
+                connectNulls={false}
+                dot={showDots ? { r: 2.4, fill: chart.accent, strokeWidth: 0 } : false}
+                activeDot={{ r: 4, fill: chart.accent, stroke: "#fff", strokeWidth: 2 }}
+                isAnimationActive={false}
+              />
+              <EventMarker eventsPath="/data/events.json" start={first} end={last} />
+              {showBrush && data.length > 30 && (
+                <Brush
+                  dataKey="t"
+                  height={24}
+                  travellerWidth={6}
+                  stroke={chart.axis}
+                  fill={chart.surfaceMuted}
+                  tickFormatter={(value: string) => formatDateTick(value, span)}
+                />
+              )}
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line/70 px-4 py-2 sm:px-5">
+        <span className="text-[10.5px] text-ink-faint">
+          {first && last ? (
+            <>
+              {formatLongDate(first)} — {formatLongDate(last)}
+            </>
+          ) : (
+            "No dated observations"
+          )}
+        </span>
+        <span className="text-[10.5px] text-ink-faint">
+          {showBrush && data.length > 30 ? "Drag the range handles to inspect a window" : `${data.length} observations`}
+        </span>
       </div>
     </div>
   );

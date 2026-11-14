@@ -1,10 +1,10 @@
 "use client";
 import { MetricKind } from "@/lib/types";
 
-const styles: Record<MetricKind, { bg: string; text: string; border: string; pattern?: string }> = {
-  measured: { bg: "bg-green-900/30", text: "text-green-300", border: "border-green-700" },
-  derived: { bg: "bg-blue-900/30", text: "text-blue-300", border: "border-blue-700" },
-  modeled: { bg: "bg-amber-900/30", text: "text-amber-300", border: "border-amber-700" },
+const styles: Record<MetricKind, string> = {
+  measured: "border-sage/25 bg-sage-soft text-sage-deep",
+  derived: "border-info/25 bg-info-soft text-info-deep",
+  modeled: "border-ochre/30 bg-ochre-soft text-ochre-deep",
 };
 
 const labels: Record<MetricKind, string> = {
@@ -19,12 +19,22 @@ interface Props {
 }
 
 export default function KindBadge({ kind, className = "" }: Props) {
-  const s = styles[kind];
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium font-mono border ${s.bg} ${s.text} ${s.border} ${className}`}
-      title={kind === "modeled" ? "Depends on human assumptions — not a prediction" : kind === "derived" ? "Calculated from measured data" : "Read directly from source"}
+      className={`badge ${styles[kind]} ${className}`}
+      title={
+        kind === "modeled"
+          ? "Depends on human assumptions — not a prediction"
+          : kind === "derived"
+            ? "Calculated from measured data"
+            : "Read directly from source"
+      }
     >
+      <span
+        className={`h-1 w-1 rounded-full ${
+          kind === "measured" ? "bg-sage" : kind === "derived" ? "bg-info" : "bg-ochre"
+        }`}
+      />
       {labels[kind]}
     </span>
   );

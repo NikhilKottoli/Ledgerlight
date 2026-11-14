@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
-import { sankey, sankeyLinkHorizontal } from "d3-sankey";
-import { sankeyJustify } from "d3-sankey";
-import { FlowLedgerModel, FlowNodeModel, FlowEdgeModel } from "@/lib/types";
+import { sankey, sankeyLinkHorizontal, sankeyJustify } from "d3-sankey";
+import { FlowLedgerModel, FlowNodeModel } from "@/lib/types";
+import { chart, formatNumber } from "@/lib/chartTheme";
+import { IconAlert, IconChevronDown, IconClose, IconInfo, IconX } from "../ui/icons";
 
 interface Props {
   ledger: FlowLedgerModel;
@@ -12,21 +13,21 @@ interface Props {
   onUnitToggle?: (unit: "USD" | "NEAR") => void;
 }
 
-const STAGE_COLORS: Record<string, { base: string; reconciled: string; partial: string; unknown: string }> = {
-  context_volume: { base: "#6b7280", reconciled: "#9ca3af", partial: "#9ca3af", unknown: "#9ca3af" },
-  gross_fees: { base: "#3b82f6", reconciled: "#60a5fa", partial: "#93c5fd", unknown: "#bfdbfe" },
-  partner_payout: { base: "#8b5cf6", reconciled: "#a78bfa", partial: "#c4b5fd", unknown: "#ddd6fe" },
-  solver_payout: { base: "#ec4899", reconciled: "#f472b6", partial: "#f9a8d4", unknown: "#fce7f3" },
-  net_revenue_swept: { base: "#10b981", reconciled: "#34d399", partial: "#6ee7b7", unknown: "#a7f3d0" },
-  net_revenue_near: { base: "#059669", reconciled: "#10b981", partial: "#34d399", unknown: "#a7f3d0" },
-  buyback: { base: "#f59e0b", reconciled: "#fbbf24", partial: "#fcd34d", unknown: "#fef3c7" },
-  held: { base: "#6b7280", reconciled: "#9ca3af", partial: "#9ca3af", unknown: "#d1d5db" },
-  spent: { base: "#ef4444", reconciled: "#f87171", partial: "#fca5a5", unknown: "#fee2e2" },
-  unknown_dest: { base: "#9ca3af", reconciled: "#d1d5db", partial: "#d1d5db", unknown: "#e5e7eb" },
-  burned: { base: "#ef4444", reconciled: "#f87171", partial: "#fca5a5", unknown: "#fee2e2" },
-  held_buyback: { base: "#f59e0b", reconciled: "#fbbf24", partial: "#fcd34d", unknown: "#fef3c7" },
-  redistributed: { base: "#3b82f6", reconciled: "#60a5fa", partial: "#93c5fd", unknown: "#bfdbfe" },
-  unknown_buyback: { base: "#9ca3af", reconciled: "#d1d5db", partial: "#d1d5db", unknown: "#e5e7eb" },
+const STAGE_COLORS: Record<string, { base: string; soft: string }> = {
+  context_volume: { base: "#9c9287", soft: "#e8e3db" },
+  gross_fees: { base: "#b45a3c", soft: "#f5e7e1" },
+  partner_payout: { base: "#9c7b5f", soft: "#f0e7df" },
+  solver_payout: { base: "#8a6a7e", soft: "#efe7ec" },
+  net_revenue_swept: { base: "#4d6b85", soft: "#e9eff4" },
+  net_revenue_near: { base: "#557a60", soft: "#e8f0e9" },
+  buyback: { base: "#a8742a", soft: "#f7eedd" },
+  held: { base: "#8c8378", soft: "#efebe5" },
+  spent: { base: "#b24a3e", soft: "#f8e7e3" },
+  unknown_dest: { base: "#a8a094", soft: "#f0ece6" },
+  burned: { base: "#b24a3e", soft: "#f8e7e3" },
+  held_buyback: { base: "#a8742a", soft: "#f7eedd" },
+  redistributed: { base: "#4d6b85", soft: "#e9eff4" },
+  unknown_buyback: { base: "#a8a094", soft: "#f0ece6" },
 };
 
 const STAGE_ORDER: Record<string, number> = {
@@ -68,189 +69,331 @@ interface SankeyLink {
   source: string;
   target: string;
   value: number;
+  amount: number;
+  unit: string;
+  status: string;
 }
 
-export default function FlowSankey({
-  ledger,
-  onNodeClick,
-  unitToggle = "USD",
-  onUnitToggle,
-}: Props) {
+const statusStyles: Record<string, string> = {
+  reconciled: "border-sage/25 bg-sage-soft text-sage-deep",
+  partial: "border-ochre/30 bg-ochre-soft text-ochre-deep",
+  unknown: "border-line bg-surface-muted text-ink-muted",
+};
+
+function truncate(value: string, length: number) {
+  return value.length > length ? `${value.slice(0, length - 1)}…` : value;
+}
+
+export default function FlowSankey({ ledger, onNodeClick, unitToggle = "USD", onUnitToggle }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(400);
+  const [internalUnit, setInternalUnit] = useState<"USD" | "NEAR">(unitToggle);
   const [selectedNode, setSelectedNode] = useState<FlowNodeModel | null>(null);
+  const activeUnit = onUnitToggle ? unitToggle : internalUnit;
+  const height = 440;
+
+  const visibleNodes = useMemo(
+    () =>
+      ledger.nodes.filter((n) =>
+        activeUnit === "USD" ? n.unit === "USD" : n.unit === "NEAR" || n.alt_unit === "NEAR"
+      ),
+    [ledger.nodes, activeUnit]
+  );
+  const visibleEdges = useMemo(() => {
+    const ids = new Set(visibleNodes.map((n) => n.id));
+    return ledger.edges.filter((e) => ids.has(e.source) && ids.has(e.target));
+  }, [ledger.edges, visibleNodes]);
+
+  const setUnit = (unit: "USD" | "NEAR") => {
+    if (onUnitToggle) onUnitToggle(unit);
+    else setInternalUnit(unit);
+  };
 
   useEffect(() => {
-    if (containerRef.current) {
-      setWidth(containerRef.current.clientWidth);
-    }
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setWidth(el.clientWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!containerRef.current || !ledger.nodes.length) return;
+    if (!selectedNode) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedNode(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [selectedNode]);
+
+  useEffect(() => {
+    if (!containerRef.current || !width || !visibleNodes.length) return;
 
     const svg = d3.select(containerRef.current).select("svg");
     const g = svg.select("g");
-
     g.selectAll("*").remove();
 
-    // Filter nodes by unit
-    const nodes = ledger.nodes.filter(n =>
-      unitToggle === "USD" ? n.unit === "USD" : n.unit === "NEAR" || n.alt_unit === "NEAR"
-    );
-    const edges = ledger.edges.filter(e => {
-      const src = nodes.find(n => n.id === e.source);
-      const tgt = nodes.find(n => n.id === e.target);
-      return src && tgt;
-    });
+    const nodes: SankeyNode[] = visibleNodes.map((n) => ({
+      ...n,
+      amount: Number(n.amount),
+      alt_amount: n.alt_amount !== null ? Number(n.alt_amount) : null,
+      stageOrder: STAGE_ORDER[n.stage] ?? 99,
+    }));
+    const links: SankeyLink[] = visibleEdges.map((edge) => ({
+      source: edge.source,
+      target: edge.target,
+      value: Math.max(Number(edge.amount), 0.0001),
+      amount: Number(edge.amount),
+      unit: edge.unit,
+      status: edge.status,
+    }));
 
-    const sankeyLayout = sankey<SankeyNode, SankeyLink>()
-      .nodeId((d: SankeyNode) => d.id)
+    const layout = sankey<SankeyNode, SankeyLink>()
+      .nodeId((d) => d.id)
       .nodeAlign(sankeyJustify)
-      .nodeWidth(20)
+      .nodeWidth(14)
       .nodePadding(20)
-      .extent([[50, 20], [width - 50, height - 40]]);
+      .extent([
+        [14, 34],
+        [width - 14, height - 34],
+      ]);
 
-    const snodes = nodes.map(n => ({ ...n, stageOrder: STAGE_ORDER[n.stage] || 99 })) as SankeyNode[];
-    const slinks = edges.map(e => ({ source: e.source, target: e.target, value: Number(e.amount) })) as SankeyLink[];
+    let laidOut: { nodes: SankeyNode[]; links: SankeyLink[] };
+    try {
+      laidOut = layout({ nodes, links }) as unknown as { nodes: SankeyNode[]; links: SankeyLink[] };
+    } catch {
+      return;
+    }
 
-    const { nodes: snodesLayout, links: slinksLayout } = sankeyLayout({
-      nodes: snodes,
-      links: slinks,
-    });
-
-    // Links
-    const link = g.append("g")
-      .attr("fill", "none")
-      .attr("stroke-opacity", 0.5)
+    const linkGroup = g.append("g").attr("fill", "none");
+    linkGroup
       .selectAll("path")
-      .data(slinksLayout)
+      .data(laidOut.links)
       .join("path")
       .attr("d", sankeyLinkHorizontal())
       .attr("stroke", (d: any) => {
         const colors = STAGE_COLORS[d.target.stage] || STAGE_COLORS.gross_fees;
-        return colors.reconciled;
+        return colors.base;
       })
+      .attr("stroke-opacity", 0.22)
       .attr("stroke-width", (d: any) => Math.max(1, d.width))
-      .style("cursor", "pointer");
+      .style("cursor", "pointer")
+      .on("mouseenter", function () {
+        d3.select(this).attr("stroke-opacity", 0.38);
+      })
+      .on("mouseleave", function () {
+        d3.select(this).attr("stroke-opacity", 0.22);
+      })
+      .append("title")
+      .text((d: any) => {
+        const source = typeof d.source === "object" ? d.source.label : d.source;
+        const target = typeof d.target === "object" ? d.target.label : d.target;
+        return `${source} → ${target}\n${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(d.amount)} ${d.unit}\nStatus: ${d.status}`;
+      });
 
-    // Nodes
-    const node = g.append("g")
+    const node = g
+      .append("g")
       .selectAll("g")
-      .data(snodesLayout)
+      .data(laidOut.nodes)
       .join("g")
       .attr("transform", (d: any) => `translate(${d.x0},${d.y0})`)
       .style("cursor", "pointer");
 
-    node.append("rect")
-      .attr("height", (d: any) => d.y1 - d.y0)
-      .attr("width", (d: any) => d.x1 - d.x0)
-      .attr("fill", (d: any) => {
-        const colors = STAGE_COLORS[d.stage] || STAGE_COLORS.gross_fees;
-        if (d.status === "reconciled") return colors.reconciled;
-        if (d.status === "partial") return colors.partial;
-        if (d.status === "unknown") return colors.unknown;
-        return colors.base;
-      })
-      .attr("stroke", (d: any) => {
-        if (d.status === "partial" || d.status === "unknown") return "#f59e0b";
-        return "none";
-      })
-      .attr("stroke-width", 1.5)
-      .attr("stroke-dasharray", (d: any) => d.status === "partial" ? "4,2" : "none");
+    node
+      .append("rect")
+      .attr("height", (d: any) => Math.max(2, d.y1 - d.y0))
+      .attr("width", (d: any) => Math.max(3, d.x1 - d.x0))
+      .attr("rx", 3)
+      .attr("fill", (d: any) => (STAGE_COLORS[d.stage] || STAGE_COLORS.gross_fees).base)
+      .attr("stroke", (d: any) => (d.status === "reconciled" ? "none" : chart.ochre))
+      .attr("stroke-width", 1.4)
+      .attr("stroke-dasharray", (d: any) => (d.status === "partial" ? "3,2" : d.status === "unknown" ? "1,2" : "none"))
+      .attr("opacity", (d: any) => (d.status === "unknown" ? 0.72 : 1));
 
-    node.append("title")
-      .text((d: any) => `${d.label}\n${new Intl.NumberFormat().format(d.amount)} ${d.unit}`);
+    node
+      .append("title")
+      .text(
+        (d: any) =>
+          `${d.label}\n${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(d.amount)} ${d.unit}\nStatus: ${d.status}`
+      );
 
-    // Labels
-    node.append("text")
-      .attr("x", (d: any) => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
-      .attr("y", (d: any) => (d.y1 + d.y0) / 2)
-      .attr("dy", "0.35em")
-      .attr("text-anchor", (d: any) => d.x0 < width / 2 ? "start" : "end")
-      .attr("font-size", "11px")
-      .attr("fill", "#e5e7eb")
-      .text((d: any) => d.label);
+    const labels = node
+      .append("text")
+      .attr("x", (d: any) => (d.x0 < width / 2 ? d.x1 - d.x0 + 8 : -8))
+      .attr("y", (d: any) => (d.y1 - d.y0) / 2)
+      .attr("dy", "-0.1em")
+      .attr("text-anchor", (d: any) => (d.x0 < width / 2 ? "start" : "end"))
+      .attr("font-size", "10.5px")
+      .attr("font-family", "var(--font-sans), ui-sans-serif, sans-serif")
+      .attr("fill", chart.ink)
+      .attr("font-weight", 500);
 
-    // Click handler
-    node.on("click", (event: any, d: any) => {
-      const fullNode = ledger.nodes.find(n => n.id === d.id);
-      if (fullNode && onNodeClick) {
-        onNodeClick(fullNode);
-        setSelectedNode(fullNode);
-      }
+    labels.each(function (this: SVGTextElement, d: any) {
+      const el = d3.select(this);
+      const available = d.x0 < width / 2 ? width - d.x1 - 24 : d.x0 - 24;
+      const maxChars = Math.max(12, Math.floor(available / 6.1));
+      el.append("tspan").text(truncate(d.label, maxChars));
+      el.append("tspan")
+        .attr("x", d.x0 < width / 2 ? d.x1 - d.x0 + 8 : -8)
+        .attr("dy", "1.35em")
+        .attr("fill", chart.faint)
+        .attr("font-size", "9.5px")
+        .attr("font-weight", 400)
+        .text(`${formatNumber(d.amount)} ${d.unit}`);
     });
 
-    // Context strip (volume) at top
-    if (ledger.volume_usd && unitToggle === "USD") {
+    if (activeUnit === "NEAR" && ledger.volume_usd && ledger.effective_gross_take_bps) {
       g.append("text")
-        .attr("x", width / 2)
-        .attr("y", 15)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("fill", "#9ca3af")
-        .text(`Swap Volume: ${new Intl.NumberFormat(undefined, { notation: "compact" }).format(ledger.volume_usd)} USD  |  Effective Take Rate: ${ledger.effective_gross_take_bps ? (Number(ledger.effective_gross_take_bps) / 100).toFixed(2) + "%" : "N/A"}`);
+        .attr("x", width - 14)
+        .attr("y", 14)
+        .attr("text-anchor", "end")
+        .attr("font-size", "9.5px")
+        .attr("fill", chart.faint)
+        .text(`Swap volume $${formatNumber(ledger.volume_usd)} · ${(Number(ledger.effective_gross_take_bps) / 100).toFixed(2)}% take rate`);
     }
 
-    // Unit toggle hint
-    if (unitToggle === "NEAR") {
-      g.append("text")
-        .attr("x", width - 50)
-        .attr("y", 15)
-        .attr("text-anchor", "end")
-        .attr("font-size", "11px")
-        .attr("fill", "#f59e0b")
-        .text("Showing NEAR amounts (alt)");
-    }
-  }, [ledger, unitToggle, width, height, onNodeClick]);
+    node.on("click", (_event: any, d: any) => {
+      const fullNode = ledger.nodes.find((n) => n.id === d.id);
+      if (!fullNode) return;
+      onNodeClick?.(fullNode);
+      setSelectedNode(fullNode);
+    });
+  }, [ledger, activeUnit, width, visibleNodes, visibleEdges, onNodeClick]);
+
+  const statusCounts = visibleNodes.reduce(
+    (acc, n) => {
+      acc[n.status] = (acc[n.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   return (
-    <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold">Economic Flow Ledger — {ledger.period.toUpperCase()}</span>
-          <span className="text-xs text-muted">{ledger.start} → {ledger.end}</span>
+    <div className="card overflow-hidden">
+      <div className="flex flex-col gap-3 border-b border-line px-4 py-4 sm:px-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="section-title">Economic flow ledger</h3>
+              <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">
+                {ledger.period.toUpperCase()}
+              </span>
+              <span className="badge border-line bg-surface-subtle font-mono text-ink-faint">
+                {ledger.start} → {ledger.end}
+              </span>
+            </div>
+            <p className="mt-1 text-[11px] leading-relaxed text-ink-faint">
+              Gross fees → protocol revenue → buyback → destination. Widths are relative within each unit.
+            </p>
+          </div>
+          <div className="segmented" role="group" aria-label="Flow ledger unit">
+            <button
+              type="button"
+              onClick={() => setUnit("USD")}
+              aria-pressed={activeUnit === "USD"}
+              className={`segmented-item ${activeUnit === "USD" ? "segmented-item-active" : ""}`}
+            >
+              USD stages
+            </button>
+            <button
+              type="button"
+              onClick={() => setUnit("NEAR")}
+              aria-pressed={activeUnit === "NEAR"}
+              className={`segmented-item ${activeUnit === "NEAR" ? "segmented-item-active" : ""}`}
+            >
+              NEAR stages
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onUnitToggle?.("USD")}
-            className={`px-2 py-1 text-xs rounded ${unitToggle === "USD" ? "bg-blue-900/30 text-blue-300" : "bg-neutral-800 text-muted"}`}
-          >
-            USD
-          </button>
-          <button
-            onClick={() => onUnitToggle?.("NEAR")}
-            className={`px-2 py-1 text-xs rounded ${unitToggle === "NEAR" ? "bg-amber-900/30 text-amber-300" : "bg-neutral-800 text-muted"}`}
-          >
-            NEAR
-          </button>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10.5px] text-ink-faint">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-sm bg-sage" /> Reconciled
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-sm border border-dashed border-ochre" /> Partial ({statusCounts.partial || 0})
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-sm bg-ink-faint/60" /> Unknown ({statusCounts.unknown || 0})
+          </span>
+          <span className="ml-auto inline-flex items-center gap-1.5">
+            <IconInfo className="h-3 w-3" />
+            Click any node for its definition and evidence
+          </span>
         </div>
+
+        {ledger.volume_usd && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-line bg-surface-subtle px-3 py-2 text-[11px] text-ink-muted">
+            <span>
+              Swap volume <strong className="tnum font-medium text-ink">${formatNumber(ledger.volume_usd)}</strong>
+            </span>
+            {ledger.effective_gross_take_bps && (
+              <span>
+                Effective gross take rate{" "}
+                <strong className="tnum font-medium text-ink">
+                  {(Number(ledger.effective_gross_take_bps) / 100).toFixed(2)}%
+                </strong>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
-      <div ref={containerRef} style={{ width: "100%", height: `${height}px` }}>
-        <svg width="100%" height="100%">
-          <g />
-        </svg>
-      </div>
+      {activeUnit === "NEAR" && (
+        <div className="border-b border-line bg-sage-soft/50 px-4 py-2 text-[11px] text-sage-deep sm:px-5">
+          Post-sweep stages are denominated in NEAR. They are not drawn to the same scale as the USD fee stages.
+        </div>
+      )}
 
-      {/* Reconciliation Panel */}
+      <div className="overflow-x-auto">
+        <div ref={containerRef} className="min-w-[680px]" style={{ width: "100%", height }}>
+          {visibleNodes.length ? (
+            <svg width="100%" height="100%" role="img" aria-label={`Economic flow diagram for ${ledger.period}`}>
+              <g />
+            </svg>
+          ) : (
+            <div className="flex h-full items-center justify-center px-6">
+              <div className="empty-state w-full max-w-md">
+                <p className="text-[12.5px] font-medium text-ink-muted">No {activeUnit} stages in this ledger</p>
+                <p className="mt-1 text-[11.5px] text-ink-faint">Try the other unit to see the available flow.</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <p className="border-t border-line/70 px-4 py-2 text-[10.5px] text-ink-faint sm:hidden">
+        Scroll horizontally to explore the full ledger.
+      </p>
+
       {Object.keys(ledger.reconciliation).length > 0 && (
-        <details className="mt-4 border border-neutral-700 rounded p-4">
-          <summary className="cursor-pointer font-medium flex items-center gap-2">
-            <span>Reconciliation Panel</span>
-            <span className="text-xs text-amber-300">{Object.keys(ledger.reconciliation).length} stages</span>
+        <details className="group border-t border-line">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[12px] font-medium text-ink-soft hover:bg-surface-subtle sm:px-5">
+            <span className="flex items-center gap-2">
+              Reconciliation
+              <span className="badge border-ochre/30 bg-ochre-soft font-mono text-ochre-deep">
+                {Object.keys(ledger.reconciliation).length} stages
+              </span>
+            </span>
+            <IconChevronDown className="h-4 w-4 text-ink-faint transition-transform group-open:rotate-180" />
           </summary>
-          <div className="mt-3 space-y-2 text-sm">
+          <div className="space-y-2 px-4 pb-4 sm:px-5">
             {Object.entries(ledger.reconciliation).map(([stage, sources]) => (
-              <details key={stage} className="border border-neutral-700 rounded p-2">
-                <summary className="cursor-pointer font-mono text-xs">{stage}</summary>
-                <div className="mt-1 space-y-1">
-                  {(sources as any[]).map((s: any, i: number) => (
-                    <div key={i} className="text-xs text-muted flex gap-2">
-                      <span className="font-mono">{s.source}</span>
-                      <span>{new Intl.NumberFormat().format(Number(s.value))} {s.unit}</span>
-                      {s.delta_pct && <span className="text-amber-300">({Number(s.delta_pct).toFixed(2)}%)</span>}
+              <details key={stage} className="rounded-lg border border-line bg-surface-subtle/60">
+                <summary className="cursor-pointer list-none px-3 py-2 font-mono text-[11px] text-ink-muted">
+                  {stage}
+                </summary>
+                <div className="border-t border-line px-3 py-2">
+                  {(sources as any[]).map((source: any, index: number) => (
+                    <div key={index} className="flex flex-wrap items-baseline justify-between gap-2 py-1 text-[11px]">
+                      <span className="font-mono text-ink-muted">{source.source}</span>
+                      <span className="tnum text-ink-soft">
+                        {new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Number(source.value))} {source.unit}
+                        {source.delta_pct && (
+                          <span className="ml-2 text-ochre-deep">Δ {Number(source.delta_pct).toFixed(2)}%</span>
+                        )}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -260,56 +403,117 @@ export default function FlowSankey({
         </details>
       )}
 
-      {/* Residuals */}
       {ledger.residuals && ledger.residuals.length > 0 && (
-        <details className="mt-4 border border-neutral-700 rounded p-4">
-          <summary className="cursor-pointer font-medium flex items-center gap-2">
-            <span>Unreconciled Amounts</span>
-            <span className="text-xs text-amber-300">{ledger.residuals.length} residuals</span>
+        <details className="group border-t border-line">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[12px] font-medium text-ink-soft hover:bg-surface-subtle sm:px-5">
+            <span className="flex items-center gap-2">
+              Unreconciled amounts
+              <span className="badge border-ochre/30 bg-ochre-soft font-mono text-ochre-deep">
+                {ledger.residuals.length}
+              </span>
+            </span>
+            <IconChevronDown className="h-4 w-4 text-ink-faint transition-transform group-open:rotate-180" />
           </summary>
-          <div className="mt-3 space-y-2 text-sm">
-            {ledger.residuals.map((r: any, i: number) => (
-              <div key={i} className="flex items-center gap-2 text-xs">
-                <span className="font-mono">{r.stage}</span>
-                <span className={r.sign === "negative" ? "text-red-400" : "text-amber-400"}>
-                  {r.sign === "negative" ? "−" : "+"}{new Intl.NumberFormat().format(Number(r.amount))} {r.unit}
+          <div className="space-y-2 px-4 pb-4 sm:px-5">
+            {ledger.residuals.map((residual, index) => (
+              <div key={index} className="flex flex-wrap items-center gap-2 rounded-lg border border-ochre/25 bg-ochre-soft/50 px-3 py-2 text-[11px]">
+                <IconAlert className="h-3.5 w-3.5 text-ochre-deep" />
+                <span className="font-mono text-ink-soft">{residual.stage}</span>
+                <span className={residual.sign === "negative" ? "tnum text-danger-deep" : "tnum text-ochre-deep"}>
+                  {residual.sign === "negative" ? "−" : "+"}
+                  {new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Number(residual.amount))} {residual.unit}
                 </span>
-                <span className="text-muted">{r.reason}</span>
+                <span className="text-ink-muted">{residual.reason}</span>
               </div>
             ))}
           </div>
         </details>
       )}
 
-      {/* Node Drawer */}
       {selectedNode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setSelectedNode(null)}>
-          <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedNode(null)} />
-          <div className="relative w-full max-w-md bg-neutral-900 border border-neutral-700 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">{selectedNode.label}</h3>
-              <button onClick={() => setSelectedNode(null)} className="p-1 rounded hover:bg-white/5">✕</button>
+        <div className="fixed inset-0 z-[60] flex items-end justify-center p-4 sm:items-center">
+          <button
+            type="button"
+            className="absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
+            onClick={() => setSelectedNode(null)}
+            aria-label="Close node details"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="flow-node-title"
+            className="relative max-h-[84vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-surface p-5 shadow-pop"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="micro-label">Ledger node</p>
+                <h3 id="flow-node-title" className="mt-1 text-[16px] font-semibold tracking-[-0.02em] text-ink">
+                  {selectedNode.label}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedNode(null)}
+                className="rounded-lg p-1.5 text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink"
+                aria-label="Close node details"
+              >
+                <IconClose className="h-5 w-5" />
+              </button>
             </div>
-            <div className="space-y-2 text-sm">
-              <div><span className="text-muted">Stage:</span> <span className="ml-2 font-mono">{selectedNode.stage}</span></div>
-              <div><span className="text-muted">Amount:</span> <span className="ml-2 font-mono tabular-nums">{new Intl.NumberFormat().format(Number(selectedNode.amount))} {selectedNode.unit}</span></div>
-              {selectedNode.alt_amount && (
-                <div><span className="text-muted">Alt Amount:</span> <span className="ml-2 font-mono tabular-nums">{new Intl.NumberFormat().format(Number(selectedNode.alt_amount))} {selectedNode.alt_unit}</span></div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className={`badge ${statusStyles[selectedNode.status] || statusStyles.unknown}`}>{selectedNode.status}</span>
+              <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">{selectedNode.stage}</span>
+              <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">{selectedNode.kind}</span>
+            </div>
+
+            <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
+              <div className="bg-surface px-3.5 py-3">
+                <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-ink-faint">Amount</dt>
+                <dd className="tnum mt-1 text-[15px] font-semibold text-ink">
+                  {new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Number(selectedNode.amount))}{" "}
+                  <span className="text-[10px] font-medium text-ink-faint">{selectedNode.unit}</span>
+                </dd>
+              </div>
+              <div className="bg-surface px-3.5 py-3">
+                <dt className="text-[10px] font-medium uppercase tracking-[0.08em] text-ink-faint">Alternate unit</dt>
+                <dd className="tnum mt-1 text-[13px] font-medium text-ink-soft">
+                  {selectedNode.alt_amount !== null
+                    ? `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(Number(selectedNode.alt_amount))} ${selectedNode.alt_unit}`
+                    : "—"}
+                </dd>
+              </div>
+            </dl>
+
+            <div className="mt-4 space-y-3 text-[12px] leading-relaxed">
+              <div>
+                <p className="micro-label">Calculation</p>
+                <p className="mt-1 whitespace-pre-wrap text-ink-soft">{selectedNode.calc}</p>
+              </div>
+              <div>
+                <p className="micro-label">Sources</p>
+                <p className="mt-1 font-mono text-[11px] text-ink-muted">{selectedNode.sources.join(", ")}</p>
+              </div>
+              {selectedNode.price_source && (
+                <div>
+                  <p className="micro-label">Price source</p>
+                  <p className="mt-1 text-ink-soft">{selectedNode.price_source}</p>
+                </div>
               )}
-              <div><span className="text-muted">Kind:</span> <span className="ml-2 capitalize">{selectedNode.kind}</span></div>
-              <div><span className="text-muted">Status:</span> <span className="ml-2 capitalize">{selectedNode.status}</span></div>
-              <div><span className="text-muted">Calculation:</span> <div className="mt-1 text-xs text-muted whitespace-pre-wrap">{selectedNode.calc}</div></div>
-              <div><span className="text-muted">Sources:</span> <div className="mt-1 text-xs text-muted">{selectedNode.sources.join(", ")}</div></div>
               {selectedNode.completeness_note && (
-                <div className="border border-amber-700 bg-amber-900/20 rounded p-2 text-xs text-amber-200">
-                  ⚠ {selectedNode.completeness_note}
+                <div className="flex gap-2 rounded-lg border border-ochre/25 bg-ochre-soft/60 p-3 text-[11px] text-ochre-deep">
+                  <IconAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  {selectedNode.completeness_note}
                 </div>
               )}
             </div>
+
             <button
+              type="button"
               onClick={() => setSelectedNode(null)}
-              className="mt-4 w-full px-3 py-1.5 text-sm border border-neutral-600 rounded hover:bg-white/5"
+              className="btn-secondary mt-5 w-full"
             >
+              <IconX className="h-3.5 w-3.5" />
               Close
             </button>
           </div>

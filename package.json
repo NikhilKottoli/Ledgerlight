@@ -1,0 +1,29 @@
+{
+  "name": "near-value-intelligence",
+  "version": "1.0.0",
+  "description": "**Does NEAR's growing economic activity turn into sustainable economic value for NEAR tokenholders?**",
+  "main": "export-diagram.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikhilKottoli/LedgerLight.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NikhilKottoli/LedgerLight/issues"
+  },
+  "homepage": "https://github.com/NikhilKottoli/LedgerLight#readme",
+  "dependencies": {
+    "@excalidraw/excalidraw": "^0.18.1",
+    "canvas": "^3.2.3",
+    "jsdom": "^31.0.1",
+    "playwright": "^1.65.1"
+  }
+}

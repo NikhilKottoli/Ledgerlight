@@ -1,8 +1,17 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import KpiCard from "@/components/ui/KpiCard";
 import TimeSeriesChart from "@/components/ui/TimeSeriesChart";
+import BreakdownChart from "@/components/ui/BreakdownChart";
+import StatusDonut from "@/components/ui/StatusDonut";
+import PageHeader from "@/components/ui/PageHeader";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { ChartSkeleton, KpiSkeleton } from "@/components/ui/Loading";
+import { IconArrowUpRight, IconInfo } from "@/components/ui/icons";
 import { useMetrics } from "@/hooks/useMetric";
+import { formatLongDate } from "@/lib/chartTheme";
 
 const DEFI_LLAMA_METRICS = [
   { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
@@ -24,111 +33,299 @@ const INTENTS_DISTRIBUTION_METRICS = [
   { id: "intents.token_distribution.daily", label: "Token Distribution", unit: "USD" },
 ] as const;
 
-export default function IntentsPage() {
-  const defillamaIds = DEFI_LLAMA_METRICS.map(m => m.id);
-  const intentsIds = INTENTS_LIVE_METRICS.map(m => m.id);
-  const distributionIds = INTENTS_DISTRIBUTION_METRICS.map(m => m.id);
+function lastDate(artifacts: Array<{ series: Array<{ t: string; v: unknown }> } | undefined>) {
+  const dates = artifacts
+    .flatMap((artifact) => artifact?.series.filter((point) => point.v !== null).map((point) => point.t) || [])
+    .sort();
+  return dates[dates.length - 1] || "";
+}
 
-  const { artifacts: defillamaArtifacts, isLoading: defillamaLoading } = useMetrics(defillamaIds);
-  const { artifacts: intentsArtifacts, isLoading: intentsLoading } = useMetrics(intentsIds);
-  const { artifacts: distributionArtifacts, isLoading: distributionLoading } = useMetrics(distributionIds);
+function shortDate(date: string) {
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime())) return date;
+  return parsed.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+function shortenToken(part: string) {
+  const dash = part.indexOf("-");
+  if (dash < 0) return part;
+  const token = part.slice(0, dash);
+  const address = part.slice(dash + 1);
+  if (address.length <= 12) return part;
+  return `${token}-${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+function formatPair(key: string) {
+  return key
+    .split("->")
+    .map((part) => {
+      const cleaned = part.replace(/\.OMFT\.NEAR/g, "");
+      if (/^nep141$/i.test(cleaned)) return "NEP-141";
+      return shortenToken(cleaned);
+    })
+    .join(" → ");
+}
+
+export default function IntentsPage() {
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const { artifacts: defillamaArtifacts, isLoading: defillamaLoading } = useMetrics(
+    DEFI_LLAMA_METRICS.map((metric) => metric.id)
+  );
+  const { artifacts: intentsArtifacts, isLoading: intentsLoading } = useMetrics(
+    INTENTS_LIVE_METRICS.map((metric) => metric.id)
+  );
+  const { artifacts: distributionArtifacts, isLoading: distributionLoading } = useMetrics(
+    INTENTS_DISTRIBUTION_METRICS.map((metric) => metric.id)
+  );
 
   const isLoading = defillamaLoading || intentsLoading || distributionLoading;
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <header className="mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Intents</h1>
-          <p className="text-muted mt-1">NEAR Intents protocol activity: volume, swaps, addresses, chains, tokens</p>
-        </header>
-        <div className="text-center py-12 text-muted">Loading live data...</div>
-      </div>
-    );
-  }
+  const validDefillama = DEFI_LLAMA_METRICS.map((metric, index) => ({
+    ...metric,
+    artifact: defillamaArtifacts[index],
+  })).filter((metric) => metric.artifact);
+  const validIntents = INTENTS_LIVE_METRICS.map((metric, index) => ({
+    ...metric,
+    artifact: intentsArtifacts[index],
+  })).filter((metric) => metric.artifact);
+  const validDistribution = INTENTS_DISTRIBUTION_METRICS.map((metric, index) => ({
+    ...metric,
+    artifact: distributionArtifacts[index],
+  })).filter((metric) => metric.artifact);
 
-  const validDefillama = DEFI_LLAMA_METRICS.map((m, i) => ({ ...m, artifact: defillamaArtifacts[i] })).filter(m => m.artifact);
-  const validIntents = INTENTS_LIVE_METRICS.map((m, i) => ({ ...m, artifact: intentsArtifacts[i] })).filter(m => m.artifact);
-  const validDistribution = INTENTS_DISTRIBUTION_METRICS.map((m, i) => ({ ...m, artifact: distributionArtifacts[i] })).filter(m => m.artifact);
+  const dataAsOf = lastDate([...defillamaArtifacts, ...intentsArtifacts, ...distributionArtifacts]);
 
-  // Get latest data timestamp
-  const latestDates = [...validDefillama, ...validIntents, ...validDistribution]
-    .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
-    .filter(Boolean);
-  const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
+  const dateSets = validDistribution.map(
+    (metric) =>
+      new Set(
+        (metric.artifact?.series || [])
+          .filter((point) => point.v !== null)
+          .map((point) => point.t)
+      )
+  );
+  const commonDates =
+    dateSets.length > 0
+      ? [...dateSets[0]].filter((date) => dateSets.every((set) => set.has(date))).sort()
+      : [];
+  const effectiveDate =
+    (selectedDate && commonDates.includes(selectedDate) ? selectedDate : "") ||
+    commonDates[commonDates.length - 1] ||
+    "";
+
+  const statusArtifact = validDistribution.find((metric) => metric.id === "intents.status_mix.daily")?.artifact;
+  const chainArtifact = validDistribution.find((metric) => metric.id === "intents.chain_distribution.daily")?.artifact;
+  const tokenArtifact = validDistribution.find((metric) => metric.id === "intents.token_distribution.daily")?.artifact;
 
   return (
-    <div className="space-y-6">
-      <header className="mb-4">
-        <h1 className="text-3xl font-bold tracking-tight">Intents</h1>
-        <p className="text-muted mt-1">NEAR Intents protocol activity: volume, swaps, addresses, chains, tokens</p>
-        <p className="text-xs text-muted mt-1">Data as of {dataAsOf}</p>
-      </header>
-
-      {/* DefiLlama Aggregates */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">DefiLlama Aggregates</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {validDefillama.map(({ artifact, label, unit }) => (
-            artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
-          ))}
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 mt-6">
-          {validDefillama.map(({ artifact, label }) => (
-            artifact && (
-              <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-                <h3 className="text-lg font-semibold mb-4">{label}</h3>
-                <TimeSeriesChart artifact={artifact} height={300} />
-              </section>
-            )
-          ))}
-        </div>
-      </section>
-
-      {/* Live Intents Explorer Metrics */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Intents Explorer Metrics</h2>
-        {validIntents.length > 0 ? (
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Analysis · Intents"
+        title="Intents"
+        description="NEAR Intents protocol activity: volume, swaps, unique sender addresses, chains and tokens. DefiLlama aggregates and Intents Explorer observations are labelled separately."
+        meta={
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {validIntents.map(({ artifact, label, unit }) => (
-                artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
-              ))}
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 mt-6">
-              {validIntents.map(({ artifact, label }) => (
-                artifact && (
-                  <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-                    <h3 className="text-lg font-semibold mb-4">{label}</h3>
-                    <TimeSeriesChart artifact={artifact} height={300} />
-                  </section>
-                )
-              ))}
-            </div>
+            {dataAsOf && (
+              <span>
+                Latest observation <span className="font-medium text-ink-muted">{formatLongDate(dataAsOf)}</span>
+              </span>
+            )}
+            <span className="font-mono text-ink-faint">Explorer window: {geometryText(validIntents)}</span>
           </>
-        ) : (
-          <div className="text-muted text-center py-8">
-            <p>No Intents Explorer data available</p>
-          </div>
-        )}
-      </section>
+        }
+        actions={
+          <Link href="/methodology" className="btn-secondary">
+            Intents methodology
+            <IconArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        }
+      />
 
-      {/* Distribution Metrics */}
-      {validDistribution.length > 0 && (
-        <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h2 className="text-lg font-semibold mb-4">Volume Breakdown</h2>
-          <div className="grid gap-6 md:grid-cols-2 mt-6">
-            {validDistribution.map(({ artifact, label }) => (
-              artifact && (
-                <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-                  <h3 className="text-lg font-semibold mb-4">{label}</h3>
-                  <TimeSeriesChart artifact={artifact} height={300} />
-                </section>
-              )
-            ))}
+      {isLoading ? (
+        <>
+          <KpiSkeleton count={3} />
+          <div className="grid gap-4 lg:grid-cols-3">
+            <ChartSkeleton height={220} />
+            <ChartSkeleton height={220} />
+            <ChartSkeleton height={220} />
           </div>
-        </section>
+        </>
+      ) : (
+        <>
+          <section aria-labelledby="defillama-heading">
+            <SectionHeading
+              title="DefiLlama aggregates"
+              description="Protocol-level fee and revenue series. These are the longest-running Intents observations."
+              className="mb-3"
+            />
+            <h2 id="defillama-heading" className="sr-only">
+              DefiLlama aggregates
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {validDefillama.map(({ artifact, label, unit }) =>
+                artifact ? (
+                  <KpiCard
+                    key={artifact.meta.metric_id}
+                    artifact={artifact}
+                    label={label}
+                    unit={unit}
+                    previousPeriodLabel="vs prior day"
+                    preferLatest
+                  />
+                ) : null
+              )}
+            </div>
+            <div className="mt-4 grid gap-4 xl:grid-cols-3">
+              {validDefillama.map(({ artifact, label }) =>
+                artifact ? (
+                  <TimeSeriesChart
+                    key={artifact.meta.metric_id}
+                    artifact={artifact}
+                    title={label}
+                    height={240}
+                  />
+                ) : null
+              )}
+            </div>
+          </section>
+
+          <section aria-labelledby="explorer-heading">
+            <SectionHeading
+              title="Intents Explorer metrics"
+              description="Transaction-level observations from the Intents Explorer. The window is short, so changes are shown and never extrapolated."
+              className="mb-3"
+              actions={
+                <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">
+                  n = {Math.max(...validIntents.map((metric) => metric.artifact?.series.filter((point) => point.v !== null).length || 0), 0)} days
+                </span>
+              }
+            />
+            <h2 id="explorer-heading" className="sr-only">
+              Intents Explorer metrics
+            </h2>
+            {validIntents.length > 0 ? (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                  {validIntents.map(({ artifact, label, unit }) =>
+                    artifact ? (
+                      <KpiCard
+                        key={artifact.meta.metric_id}
+                        artifact={artifact}
+                        label={label}
+                        unit={unit}
+                        previousPeriodLabel="vs prior day"
+                        preferLatest
+                      />
+                    ) : null
+                  )}
+                </div>
+                <div className="mt-4 grid gap-4 xl:grid-cols-2">
+                  {validIntents.map(({ artifact, label }) =>
+                    artifact ? (
+                      <TimeSeriesChart
+                        key={artifact.meta.metric_id}
+                        artifact={artifact}
+                        title={label}
+                        height={250}
+                        showBrush={false}
+                        className={artifact.meta.metric_id === "intents.volume_usd.daily" ? "xl:col-span-2" : ""}
+                      />
+                    ) : null
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">
+                <p className="text-[12.5px] font-medium text-ink-muted">No Intents Explorer data available</p>
+                <p className="mt-1 text-[11.5px] text-ink-faint">
+                  The explorer returned no observations for this window. Nothing is estimated.
+                </p>
+              </div>
+            )}
+          </section>
+
+          {validDistribution.length > 0 && (
+            <section aria-labelledby="breakdown-heading">
+              <SectionHeading
+                title="Volume breakdown"
+                description="Status mix is a transaction count. Chain and token distributions are USD-denominated. The three views never share a scale."
+                className="mb-3"
+                actions={
+                  <div className="flex flex-col items-end gap-1.5">
+                    <div className="segmented" role="group" aria-label="Distribution observation date">
+                      {commonDates.map((date) => (
+                        <button
+                          key={date}
+                          type="button"
+                          onClick={() => setSelectedDate(date)}
+                          aria-pressed={effectiveDate === date}
+                          className={`segmented-item ${effectiveDate === date ? "segmented-item-active" : ""}`}
+                        >
+                          {shortDate(date)}
+                        </button>
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-ink-faint">Observation date · all breakdowns</span>
+                  </div>
+                }
+              />
+              <h2 id="breakdown-heading" className="sr-only">
+                Volume breakdown
+              </h2>
+
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                {statusArtifact && (
+                  <div className="self-start">
+                    <StatusDonut
+                      artifact={statusArtifact}
+                      date={effectiveDate}
+                      title="Status mix"
+                      subtitle={effectiveDate ? `${formatLongDate(effectiveDate)} · transaction count` : undefined}
+                    />
+                  </div>
+                )}
+                <div className="grid gap-4">
+                  {chainArtifact && (
+                    <BreakdownChart
+                      artifact={chainArtifact}
+                      date={effectiveDate}
+                      unit="USD"
+                      title="Chain distribution"
+                      subtitle={`USD volume by chain pair${effectiveDate ? ` · ${effectiveDate}` : ""}`}
+                      labelFormatter={formatPair}
+                      height={230}
+                    />
+                  )}
+                  {tokenArtifact && (
+                    <BreakdownChart
+                      artifact={tokenArtifact}
+                      date={effectiveDate}
+                      unit="USD"
+                      title="Token distribution"
+                      subtitle={`USD volume by token pair${effectiveDate ? ` · ${effectiveDate}` : ""}`}
+                      labelFormatter={formatPair}
+                      height={230}
+                    />
+                  )}
+                </div>
+              </div>
+              <p className="mt-3 flex items-start gap-2 text-[10.5px] leading-relaxed text-ink-faint">
+                <IconInfo className="mt-0.5 h-3 w-3 shrink-0" />
+                Breakdown categories are shown exactly as reported by the source. Percentages are computed within the
+                selected observation only.
+              </p>
+            </section>
+          )}
+        </>
       )}
     </div>
   );
+}
+
+function geometryText(metrics: Array<{ artifact?: { series: Array<{ t: string; v: unknown }> } }>) {
+  const dates = metrics
+    .flatMap((metric) => metric.artifact?.series.filter((point) => point.v !== null).map((point) => point.t) || [])
+    .sort();
+  if (!dates.length) return "no observations";
+  return `${shortDate(dates[0])} – ${shortDate(dates[dates.length - 1])}`;
 }

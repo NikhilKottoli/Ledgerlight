@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { XAxisProps } from "recharts";
+import { ReferenceLine } from "recharts";
 
 interface Event {
   date: string;
@@ -11,35 +11,77 @@ interface Event {
 
 interface EventMarkerProps {
   eventsPath?: string;
-  xAxis?: XAxisProps;
+  /** Restrict annotations to the chart's visible date span. */
+  start?: string;
+  end?: string;
 }
 
-export function EventMarker({ eventsPath = "/data/events.json" }: EventMarkerProps) {
+const cache = new Map<string, Promise<Event[]>>();
+
+function loadEvents(path: string): Promise<Event[]> {
+  if (!cache.has(path)) {
+    cache.set(
+      path,
+      fetch(path)
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => [])
+    );
+  }
+  return cache.get(path)!;
+}
+
+const EVENT_COLORS: Record<string, string> = {
+  protocol_change: "#4d6b85",
+  exploit: "#b24a3e",
+  upgrade: "#557a60",
+  other: "#a8742a",
+};
+
+const EVENT_LABELS: Record<string, string> = {
+  "Buyback programme begins": "Buybacks begin",
+  "Omni infrastructure exploit (~$3.8M)": "Exploit",
+};
+
+/**
+ * Renders real events from public/data/events.json as reference lines.
+ * Recharts ignores reference lines outside the categorical domain, but we
+ * filter first so labels never appear for dates the chart does not cover.
+ */
+export function EventMarker({ eventsPath = "/data/events.json", start, end }: EventMarkerProps) {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    fetch(eventsPath).then(r => r.ok && r.json()).then(setEvents).catch(() => {});
+    let active = true;
+    loadEvents(eventsPath).then((data) => {
+      if (active) setEvents(data);
+    });
+    return () => {
+      active = false;
+    };
   }, [eventsPath]);
 
-  if (!events.length) return null;
+  const visible = events.filter((event) => (!start || event.date >= start) && (!end || event.date <= end));
+  if (!visible.length) return null;
 
   return (
     <>
-      {events.map((e, i) => (
-        <CustomEventMarker key={i} event={e} />
+      {visible.map((event) => (
+        <ReferenceLine
+          key={`${event.date}-${event.kind}`}
+          x={event.date}
+          stroke={EVENT_COLORS[event.kind] || EVENT_COLORS.other}
+          strokeOpacity={0.45}
+          strokeDasharray="3 4"
+          ifOverflow="hidden"
+          label={{
+            value: EVENT_LABELS[event.label] || event.label,
+            position: "insideTopRight",
+            fill: EVENT_COLORS[event.kind] || EVENT_COLORS.other,
+            fontSize: 9,
+            opacity: 0.9,
+          }}
+        />
       ))}
     </>
   );
-}
-
-function CustomEventMarker({ event }: { event: Event }) {
-  const colors: Record<string, string> = {
-    protocol_change: "#3b82f6",
-    exploit: "#ef4444",
-    upgrade: "#10b981",
-    other: "#f59e0b",
-  };
-  const color = colors[event.kind] || colors.other;
-
-  return null; // Actual implementation would hook into Recharts
 }

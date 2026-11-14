@@ -1,10 +1,23 @@
 "use client";
 import { DataMode } from "@/lib/types";
+import { IconAlert, IconInfo } from "./icons";
 
-const styles: Record<DataMode, { bg: string; text: string; label: string }> = {
-  live: { bg: "bg-green-900/30", text: "text-green-300", label: "LIVE" },
-  snapshot: { bg: "bg-amber-900/30", text: "text-amber-300", label: "SNAPSHOT" },
-  synthetic: { bg: "bg-red-900/30", text: "text-red-300", label: "SYNTHETIC (TEST DATA)" },
+const styles: Record<DataMode, { wrap: string; badge: string; label: string }> = {
+  live: {
+    wrap: "",
+    badge: "",
+    label: "LIVE",
+  },
+  snapshot: {
+    wrap: "border-ochre/30 bg-ochre-soft text-ochre-deep",
+    badge: "border-ochre/30 bg-surface/60 text-ochre-deep",
+    label: "SNAPSHOT",
+  },
+  synthetic: {
+    wrap: "border-danger/30 bg-danger-soft text-danger-deep",
+    badge: "border-danger/30 bg-surface/60 text-danger-deep",
+    label: "SYNTHETIC TEST DATA",
+  },
 };
 
 interface Props {
@@ -14,24 +27,22 @@ interface Props {
 
 export default function ModeBanner({ mode, snapshotDate }: Props) {
   const s = styles[mode];
-  if (mode === "live") return null; // No banner for live
+  if (mode === "live") return null;
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-50 ${s.bg} border-b border-amber-800 ${mode === "synthetic" ? "bg-red-900/40 border-red-800" : ""}`}>
-      <div className="mx-auto max-w-7xl px-4 py-1.5 flex items-center gap-3 text-sm">
-        <span className={`font-mono px-2 py-0.5 rounded ${s.text} ${s.bg.replace("/30", "/50")}`}>
+    <div className={`border-b px-4 py-2 sm:px-6 lg:px-8 xl:px-10 ${s.wrap}`}>
+      <div className="mx-auto flex max-w-content flex-wrap items-center gap-x-3 gap-y-1 text-[12px]">
+        <span className={`badge ${s.badge} font-mono uppercase tracking-[0.08em]`}>
+          {mode === "snapshot" ? <IconInfo className="h-3.5 w-3.5" /> : <IconAlert className="h-3.5 w-3.5" />}
           {s.label}
         </span>
-        <span className="text-amber-200">
+        <span>
           {mode === "snapshot" && snapshotDate
-            ? `Showing committed snapshot from ${snapshotDate}. Data is not live.`
-            : "Synthetic test data — not real. Do not use for decisions."}
+            ? `Showing the committed snapshot from ${snapshotDate}. This is real data, but it is not live.`
+            : mode === "snapshot"
+              ? "Showing committed snapshot data. This is real data, but it is not live."
+              : "Synthetic fixtures are being displayed — not real data. Do not use for decisions."}
         </span>
-        {mode === "synthetic" && (
-          <span className="ml-auto font-mono text-xs text-red-300 bg-red-900/30 px-2 py-0.5 rounded">
-            WATERMARK: SYNTHETIC
-          </span>
-        )}
       </div>
     </div>
   );
