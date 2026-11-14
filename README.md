@@ -53,7 +53,7 @@ Pikespeak     ┘    thesis + verify        manifest (sha256)
 ```
 
 The pipeline writes static JSON and the dashboard only reads it, so credentials never reach the browser.
-
+![FossFlow](IMG-20261115-WA0001.jpg)
 ![Architecture](architecture.png)
 
 *Editable source: `architecture.excalidraw` — open in [excalidraw.com](https://excalidraw.com/)*
