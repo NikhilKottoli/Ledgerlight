@@ -148,6 +148,6 @@ Also: `THESIS.md`, `METHODOLOGY.md`.
 
 ## License and sources
 
-MIT. See `THIRD_PARTY_NOTICES.md` for adopted code.
+MIT.
 
 Data from DefiLlama, the NEAR Intents Explorer API, BigQuery public datasets (`crypto_near_mainnet_us`), NearBlocks, Pikespeak, and revenue.near.org as a reference cross-check.
