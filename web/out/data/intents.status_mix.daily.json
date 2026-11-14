@@ -3,9 +3,9 @@
   "metric_id": "intents.status_mix.daily",
   "name": "Intents Status_Mix Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59+00:00",
-  "git_commit": "3a642924",
+  "git_commit": "74d652cb",
   "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
@@ -15,6 +15,13 @@
   "kind": "measured"
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": {
+    "PENDING_DEPOSIT": 995,
+    "SUCCESS": 5
+   }
+  },
   {
    "t": "2026-11-12",
    "v": {
@@ -32,8 +39,9 @@
   {
    "t": "2026-11-14",
    "v": {
-    "PENDING_DEPOSIT": 999,
-    "PROCESSING": 1
+    "PENDING_DEPOSIT": 1998,
+    "PROCESSING": 1,
+    "SUCCESS": 1
    }
   }
  ]

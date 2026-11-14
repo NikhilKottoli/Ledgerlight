@@ -2,16 +2,21 @@
  "meta": {
   "metric_id": "intents.swaps.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "3a642924",
-  "sha256_inputs": "078017d93e5341c38c970e2041e0f64640b91b2f016336605c20de8883c05be3",
+  "git_commit": "74d652cb",
+  "sha256_inputs": "12e0814dcd20cf4b14cb440186dd2c2ff3e55aacda4a9057c636f54a9a0406cf",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
   ]
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": "5",
+   "null_reason": null
+  },
   {
    "t": "2026-11-12",
    "v": "9",
@@ -24,7 +29,7 @@
   },
   {
    "t": "2026-11-14",
-   "v": "0",
+   "v": "1",
    "null_reason": null
   }
  ]

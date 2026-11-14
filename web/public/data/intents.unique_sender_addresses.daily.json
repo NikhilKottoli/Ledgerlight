@@ -2,16 +2,21 @@
  "meta": {
   "metric_id": "intents.unique_sender_addresses.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "3a642924",
-  "sha256_inputs": "a1d4c6b64007d9b286c33869f4eebe713a9849fc1fb3fe15da64c9672691cf14",
+  "git_commit": "74d652cb",
+  "sha256_inputs": "3573e834e19411b50cd7fe2e017a3cc89add17aeda35c68f1425c0bd28e2fc3e",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
   ]
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": "5",
+   "null_reason": null
+  },
   {
    "t": "2026-11-12",
    "v": "8",

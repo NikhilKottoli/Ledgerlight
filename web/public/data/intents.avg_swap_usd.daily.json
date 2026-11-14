@@ -2,16 +2,21 @@
  "meta": {
   "metric_id": "intents.avg_swap_usd.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "3a642924",
-  "sha256_inputs": "764a863c507c1630de91e9e328baf080e2c0d76402f737cea60049301c01c8d8",
+  "git_commit": "74d652cb",
+  "sha256_inputs": "dfb60cb0e56c11b583e3b9fe06aaae7f4e7182c06899f60666befcc587cd443c",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
   ]
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": "74.2724655594524",
+   "null_reason": null
+  },
   {
    "t": "2026-11-12",
    "v": "162.8146559552572222222222222",
@@ -24,7 +29,7 @@
   },
   {
    "t": "2026-11-14",
-   "v": "0",
+   "v": "99.922900000000",
    "null_reason": null
   }
  ]

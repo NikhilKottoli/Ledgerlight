@@ -2,16 +2,21 @@
  "meta": {
   "metric_id": "intents.concentration.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "3a642924",
-  "sha256_inputs": "8e755ab65b0f4d785ddea6ebe44c719dce00b9598f29172dcb15418c1f572a6e",
+  "git_commit": "74d652cb",
+  "sha256_inputs": "c78151094cc9f81d0e0af89676c8f05ffe8a33e9065f51e523992655244a0124",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
   ]
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": "1",
+   "null_reason": null
+  },
   {
    "t": "2026-11-12",
    "v": "0.9555254343128604668094868813",

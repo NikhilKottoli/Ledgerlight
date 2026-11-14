@@ -3,9 +3,9 @@
   "metric_id": "intents.token_distribution.daily",
   "name": "Intents Token_Distribution Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "retrieved_at": "2026-11-14T11:24:24.750671Z",
   "source_max_ts": "2026-11-14T23:59:59+00:00",
-  "git_commit": "3a642924",
+  "git_commit": "74d652cb",
   "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
@@ -15,6 +15,16 @@
   "kind": "measured"
  },
  "series": [
+  {
+   "t": "2026-11-11",
+   "v": {
+    "ETH.OMFT.NEAR->TRON.OMFT.NEAR": "2.291375970000",
+    "XRP.OMFT.NEAR->TRON-D28A265909EFECDCEE7C5028585214EA0B96F015.OMFT.NEAR": "305.587639305000",
+    "ETH.OMFT.NEAR->TRON-D28A265909EFECDCEE7C5028585214EA0B96F015.OMFT.NEAR": "10.751692722262",
+    "BNB.OMDEP.NEAR->LTC.OMFT.NEAR": "10.194000000000",
+    "ETH.OMFT.NEAR->SOL.OMFT.NEAR": "42.537619800000"
+   }
+  },
   {
    "t": "2026-11-12",
    "v": {
@@ -43,7 +53,9 @@
   },
   {
    "t": "2026-11-14",
-   "v": {}
+   "v": {
+    "POL-0XC2132D05D31C914A87C6611C10748AEB04B58E8F.OMDEP.NEAR->BASE-0X833589FCD6EDB6E08F4C7C32D4F71B54BDA02913.OMFT.NEAR": "99.922900000000"
+   }
   }
  ]
 }
