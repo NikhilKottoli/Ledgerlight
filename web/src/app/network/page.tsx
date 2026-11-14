@@ -52,7 +52,7 @@ export default function NetworkPage() {
       {/* KPI Row - Available Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {validMetrics.map(({ artifact, label, unit }) => (
-          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
+          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
         ))}
       </div>
 

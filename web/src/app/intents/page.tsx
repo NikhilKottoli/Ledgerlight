@@ -70,7 +70,7 @@ export default function IntentsPage() {
         <h2 className="text-lg font-semibold mb-4">DefiLlama Aggregates</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {validDefillama.map(({ artifact, label, unit }) => (
-            artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
+            artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
           ))}
         </div>
         <div className="grid gap-6 md:grid-cols-2 mt-6">
@@ -92,7 +92,7 @@ export default function IntentsPage() {
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {validIntents.map(({ artifact, label, unit }) => (
-                artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
+                artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
               ))}
             </div>
             <div className="grid gap-6 md:grid-cols-2 mt-6">

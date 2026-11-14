@@ -37,6 +37,7 @@ export default function HomePage() {
             label="DefiLlama TVL (NEAR Intents)"
             unit="USD"
             previousPeriodLabel="vs prior day"
+            todayOverride={latest.t}
           />
         )}
       </div>

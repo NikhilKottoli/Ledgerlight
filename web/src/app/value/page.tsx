@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import dynamic from "next/dynamic";
-import KpiCard from "@/components/ui/KpiCard";
+import { useState, useEffect } from "react";
 import { useMetrics } from "@/hooks/useMetric";
+import KpiCard from "@/components/ui/KpiCard";
+import SimpleChart from "@/components/charts/SimpleChart";
+import SimpleBarChart from "@/components/charts/SimpleBarChart";
+import SimpleLineChart from "@/components/charts/SimpleLineChart";
 
 const METRICS = [
   { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
@@ -128,44 +130,65 @@ function formatCurrency(n: number): string {
   return "$" + new Intl.NumberFormat(undefined, { maximumFractionDigits: 0, notation: "compact" }).format(n);
 }
 
-function formatCurrencyFull(n: number): string {
-  return "$" + new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n);
-}
-
-// Dynamically import chart components (client-side only)
-const ProjectionChart = dynamic(() => import("@/components/charts/ProjectionChart"), { ssr: false });
-const BuybackVsIssuanceChart = dynamic(() => import("@/components/charts/BuybackVsIssuanceChart"), { ssr: false });
-const KeyRatiosChart = dynamic(() => import("@/components/charts/KeyRatiosChart"), { ssr: false });
-
 export default function ValuePage() {
-  const metricIds = METRICS.map(m => m.id);
-  const { artifacts, isLoading } = useMetrics(metricIds);
-  const [inputs, setInputs] = useState<Record<string, number>>(
-    INITIAL_INPUTS.reduce((acc, i) => ({ ...acc, [i.key]: i.value }), {})
-  );
+  const [mounted, setMounted] = useState(false);
+  const [inputs, setInputs] = useState<Record<string, number>>({});
   const [activeScenario, setActiveScenario] = useState<keyof typeof SCENARIOS>("base");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [metrics, setMetrics] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
+  // Fetch metrics on mount
+  useEffect(() => {
+    const metricIds = METRICS.map(m => m.id);
+    Promise.all(metricIds.map(id => fetch(`/api/data/${id}`).then(r => r.json())))
+      .then(data => {
+        setMetrics(data);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    setInputs(INITIAL_INPUTS.reduce((acc, i) => ({ ...acc, [i.key]: i.value }), {}));
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
     return (
       <div className="space-y-6">
         <header className="mb-4">
           <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
+          <p className="text-muted mt-1">Interactive breakeven analysis</p>
         </header>
         <div className="text-center py-12 text-muted">Loading live data...</div>
       </div>
     );
   }
 
-  const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: artifacts[i] })).filter(m => m.artifact);
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
+          <p className="text-muted mt-1">Interactive breakeven analysis</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
+
+  const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: metrics[i] })).filter(m => m.artifact);
 
   const latestDates = validMetrics
     .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
     .filter(Boolean);
   const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
 
-  const results = useMemo(() => runModel(inputs), [inputs]);
+  const results = runModel(inputs);
 
   const handleScenario = (scenario: keyof typeof SCENARIOS) => {
     const s = SCENARIOS[scenario];
@@ -175,7 +198,7 @@ export default function ValuePage() {
   };
 
   // Chart data
-  const chartData = useMemo(() => results.years.map(y => ({
+  const chartData = results.years.map(y => ({
     year: `Year ${y.year}`,
     volume: y.V_t,
     grossFees: y.GrossFees_t,
@@ -185,33 +208,26 @@ export default function ValuePage() {
     buybackRatio: y.BuybackToIssuance_t * 100,
     revYield: y.RevYield_t * 100,
     deltaSupply: y.DeltaSupply_t,
-  })), [results.years]);
+  }));
 
-  const breakevenData = useMemo(() => {
-    if (!results.breakeven_volume_buyback) return [];
-    const currentVol = inputs.V0;
-    const breakeven = results.breakeven_volume_buyback;
-    return [
-      { label: "Current Volume", value: currentVol, type: "current" },
-      { label: "Breakeven Volume", value: breakeven, type: "breakeven" },
-    ];
-  }, [results.breakeven_volume_buyback, inputs.V0]);
+  const breakevenData = results.breakeven_volume_buyback ? [
+    { label: "Current Volume", value: inputs.V0, type: "current" },
+    { label: "Breakeven Volume", value: results.breakeven_volume_buyback, type: "breakeven" },
+  ] : [];
 
-  const scenarioComparison = useMemo(() => {
-    return (["bear", "base", "bull"] as const).map(s => {
-      const scen = SCENARIOS[s];
-      const { label, ...scenValues } = scen;
-      const scenInputs = { ...inputs, ...scenValues };
-      const scenResults = runModel(scenInputs);
-      return {
-        scenario: s,
-        breakeven: scenResults.breakeven_volume_buyback,
-        multiple: scenResults.breakeven_multiple_buyback,
-        year0BuybackRatio: scenResults.years[0]?.BuybackToIssuance_t * 100 || 0,
-        year0RevYield: scenResults.years[0]?.RevYield_t * 100 || 0,
-      };
-    });
-  }, [inputs]);
+  const scenarioComparison = (["bear", "base", "bull"] as const).map(s => {
+    const scen = SCENARIOS[s];
+    const { label, ...scenValues } = scen;
+    const scenInputs = { ...inputs, ...scenValues };
+    const scenResults = runModel(scenInputs);
+    return {
+      scenario: s,
+      breakeven: scenResults.breakeven_volume_buyback,
+      multiple: scenResults.breakeven_multiple_buyback,
+      year0BuybackRatio: scenResults.years[0]?.BuybackToIssuance_t * 100 || 0,
+      year0RevYield: scenResults.years[0]?.RevYield_t * 100 || 0,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -238,7 +254,7 @@ export default function ValuePage() {
       {/* KPI Row */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {validMetrics.map(({ artifact, label, unit }) => (
-          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
+          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" todayOverride={dataAsOf} />
         ))}
       </div>
 
@@ -349,13 +365,13 @@ export default function ValuePage() {
           <h2 className="text-lg font-semibold">Projections (5 Years)</h2>
 
           {/* Projection Chart */}
-          <ProjectionChart chartData={chartData} />
+          <SimpleChart data={chartData} height={300} />
 
           {/* Buyback vs Issuance Chart */}
-          <BuybackVsIssuanceChart chartData={chartData} />
+          <SimpleBarChart data={chartData} height={224} />
 
           {/* Key Ratios Chart */}
-          <KeyRatiosChart chartData={chartData} />
+          <SimpleLineChart data={chartData} height={224} />
         </section>
 
         {/* Right: Breakeven Analysis & Scenario Compare */}
@@ -486,4 +502,3 @@ export default function ValuePage() {
     </div>
   );
 }
-
