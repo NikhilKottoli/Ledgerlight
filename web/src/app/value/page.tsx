@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, Legend, AreaChart, Area
+} from "recharts";
 import KpiCard from "@/components/ui/KpiCard";
 import { useMetrics } from "@/hooks/useMetric";
 
@@ -32,24 +36,25 @@ interface InputRow {
   step: number;
   anchor?: number;
   measuredLabel?: string;
+  format?: (v: number) => string;
 }
 
 const INITIAL_INPUTS: InputRow[] = [
-  { key: "V0", label: "Starting Annual Volume (V₀)", value: 3_800_000_000, unit: "USD", min: 1_000_000_000, max: 50_000_000_000, step: 100_000_000, anchor: 3_800_000_000, measuredLabel: "Trailing 90d × 4" },
-  { key: "g", label: "Annual Volume Growth (g)", value: 0.15, unit: "", min: -0.5, max: 1.0, step: 0.01, anchor: 0.15, measuredLabel: "Trailing 90d" },
-  { key: "d", label: "Growth Decay (d)", value: 0.05, unit: "/yr", min: 0, max: 0.5, step: 0.01, anchor: 0.05, measuredLabel: "Assumption" },
-  { key: "r", label: "Gross Take Rate (r)", value: 160, unit: "bps", min: 0, max: 500, step: 1, anchor: 160, measuredLabel: "DefiLlama trailing" },
-  { key: "dr", label: "Take Rate Change (dr)", value: -5, unit: "bps/yr", min: -50, max: 50, step: 1, anchor: -5, measuredLabel: "Observed compression" },
-  { key: "c", label: "Capture Rate (c)", value: 0.35, unit: "", min: 0, max: 1, step: 0.01, anchor: 0.35, measuredLabel: "DefiLlama holders revenue / fees" },
-  { key: "b", label: "Buyback Allocation (b)", value: 0.4, unit: "", min: 0, max: 1, step: 0.05, anchor: 0.4, measuredLabel: "Buyback wallet / net revenue" },
-  { key: "phi", label: "Burn Fraction (φ)", value: 0.0, unit: "", min: 0, max: 1, step: 0.1, anchor: 0.0, measuredLabel: "Onchain trace (0%)" },
-  { key: "P0", label: "NEAR Price (P₀)", value: 3.5, unit: "USD", min: 0.1, max: 50, step: 0.1, anchor: 3.5, measuredLabel: "DefiLlama/CoinGecko" },
-  { key: "P_growth", label: "Price Growth", value: 0.0, unit: "", min: -0.5, max: 1.0, step: 0.05, anchor: 0.0, measuredLabel: "Flat assumption" },
-  { key: "S0", label: "Total Supply (S₀)", value: 1_310_000_000, unit: "NEAR", min: 1_000_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_310_000_000, measuredLabel: "Blocks total supply" },
-  { key: "m", label: "Gross Issuance (m)", value: 0.025, unit: "", min: 0, max: 0.1, step: 0.001, anchor: 0.025, measuredLabel: "NEAR protocol (2.5%)" },
-  { key: "beta", label: "Gas Burn Offset (β)", value: 0.0, unit: "", min: 0, max: 0.5, step: 0.01, anchor: 0.0, measuredLabel: "Negligible" },
-  { key: "circulating_supply", label: "Circulating Supply", value: 1_000_000_000, unit: "NEAR", min: 500_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_000_000_000, measuredLabel: "DefiLlama/staking" },
-  { key: "market_cap", label: "Market Cap", value: 3_500_000_000, unit: "USD", min: 1_000_000_000, max: 50_000_000_000, step: 100_000_000, anchor: 3_500_000_000, measuredLabel: "Price × circulating" },
+  { key: "V0", label: "Starting Annual Volume (V₀)", value: 3_800_000_000, unit: "USD", min: 1_000_000_000, max: 50_000_000_000, step: 100_000_000, anchor: 3_800_000_000, measuredLabel: "Trailing 90d × 4", format: (v) => "$" + new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(v) },
+  { key: "g", label: "Annual Volume Growth (g)", value: 0.15, unit: "", min: -0.5, max: 1.0, step: 0.01, anchor: 0.15, measuredLabel: "Trailing 90d", format: (v) => (v * 100).toFixed(1) + "%" },
+  { key: "d", label: "Growth Decay (d)", value: 0.05, unit: "/yr", min: 0, max: 0.5, step: 0.01, anchor: 0.05, measuredLabel: "Assumption", format: (v) => (v * 100).toFixed(1) + "%/yr" },
+  { key: "r", label: "Gross Take Rate (r)", value: 160, unit: "bps", min: 0, max: 500, step: 1, anchor: 160, measuredLabel: "DefiLlama trailing", format: (v) => v + " bps" },
+  { key: "dr", label: "Take Rate Change (dr)", value: -5, unit: "bps/yr", min: -50, max: 50, step: 1, anchor: -5, measuredLabel: "Observed compression", format: (v) => (v >= 0 ? "+" : "") + v + " bps/yr" },
+  { key: "c", label: "Capture Rate (c)", value: 0.35, unit: "", min: 0, max: 1, step: 0.01, anchor: 0.35, measuredLabel: "DefiLlama holders revenue / fees", format: (v) => (v * 100).toFixed(1) + "%" },
+  { key: "b", label: "Buyback Allocation (b)", value: 0.4, unit: "", min: 0, max: 1, step: 0.05, anchor: 0.4, measuredLabel: "Buyback wallet / net revenue", format: (v) => (v * 100).toFixed(0) + "%" },
+  { key: "phi", label: "Burn Fraction (φ)", value: 0.0, unit: "", min: 0, max: 1, step: 0.1, anchor: 0.0, measuredLabel: "Onchain trace (0%)", format: (v) => (v * 100).toFixed(0) + "%" },
+  { key: "P0", label: "NEAR Price (P₀)", value: 3.5, unit: "USD", min: 0.1, max: 50, step: 0.1, anchor: 3.5, measuredLabel: "DefiLlama/CoinGecko", format: (v) => "$" + v.toFixed(2) },
+  { key: "P_growth", label: "Price Growth", value: 0.0, unit: "", min: -0.5, max: 1.0, step: 0.05, anchor: 0.0, measuredLabel: "Flat assumption", format: (v) => (v * 100).toFixed(1) + "%" },
+  { key: "S0", label: "Total Supply (S₀)", value: 1_310_000_000, unit: "NEAR", min: 1_000_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_310_000_000, measuredLabel: "Blocks total supply", format: (v) => new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(v) + " NEAR" },
+  { key: "m", label: "Gross Issuance (m)", value: 0.025, unit: "", min: 0, max: 0.1, step: 0.001, anchor: 0.025, measuredLabel: "NEAR protocol (2.5%)", format: (v) => (v * 100).toFixed(2) + "%" },
+  { key: "beta", label: "Gas Burn Offset (β)", value: 0.0, unit: "", min: 0, max: 0.5, step: 0.01, anchor: 0.0, measuredLabel: "Negligible", format: (v) => (v * 100).toFixed(0) + "%" },
+  { key: "circulating_supply", label: "Circulating Supply", value: 1_000_000_000, unit: "NEAR", min: 500_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_000_000_000, measuredLabel: "DefiLlama/staking", format: (v) => new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(v) + " NEAR" },
+  { key: "market_cap", label: "Market Cap", value: 3_500_000_000, unit: "USD", min: 1_000_000_000, max: 50_000_000_000, step: 100_000_000, anchor: 3_500_000_000, measuredLabel: "Price × circulating", format: (v) => "$" + new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(v) },
 ] as const;
 
 const SCENARIOS = {
@@ -114,15 +119,6 @@ function runModel(inputs: Record<string, number>) {
   return { breakeven_volume_buyback, breakeven_multiple_buyback, breakeven_volume_burn, breakeven_multiple_burn, years };
 }
 
-function MetricCard({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
-      <div className="text-xs text-muted">{title}</div>
-      <div className="font-mono text-lg font-semibold">{value}</div>
-    </div>
-  );
-}
-
 function formatNumber(n: number): string {
   return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0, notation: "compact" }).format(n);
 }
@@ -131,19 +127,38 @@ function formatPct(n: number): string {
   return (n * 100).toFixed(1) + "%";
 }
 
+function formatCurrency(n: number): string {
+  return "$" + new Intl.NumberFormat(undefined, { maximumFractionDigits: 0, notation: "compact" }).format(n);
+}
+
+function formatCurrencyFull(n: number): string {
+  return "$" + new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n);
+}
+
+const CHART_COLORS = {
+  volume: "#10b981",
+  fees: "#3b82f6",
+  netRev: "#8b5cf6",
+  buyback: "#f59e0b",
+  issuance: "#ef4444",
+  yield: "#06b6d4",
+};
+
 export default function ValuePage() {
   const metricIds = METRICS.map(m => m.id);
   const { artifacts, isLoading } = useMetrics(metricIds);
   const [inputs, setInputs] = useState<Record<string, number>>(
     INITIAL_INPUTS.reduce((acc, i) => ({ ...acc, [i.key]: i.value }), {})
   );
+  const [activeScenario, setActiveScenario] = useState<keyof typeof SCENARIOS>("base");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <header className="mb-4">
           <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-          <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
+          <p className="text-muted mt-1">Interactive breakeven analysis</p>
         </header>
         <div className="text-center py-12 text-muted">Loading live data...</div>
       </div>
@@ -152,140 +167,376 @@ export default function ValuePage() {
 
   const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: artifacts[i] })).filter(m => m.artifact);
 
-  // Get latest data timestamp
   const latestDates = validMetrics
     .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
     .filter(Boolean);
   const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
 
-  const results = runModel(inputs);
+  const results = useMemo(() => runModel(inputs), [inputs]);
 
   const handleScenario = (scenario: keyof typeof SCENARIOS) => {
     const s = SCENARIOS[scenario];
     const { label, ...values } = s;
     setInputs(prev => ({ ...prev, ...values }));
+    setActiveScenario(scenario);
   };
+
+  // Chart data
+  const chartData = useMemo(() => results.years.map(y => ({
+    year: `Year ${y.year}`,
+    volume: y.V_t,
+    grossFees: y.GrossFees_t,
+    netRev: y.NetRev_t,
+    buybackNEAR: y.Buyback_NEAR_t,
+    issuance: y.NetIssuance_t,
+    buybackRatio: y.BuybackToIssuance_t * 100,
+    revYield: y.RevYield_t * 100,
+    deltaSupply: y.DeltaSupply_t,
+  })), [results.years]);
+
+  const breakevenData = useMemo(() => {
+    if (!results.breakeven_volume_buyback) return [];
+    const currentVol = inputs.V0;
+    const breakeven = results.breakeven_volume_buyback;
+    return [
+      { label: "Current Volume", value: currentVol, type: "current" },
+      { label: "Breakeven Volume", value: breakeven, type: "breakeven" },
+    ];
+  }, [results.breakeven_volume_buyback, inputs.V0]);
+
+  const scenarioComparison = useMemo(() => {
+    return (["bear", "base", "bull"] as const).map(s => {
+      const scen = SCENARIOS[s];
+      const { label, ...scenValues } = scen;
+      const scenInputs = { ...inputs, ...scenValues };
+      const scenResults = runModel(scenInputs);
+      return {
+        scenario: s,
+        breakeven: scenResults.breakeven_volume_buyback,
+        multiple: scenResults.breakeven_multiple_buyback,
+        year0BuybackRatio: scenResults.years[0]?.BuybackToIssuance_t * 100 || 0,
+        year0RevYield: scenResults.years[0]?.RevYield_t * 100 || 0,
+      };
+    });
+  }, [inputs]);
 
   return (
     <div className="space-y-6">
-      <header className="mb-4">
-        <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
-        <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
-        <p className="text-xs text-muted mt-1">Data as of {dataAsOf}</p>
+      {/* Header */}
+      <header className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
+          <p className="text-muted mt-1">What Intents volume is needed for buybacks to offset emissions?</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted">Data as of {dataAsOf}</span>
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showAdvanced}
+              onChange={e => setShowAdvanced(e.target.checked)}
+              className="w-4 h-4 rounded border-neutral-700 bg-neutral-800 text-blue-500 focus:ring-blue-500"
+            />
+            Show advanced inputs
+          </label>
+        </div>
       </header>
 
-      {/* KPI Row - Available Metrics */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* KPI Row */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {validMetrics.map(({ artifact, label, unit }) => (
           artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left: Inputs with Measured Anchors */}
-        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
-          <h2 className="text-lg font-semibold">Inputs</h2>
-          <div className="space-y-3">
-            {INITIAL_INPUTS.map(input => (
-              <div key={input.key} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <label className="font-medium">{input.label}</label>
-                  {input.anchor !== undefined && (
-                    <span className="text-xs text-muted px-1.5 py-0.5 bg-neutral-800 rounded">
-                      Measured: {input.measuredLabel}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    value={inputs[input.key]}
-                    onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
-                    min={input.min}
-                    max={input.max}
-                    step={input.step}
-                    className="flex-1 bg-neutral-800 border border-neutral-700 rounded px-2 py-1 text-sm font-mono text-right"
-                  />
-                  <span className="text-xs text-muted w-12 text-right">{input.unit}</span>
-                </div>
-              </div>
-            ))}
+      {/* Key Output Cards - Prominent */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+        <div className="bg-amber-900/30 border border-amber-800 rounded-xl p-5">
+          <div className="text-xs text-amber-400 font-medium mb-1">Buyback Breakeven</div>
+          <div className="text-3xl font-mono font-bold text-amber-300">
+            {results.breakeven_volume_buyback
+              ? formatCurrency(results.breakeven_volume_buyback)
+              : "N/A (φ=0)"}
           </div>
-          <div className="pt-4 border-t border-neutral-700 space-y-2">
-            <h3 className="font-semibold text-sm">Scenarios</h3>
+          <div className="text-sm text-muted mt-1">
+            {results.breakeven_multiple_buyback
+              ? `${results.breakeven_multiple_buyback.toFixed(1)}× current volume`
+              : "Burn fraction is 0%"}
+          </div>
+        </div>
+        <div className="bg-green-900/30 border border-green-800 rounded-xl p-5">
+          <div className="text-xs text-green-400 font-medium mb-1">Year 0 Buyback / Issuance</div>
+          <div className="text-3xl font-mono font-bold text-green-300">
+            {formatPct(results.years[0]?.BuybackToIssuance_t || 0)}
+          </div>
+          <div className="text-sm text-muted mt-1">Target: ≥100%</div>
+        </div>
+        <div className="bg-blue-900/30 border border-blue-800 rounded-xl p-5">
+          <div className="text-xs text-blue-400 font-medium mb-1">Year 0 Revenue Yield</div>
+          <div className="text-3xl font-mono font-bold text-blue-300">
+            {formatPct(results.years[0]?.RevYield_t || 0)}
+          </div>
+          <div className="text-sm text-muted mt-1">Net Rev / Market Cap</div>
+        </div>
+        <div className="bg-purple-900/30 border border-purple-800 rounded-xl p-5">
+          <div className="text-xs text-purple-400 font-medium mb-1">Year 0 Rev / Emissions</div>
+          <div className="text-3xl font-mono font-bold text-purple-300">
+            {formatPct(results.years[0]?.RevToEmissions_t || 0)}
+          </div>
+          <div className="text-sm text-muted mt-1">NEAR Revenue / NEAR Issued</div>
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_1fr_1fr]">
+        {/* Left: Inputs */}
+        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Inputs</h2>
             <div className="flex gap-2">
-              {["bear", "base", "bull"].map(s => (
+              {(["bear", "base", "bull"] as const).map(s => (
                 <button
                   key={s}
-                  onClick={() => handleScenario(s as keyof typeof SCENARIOS)}
-                  className={`px-3 py-1.5 text-xs rounded font-mono transition-colors border ${"bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"}`}
+                  onClick={() => handleScenario(s)}
+                  className={`px-3 py-1.5 text-xs rounded font-mono transition-colors border ${
+                    activeScenario === s
+                      ? "bg-blue-900/30 text-blue-300 border-blue-700"
+                      : "bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"
+                  }`}
                 >
                   {s.toUpperCase()}
                 </button>
               ))}
             </div>
           </div>
-        </section>
 
-        {/* Middle: Measured Anchors */}
-        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4 max-h-[80vh] overflow-y-auto">
-          <h2 className="text-lg font-semibold">Measured Anchors</h2>
-          <p className="text-xs text-muted">Each input shows its measured trailing value. Adjust sliders to test assumptions.</p>
-          <div className="space-y-2">
-            {VALUE_MEASURED_ANCHORS.map(anchor => (
-              <div key={anchor.label} className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{anchor.label}</span>
-                  <span className="font-mono text-lg text-green-400">{anchor.value}</span>
+          <div className="space-y-3">
+            {INITIAL_INPUTS
+              .filter(input => showAdvanced || ["V0", "g", "r", "c", "b", "phi", "P0"].includes(input.key))
+              .map(input => (
+                <div key={input.key} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="font-medium cursor-help" title={input.measuredLabel}>
+                      {input.label}
+                    </label>
+                    {input.anchor !== undefined && (
+                      <span className="text-xs text-muted px-1.5 py-0.5 bg-neutral-800 rounded">
+                        Measured: {input.format ? input.format(input.anchor) : input.anchor}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={input.min}
+                      max={input.max}
+                      step={input.step}
+                      value={inputs[input.key]}
+                      onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
+                      className="flex-1 h-2 bg-neutral-800 rounded-lg appearance-none accent-blue-500"
+                    />
+                    <input
+                      type="number"
+                      min={input.min}
+                      max={input.max}
+                      step={input.step}
+                      value={inputs[input.key]}
+                      onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
+                      className="w-28 bg-neutral-800 border border-neutral-700 rounded px-2 py-1 text-sm font-mono text-right"
+                    />
+                    <span className="text-xs text-muted w-20 text-right">{input.unit}</span>
+                  </div>
                 </div>
-                <div className="text-xs text-muted mt-1">{anchor.source}</div>
-              </div>
-            ))}
+              ))}
           </div>
         </section>
 
-        {/* Right: Outputs */}
+        {/* Middle: Live Charts */}
         <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
-          <h2 className="text-lg font-semibold">Outputs</h2>
-          
-          {/* Breakeven Card */}
-          <div className="bg-amber-900/20 border border-amber-800 rounded-xl p-4">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <span className="text-amber-400">⚖</span> Breakeven Analysis
+          <h2 className="text-lg font-semibold">Projections (5 Years)</h2>
+
+          {/* Projection Chart */}
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COLORS.volume} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={CHART_COLORS.volume} stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorFees" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COLORS.fees} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={CHART_COLORS.fees} stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorNetRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COLORS.netRev} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={CHART_COLORS.netRev} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
+                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
+                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
+                  tickFormatter={v => formatCurrency(v)} />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    return (
+                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
+                        <p className="font-mono text-white">{label}</p>
+                        {payload.map(p => (
+                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
+                            <span>{p.name}: </span>
+                            <span className="font-mono">{(p.dataKey === "buybackRatio" || p.dataKey === "revYield")
+                              ? formatPct(Number(p.value) / 100)
+                              : formatCurrency(Number(p.value))}</span>
+                          </p>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+                <Legend />
+                <Area type="monotone" dataKey="volume" name="Volume (USD)" stroke={CHART_COLORS.volume} fillOpacity={1} fill="url(#colorVolume)" />
+                <Area type="monotone" dataKey="grossFees" name="Gross Fees (USD)" stroke={CHART_COLORS.fees} fillOpacity={1} fill="url(#colorFees)" />
+                <Area type="monotone" dataKey="netRev" name="Net Revenue (USD)" stroke={CHART_COLORS.netRev} fillOpacity={1} fill="url(#colorNetRev)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Buyback vs Issuance Chart */}
+          <div className="h-56 mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
+                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
+                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
+                  tickFormatter={v => formatCurrency(v)} />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    return (
+                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
+                        <p className="font-mono text-white">{label}</p>
+                        {payload.map(p => (
+                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
+                            <span>{p.name}: </span>
+                            <span className="font-mono">{formatCurrency(Number(p.value))}</span>
+                          </p>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="buybackNEAR" name="Buyback (NEAR)" fill={CHART_COLORS.buyback} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="issuance" name="Issuance (NEAR)" fill={CHART_COLORS.issuance} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Key Ratios Chart */}
+          <div className="h-56 mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="4 4" stroke="#1f2937" vertical={false} />
+                <XAxis dataKey="year" tick={{ fill: "#9ca3af", fontSize: 11 }} axisLine={{ stroke: "#374151" }} />
+                <YAxis tick={{ fill: "#9ca3af", fontSize: 11 }} tickLine={false} axisLine={false}
+                  tickFormatter={v => v.toFixed(1) + "%"} />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    return (
+                      <div className="bg-neutral-900 border border-neutral-700 rounded p-3 text-xs">
+                        <p className="font-mono text-white">{label}</p>
+                        {payload.map(p => (
+                          <p key={p.dataKey} className="flex items-center gap-1" style={{ color: (p.color as string) }}>
+                            <span>{p.name}: </span>
+                            <span className="font-mono">{Number(p.value).toFixed(1)}%</span>
+                          </p>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="buybackRatio" name="Buyback / Issuance" stroke={CHART_COLORS.buyback} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="revYield" name="Revenue Yield" stroke={CHART_COLORS.yield} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+
+        {/* Right: Breakeven Analysis & Scenario Compare */}
+        <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4">
+          <h2 className="text-lg font-semibold">Breakeven Analysis</h2>
+
+          {/* Breakeven Volume Visual */}
+          <div className="bg-amber-900/20 border border-amber-800 rounded-xl p-5">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <span className="text-amber-400">⚖</span> Volume Required for Buyback = Issuance
             </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Volume for Buyback = Issuance</span>
-                <span className="font-mono font-semibold">
-                  {results.breakeven_volume_buyback
-                    ? `$${formatNumber(results.breakeven_volume_buyback)} (${results.breakeven_multiple_buyback?.toFixed(1)}× current)`
-                    : "N/A (φ=0)"}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted">Volume for Burn = Issuance</span>
-                <span className="font-mono font-semibold">
-                  {results.breakeven_volume_burn
-                    ? `$${formatNumber(results.breakeven_volume_burn)} (${results.breakeven_multiple_burn?.toFixed(1)}× current)`
-                    : "NOT REACHABLE (φ=0)"}
-                </span>
+            <div className="space-y-3">
+              {breakevenData.map((d, i) => (
+                <div key={d.label} className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                    d.type === "current" ? "bg-blue-500 text-white" : "bg-amber-500 text-white"
+                  }`}>
+                    {i + 1}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{d.label}</div>
+                    <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          d.type === "current" ? "bg-blue-500" : "bg-amber-500"
+                        }`}
+                        style={{ width: `${Math.min(100, (d.value / results.breakeven_volume_buyback!) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-40 text-right font-mono text-lg">
+                    {formatCurrency(d.value)}
+                  </div>
+                </div>
+              ))}
+              <div className="pt-2 border-t border-amber-800 text-sm text-muted">
+                {results.breakeven_multiple_buyback
+                  ? `Need ${results.breakeven_multiple_buyback.toFixed(1)}× current volume`
+                  : "Not reachable (φ=0)"}
               </div>
             </div>
           </div>
 
-          {/* Key Ratios */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            {results.years[0] && (
-              <>
-                <MetricCard title="Year 0 Buyback / Issuance" value={formatPct(results.years[0].BuybackToIssuance_t)} />
-                <MetricCard title="Year 0 Burn / Issuance" value={formatPct(results.years[0].BurnToIssuance_t)} />
-                <MetricCard title="Year 0 Rev Yield" value={formatPct(results.years[0].RevYield_t)} />
-                <MetricCard title="Year 0 Rev / Emissions" value={formatPct(results.years[0].RevToEmissions_t || 0)} />
-              </>
-            )}
+          {/* Scenario Comparison */}
+          <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4">
+            <h3 className="font-semibold mb-3">Scenario Comparison</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-muted border-b border-neutral-700">
+                    <th className="pb-2">Scenario</th>
+                    <th className="pb-2 text-right">Breakeven Vol</th>
+                    <th className="pb-2 text-right">Multiple</th>
+                    <th className="pb-2 text-right">Y0 Buyback/Iss</th>
+                    <th className="pb-2 text-right">Y0 Rev Yield</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {scenarioComparison.map(s => (
+                    <tr key={s.scenario} className={`border-b border-neutral-800 ${activeScenario === s.scenario ? "bg-blue-900/20" : ""}`}>
+                      <td className="py-2 font-medium capitalize">{s.scenario}</td>
+                      <td className="py-2 text-right font-mono">{s.breakeven ? formatCurrency(s.breakeven) : "N/A"}</td>
+                      <td className="py-2 text-right font-mono">{s.multiple ? s.multiple.toFixed(1) + "×" : "N/A"}</td>
+                      <td className="py-2 text-right font-mono">{formatPct(s.year0BuybackRatio / 100)}</td>
+                      <td className="py-2 text-right font-mono">{formatPct(s.year0RevYield / 100)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          {/* Yearly Table */}
+          {/* Yearly Detail Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -295,22 +546,22 @@ export default function ValuePage() {
                   <th className="pb-2 text-right">Gross Fees</th>
                   <th className="pb-2 text-right">Net Rev</th>
                   <th className="pb-2 text-right">Buyback (NEAR)</th>
-                  <th className="pb-2 text-right">Burned (NEAR)</th>
                   <th className="pb-2 text-right">ΔSupply</th>
-                  <th className="pb-2 text-right">Buyback/Issuance</th>
+                  <th className="pb-2 text-right">Buyback/Iss</th>
+                  <th className="pb-2 text-right">Rev Yield</th>
                 </tr>
               </thead>
               <tbody>
                 {results.years.map(y => (
                   <tr key={y.year} className="border-b border-neutral-800">
                     <td className="py-2 font-mono">{y.year}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.V_t)}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.GrossFees_t)}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.NetRev_t)}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.Buyback_NEAR_t)}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.Burned_NEAR_t)}</td>
-                    <td className="py-2 text-right font-mono">${formatNumber(y.DeltaSupply_t)}</td>
+                    <td className="py-2 text-right font-mono">{formatCurrency(y.V_t)}</td>
+                    <td className="py-2 text-right font-mono">{formatCurrency(y.GrossFees_t)}</td>
+                    <td className="py-2 text-right font-mono">{formatCurrency(y.NetRev_t)}</td>
+                    <td className="py-2 text-right font-mono">{formatNumber(y.Buyback_NEAR_t)} NEAR</td>
+                    <td className="py-2 text-right font-mono">{formatNumber(y.DeltaSupply_t)} NEAR</td>
                     <td className="py-2 text-right font-mono">{formatPct(y.BuybackToIssuance_t)}</td>
+                    <td className="py-2 text-right font-mono">{formatPct(y.RevYield_t)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -319,35 +570,26 @@ export default function ValuePage() {
         </section>
       </div>
 
-      {/* Measured Anchors Table */}
+      {/* Measured Anchors - Compact */}
       <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
         <h2 className="text-lg font-semibold mb-4">Measured Anchors</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-muted border-b border-neutral-700">
-                <th className="pb-2">Parameter</th>
-                <th className="pb-2">Measured Value</th>
-                <th className="pb-2">Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              {VALUE_MEASURED_ANCHORS.map(a => (
-                <tr key={a.label} className="border-b border-neutral-800">
-                  <td className="py-2 font-medium">{a.label}</td>
-                  <td className="py-2 font-mono text-green-400">{a.value}</td>
-                  <td className="py-2 text-muted">{a.source}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {VALUE_MEASURED_ANCHORS.map(a => (
+            <div key={a.label} className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">{a.label}</span>
+                <span className="font-mono text-lg text-green-400">{a.value}</span>
+              </div>
+              <div className="text-xs text-muted mt-1">{a.source}</div>
+            </div>
+          ))}
         </div>
       </section>
 
+      {/* Formula Reference */}
       <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
-        <p><strong>Model:</strong> V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ) for burned; without φ for buyback.</p>
-        <p className="mt-1"><strong>Assumptions:</strong> Flat price, constant issuance, 5-year horizon.</p>
-        <p className="mt-1"><strong>Key finding:</strong> With φ=0 (buybacks held, not burned), burned breakeven is unreachable. Buyback breakeven requires ~13.5× current volume.</p>
+        <p className="font-mono"><strong>Breakeven:</strong> V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ) [burned] | without φ [buyback]</p>
+        <p className="mt-1"><strong>Key finding:</strong> With φ=0 (buybacks held, not burned), burned breakeven is unreachable. Buyback breakeven requires ~{results.breakeven_multiple_buyback?.toFixed(1) || "13.5"}× current volume.</p>
       </div>
     </div>
   );

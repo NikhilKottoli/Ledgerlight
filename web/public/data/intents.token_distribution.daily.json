@@ -3,9 +3,9 @@
   "metric_id": "intents.token_distribution.daily",
   "name": "Intents Token_Distribution Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T12:48:37.248703Z",
+  "retrieved_at": "2026-11-14T12:53:39.802417Z",
   "source_max_ts": "2026-11-14T23:59:59+00:00",
-  "git_commit": "666398f3",
+  "git_commit": "c7951c83",
   "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
