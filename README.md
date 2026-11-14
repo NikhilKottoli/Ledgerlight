@@ -51,7 +51,9 @@ Pikespeak     ┘    thesis + verify        manifest (sha256)
 
 The pipeline writes static JSON and the dashboard only reads it, so credentials never reach the browser.
 
-**Architecture diagram:** [Open in Excalidraw](https://excalidraw.com/#json=architecture.excalidraw) — or download `architecture.excalidraw` and drag it into [excalidraw.com](https://excalidraw.com/).
+![Architecture](architecture.png)
+
+*Editable source: `architecture.excalidraw` — open in [excalidraw.com](https://excalidraw.com/)*
 
 ## Quick start (snapshot mode, no credentials)
 
