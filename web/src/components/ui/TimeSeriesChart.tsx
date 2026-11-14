@@ -23,11 +23,20 @@ interface Props {
 }
 
 export default function TimeSeriesChart({ artifact, registryEntry, height = 300, showBrush = true, kindOverride }: Props) {
-  const data = artifact.series.map(s => ({
-    t: s.t,
-    v: s.v !== null ? Number(s.v) : null,
-    null_reason: s.null_reason,
-  }));
+  const data = (() => {
+    const seen = new Set<string>();
+    return artifact.series
+      .map(s => ({
+        t: s.t,
+        v: s.v !== null ? Number(s.v) : null,
+        null_reason: s.null_reason,
+      }))
+      .filter(s => {
+        if (seen.has(s.t)) return false;
+        seen.add(s.t);
+        return true;
+      });
+  })();
 
   const kind = kindOverride || (artifact.meta.data_mode === "live" ? "measured" : artifact.meta.data_mode === "snapshot" ? "derived" : "modeled");
   const style = kindStyles[kind];

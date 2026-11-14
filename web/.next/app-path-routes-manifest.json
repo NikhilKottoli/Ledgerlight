@@ -4,8 +4,8 @@
   "/api/data/registry/route": "/api/data/registry",
   "/flows/page": "/flows",
   "/intents/page": "/intents",
-  "/network/page": "/network",
   "/methodology/page": "/methodology",
+  "/network/page": "/network",
   "/page": "/",
   "/value/page": "/value",
   "/thesis/page": "/thesis"

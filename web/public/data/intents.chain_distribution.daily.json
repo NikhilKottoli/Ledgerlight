@@ -3,9 +3,9 @@
   "metric_id": "intents.chain_distribution.daily",
   "name": "Intents Chain_Distribution Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T11:24:24.750671Z",
+  "retrieved_at": "2026-11-14T12:21:30.800881Z",
   "source_max_ts": "2026-11-14T23:59:59+00:00",
-  "git_commit": "74d652cb",
+  "git_commit": "3c76de65",
   "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [

@@ -2,10 +2,10 @@
  "meta": {
   "metric_id": "intents.concentration.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T11:24:24.750671Z",
+  "retrieved_at": "2026-11-14T12:21:30.800881Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "74d652cb",
-  "sha256_inputs": "c78151094cc9f81d0e0af89676c8f05ffe8a33e9065f51e523992655244a0124",
+  "git_commit": "3c76de65",
+  "sha256_inputs": "fe9a12f4205efc05406e13e43b7512759b070e1a362439a04ab57325ba244a48",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
