@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useMetrics } from "@/hooks/useMetric";
 
 export default function MethodologyPage() {
+  const [mounted, setMounted] = useState(false);
   const [registry, setRegistry] = useState<any>(null);
   const [isRegistryLoading, setIsRegistryLoading] = useState(true);
 
   // Fetch registry on mount
   useEffect(() => {
-    fetch("/api/data/registry")
+    fetch("/api/data/registry/")
       .then(res => res.json())
       .then(data => {
         setRegistry(data);
@@ -18,9 +18,21 @@ export default function MethodologyPage() {
       .catch(() => setIsRegistryLoading(false));
   }, []);
 
-  // Fetch artifacts for all metrics
-  const metricIds = registry?.metrics?.map((m: any) => m.id) || [];
-  const { artifacts, isLoading } = useMetrics(metricIds);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Methodology</h1>
+          <p className="text-muted mt-1">Inspect every metric: source, definition, calculation, coverage, freshness, limitations</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
 
   if (isRegistryLoading) {
     return (
