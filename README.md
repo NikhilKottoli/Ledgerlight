@@ -49,7 +49,9 @@ NearBlocks    │    stats (bootstrap)      reconciliation     provenance drawer
 Pikespeak     ┘    thesis + verify        manifest (sha256)
 ```
 
-The pipeline writes static JSON and the dashboard only reads it, so credentials never reach the browser. An editable diagram is in `architecture.excalidraw`.
+The pipeline writes static JSON and the dashboard only reads it, so credentials never reach the browser.
+
+**Architecture diagram:** [Open in Excalidraw](https://excalidraw.com/#json=architecture.excalidraw) — or download `architecture.excalidraw` and drag it into [excalidraw.com](https://excalidraw.com/).
 
 ## Quick start (snapshot mode, no credentials)
 
@@ -132,7 +134,7 @@ data/        raw/ and processed/ (gitignored) · snapshot/ (committed) · refere
 plans/       9 gated build plans · AGENTS.md · DECISIONS.md · BLOCKERS.md
 ```
 
-Also: `THESIS.md`, `METHODOLOGY.md`, `THIRD_PARTY_NOTICES.md`.
+Also: `THESIS.md`, `METHODOLOGY.md`.
 
 ## Limitations
 
