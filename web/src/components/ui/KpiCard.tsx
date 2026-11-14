@@ -11,9 +11,33 @@ interface Props {
   previousPeriodLabel?: string;
 }
 
+function getLatestCompletePoint(series: Array<{ t: string; v: number | null }>) {
+  const today = new Date().toISOString().split("T")[0];
+  // Find the last point that's not today and has a value
+  for (let i = series.length - 1; i >= 0; i--) {
+    if (series[i].v !== null && series[i].t !== today) {
+      return series[i];
+    }
+  }
+  // Fallback: last point with value (even if today)
+  return series.findLast(s => s.v !== null) ?? null;
+}
+
+function getPrevPoint(series: Array<{ t: string; v: number | null }>, latest: { t: string; v: number | null } | null) {
+  if (!latest) return null;
+  const latestIdx = series.findIndex(s => s.t === latest.t);
+  if (latestIdx <= 0) return null;
+  for (let i = latestIdx - 1; i >= 0; i--) {
+    if (series[i].v !== null) {
+      return series[i];
+    }
+  }
+  return null;
+}
+
 export default function KpiCard({ artifact, registryEntry, label, unit, previousPeriodLabel }: Props) {
-  const latest = artifact.series.findLast(s => s.v !== null);
-  const prev = artifact.series.filter(s => s.v !== null).slice(-2, -1)[0];
+  const latest = getLatestCompletePoint(artifact.series);
+  const prev = getPrevPoint(artifact.series, latest);
   const value = latest?.v ?? null;
   const prevValue = prev?.v ?? null;
   const delta = value !== null && prevValue !== null ? ((Number(value) - Number(prevValue)) / Number(prevValue)) * 100 : null;

@@ -4,7 +4,7 @@
   "/thesis/page": "/thesis",
   "/flows/page": "/flows",
   "/network/page": "/network",
-  "/page": "/",
   "/intents/page": "/intents",
+  "/page": "/",
   "/value/page": "/value"
 }
