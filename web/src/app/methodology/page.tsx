@@ -3,7 +3,6 @@ import { MetricArtifact } from "@/lib/types";
 import fs from "fs";
 import path from "path";
 
-
 function loadArtifact(metricId: string): MetricArtifact | null {
   const p = path.join(process.cwd(), `public/data/${metricId}.json`);
   try {
@@ -14,10 +13,9 @@ function loadArtifact(metricId: string): MetricArtifact | null {
 }
 
 function loadRegistry() {
-  const p = path.join(process.cwd(), "metrics/registry.yaml");
+  const p = path.join(process.cwd(), "public/data/registry.json");
   try {
-    const yaml = require("js-yaml");
-    return yaml.load(fs.readFileSync(p, "utf-8"));
+    return JSON.parse(fs.readFileSync(p, "utf-8"));
   } catch {
     return null;
   }

@@ -1,31 +1,40 @@
 {
  "meta": {
   "metric_id": "intents.status_mix.daily",
+  "name": "Intents Status_Mix Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T05:41:55.379382Z",
-  "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "625c0ef5",
-  "sha256_inputs": "64cb3dd45e99b51bfcfa4aef58b8ba7a4492119c8ef7443961add6697bc7ae7d",
+  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "source_max_ts": "2026-11-14T23:59:59+00:00",
+  "git_commit": "3a642924",
+  "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
-  ]
+  ],
+  "unit": "ratio",
+  "kind": "measured"
  },
  "series": [
   {
    "t": "2026-11-12",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {
+    "PENDING_DEPOSIT": 991,
+    "SUCCESS": 9
+   }
   },
   {
    "t": "2026-11-13",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {
+    "PENDING_DEPOSIT": 993,
+    "SUCCESS": 7
+   }
   },
   {
    "t": "2026-11-14",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {
+    "PENDING_DEPOSIT": 999,
+    "PROCESSING": 1
+   }
   }
  ]
 }

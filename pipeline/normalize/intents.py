@@ -15,16 +15,20 @@ PROCESSED = Path(__file__).resolve().parents[2] / "data" / "processed"
 ARTIFACTS = Path(__file__).resolve().parents[2] / "web" / "public" / "data"
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
-# Metrics we'll produce
+# Metrics we'll produce - numeric only
 METRICS = {
     "intents.volume_usd.daily": ("volume_usd", "USD"),
     "intents.swaps.daily": ("swaps", "count"),
     "intents.unique_sender_addresses.daily": ("unique_sender_addresses", "address"),
     "intents.avg_swap_usd.daily": ("avg_swap_usd", "USD"),
-    "intents.status_mix.daily": ("status_mix", "count"),
+    "intents.concentration.daily": ("top10_sender_share", "ratio"),
+}
+
+# Distribution metrics stored as JSON strings (separate artifacts)
+DISTRIBUTION_METRICS = {
+    "intents.status_mix.daily": ("status_mix", "ratio"),
     "intents.chain_distribution.daily": ("chain_distribution", "USD"),
     "intents.token_distribution.daily": ("token_distribution", "USD"),
-    "intents.concentration.daily": ("concentration", "ratio"),
 }
 
 
@@ -228,11 +232,46 @@ def write_artifacts(series: dict, mode: DataMode, git_commit: str, retrieved_at:
         out_path.write_text(artifact.to_json())
         print(f"  Wrote {metric_id} ({len(points)} points)")
 
+    # Write distribution metrics as raw JSON (not Decimal artifacts)
+    write_distribution_artifacts(series, mode, git_commit, retrieved_at)
+
     # Also write transaction sample (latest 5000 + top 1000 by USD)
     all_txs = []
     for date in sorted(series.keys()):
         # We'd need to store normalized txs per date; for now skip
         pass
+
+
+def write_distribution_artifacts(series: dict, mode: DataMode, git_commit: str, retrieved_at: datetime):
+    """Write distribution metrics as raw JSON files for frontend parsing."""
+    import json as json_module
+    for metric_id, (field, unit) in DISTRIBUTION_METRICS.items():
+        data = {}
+        for date in sorted(series.keys()):
+            val = series[date].get(field)
+            if val is not None:
+                data[date] = val
+        
+        # Write as raw JSON
+        out_path = ARTIFACTS / f"{metric_id}.json"
+        out_data = {
+            "meta": {
+                "metric_id": metric_id,
+                "name": metric_id.replace(".", " ").title(),
+                "data_mode": mode.value,
+                "retrieved_at": retrieved_at.isoformat().replace("+00:00", "Z"),
+                "source_max_ts": max(data.keys()) + "T23:59:59+00:00" if data else None,
+                "git_commit": git_commit,
+                "sha256_inputs": "",
+                "completeness": "complete" if data else "empty",
+                "warnings": ["Quota-limited window; confidential flows not fully visible"],
+                "unit": unit,
+                "kind": "measured",
+            },
+            "series": [{"t": date, "v": val} for date, val in data.items()]
+        }
+        out_path.write_text(json_module.dumps(out_data, indent=1))
+        print(f"  Wrote {metric_id} ({len(data)} points) [distribution]")
 
 
 def main():

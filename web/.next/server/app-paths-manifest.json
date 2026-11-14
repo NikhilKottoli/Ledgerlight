@@ -2,9 +2,9 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/methodology/page": "app/methodology/page.js",
   "/thesis/page": "app/thesis/page.js",
-  "/intents/page": "app/intents/page.js",
-  "/page": "app/page.js",
   "/flows/page": "app/flows/page.js",
+  "/page": "app/page.js",
   "/network/page": "app/network/page.js",
+  "/intents/page": "app/intents/page.js",
   "/value/page": "app/value/page.js"
 }

@@ -2,10 +2,10 @@
  "meta": {
   "metric_id": "intents.swaps.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T05:41:55.379382Z",
+  "retrieved_at": "2026-11-14T10:24:10.623002Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "625c0ef5",
-  "sha256_inputs": "40244e59eb4fbd0c01595e9ba0e3d45f2026df3c0d4cab1b4ad3ac4a7f71ca36",
+  "git_commit": "3a642924",
+  "sha256_inputs": "078017d93e5341c38c970e2041e0f64640b91b2f016336605c20de8883c05be3",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"

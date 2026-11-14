@@ -2,9 +2,9 @@
   "/_not-found/page": "/_not-found",
   "/methodology/page": "/methodology",
   "/thesis/page": "/thesis",
-  "/intents/page": "/intents",
-  "/page": "/",
   "/flows/page": "/flows",
+  "/page": "/",
   "/network/page": "/network",
+  "/intents/page": "/intents",
   "/value/page": "/value"
 }

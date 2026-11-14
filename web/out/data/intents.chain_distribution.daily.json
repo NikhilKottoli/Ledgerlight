@@ -1,31 +1,38 @@
 {
  "meta": {
   "metric_id": "intents.chain_distribution.daily",
+  "name": "Intents Chain_Distribution Daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T05:41:55.379382Z",
-  "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "625c0ef5",
-  "sha256_inputs": "417eda0cd7c47b82da16e6956b0b9dc43041f4d97539cbcc5038818f2ba2bd0d",
+  "retrieved_at": "2026-11-14T10:24:10.623002Z",
+  "source_max_ts": "2026-11-14T23:59:59+00:00",
+  "git_commit": "3a642924",
+  "sha256_inputs": "",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"
-  ]
+  ],
+  "unit": "USD",
+  "kind": "measured"
  },
  "series": [
   {
    "t": "2026-11-12",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {
+    "nep141->nep141": "1366.048590844664",
+    "1cs_v1->nep141": "98.832322920000",
+    "nep141->nep245": "0.450989832651"
+   }
   },
   {
    "t": "2026-11-13",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {
+    "nep141->nep141": "410.602472792034",
+    "nep141->nep245": "278.174263357323"
+   }
   },
   {
    "t": "2026-11-14",
-   "v": "0",
-   "null_reason": "conversion_error"
+   "v": {}
   }
  ]
 }

@@ -467,3 +467,57 @@ metrics:
     completeness: partial
     limitations: ["Snapshot only — no historical backfill available"]
     depends_on: []
+
+  - id: intents.status_mix.daily
+    name: Intents Status Mix — Daily
+    kind: measured
+    unit: ratio
+    entity: ratio
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Share of swaps by status (SUCCESS, FAILED, REFUNDED, PROCESSING, PENDING_DEPOSIT, INCOMPLETE_DEPOSIT)"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; only 3 days of data"]
+    depends_on: []
+
+  - id: intents.chain_distribution.daily
+    name: Intents Chain Distribution — Daily
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Volume USD by origin_chain->dest_chain per day"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; only 3 days of data"]
+    depends_on: []
+
+  - id: intents.token_distribution.daily
+    name: Intents Token Distribution — Daily
+    kind: measured
+    unit: USD
+    entity: usd
+    source:
+      name: NEAR Intents Explorer
+      url: "https://explorer.near-intents.org"
+      endpoint_or_table: "api/v0/transactions"
+    definition: "Volume USD by origin_symbol->dest_symbol per day"
+    calc_ref: "pipeline/connectors/intents_explorer.py → pipeline/normalize/intents.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Requires Intents JWT; 1 req/5s rate limit; only 3 days of data"]
+    depends_on: []
