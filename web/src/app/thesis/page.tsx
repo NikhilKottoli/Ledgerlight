@@ -74,24 +74,6 @@ const HYPOTHESES = [
       "Net supply still rising",
     ],
   },
-  {
-    id: "H5",
-    claim: "Adoption is becoming less concentrated",
-    hypothesis: "Usage distribution flattening across addresses, contracts, chains, tokens",
-    tests: [
-      { id: "sender_gini", label: "Intents Sender Gini", threshold: "Not rising 2 consecutive quarters" },
-      { id: "sender_top10", label: "Intents Top-10 Share", threshold: "<= 10pp rise" },
-      { id: "account_hhi", label: "NEAR Account HHI", threshold: "Not rising 2 consecutive quarters" },
-      { id: "contract_hhi", label: "Contract HHI", threshold: "Not rising 2 consecutive quarters" },
-      { id: "chain_hhi", label: "Chain HHI", threshold: "Not rising 2 consecutive quarters" },
-      { id: "token_hhi", label: "Token HHI", threshold: "Not rising 2 consecutive quarters" },
-      { id: "returning_sender", label: "Returning Sender Trend", threshold: "Not falling" },
-    ],
-    killCriteria: [
-      "HHI rises in 2 consecutive quarters on >= 2 of 4 dimensions",
-      "Top-10 share rises > 10 percentage points",
-    ],
-  },
 ] as const;
 
 interface TestItem {
@@ -181,11 +163,11 @@ export default function ThesisPage() {
       <PageHeader
         eyebrow="Research · Thesis"
         title="Thesis Lab"
-        description="Pre-registered hypotheses H1–H5 with rule-based verdicts and visible evidence status. Tests and kill criteria are frozen before analysis."
+        description="Pre-registered hypotheses H1–H4 with rule-based verdicts and visible evidence status. Tests and kill criteria are frozen before analysis."
         meta={
           <>
             <span className="badge border-line bg-surface-subtle font-mono text-ink-muted">prereg-v1</span>
-            <span>5 hypotheses</span>
+            <span>4 hypotheses</span>
             <span className="inline-flex items-center gap-1.5">
               <IconShield className="h-3 w-3 text-sage" />
               Frozen pre-registration tag

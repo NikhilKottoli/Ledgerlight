@@ -22,7 +22,7 @@ It traces gross fees through to tokenholder-relevant outcomes and shows, at ever
 - **Onchain revenue rebuild.** Net revenue is reconstructed from NEAR/wNEAR transfers into the three revenue wallets (inter-wallet transfers excluded), then compared with DefiLlama and revenue.near.org.
 - **Buyback vs burn.** Outflows from the buyback wallet are classified (burn, treasury, staking, exchange, unknown).
 - **Honest flows.** Each Sankey stage reconciles or shows an explicit unreconciled amount. Nothing is forced to balance.
-- **Pre-registered tests.** H1–H5 and their kill criteria were frozen at tag `prereg-v1` before any analysis ran. Verdicts come from rules: `SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`.
+- **Pre-registered tests.** H1–H4 and their kill criteria were frozen at tag `prereg-v1` before any analysis ran. Verdicts come from rules: `SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`.
 - **Snapshot scorecard.** The thesis page reads the deterministic `thesis_results.json` export and shows the latest verdict, data mode, and evidence status for each hypothesis.
 - **Typed units.** `GrossFeesUSD`, `NetRevenueNEAR`, `BuybackNEAR` and `BurnNEAR` are separate types. Mixing them fails.
 - **Provenance on every chart.** Click a chart to see its source, definition, SQL, registry entry and raw data.
@@ -36,7 +36,7 @@ It traces gross fees through to tokenholder-relevant outcomes and shows, at ever
 | `/value` | Value capture model with a burn-fraction (φ) slider and breakeven |
 | `/intents` | Volume, status mix, chain and token distribution |
 | `/network` | NEAR activity excluding Intents |
-| `/thesis` | H1–H5 scorecard, test definitions, kill criteria, robustness |
+| `/thesis` | H1–H4 scorecard, test definitions, kill criteria, robustness |
 | `/methodology` | Metric registry, sources, unit policy, statistical method |
 
 ## Architecture
@@ -118,8 +118,9 @@ tokenholder benefit**. H1 is partial/mixed because proxy volume grows while the
 take rate compresses; H2 is contradicted because no tested lag clears the
 pre-registered statistical threshold; H3 is supported because trailing capture
 exceeds 10%; and H4 is mixed because observed buybacks are held rather than
-burned (`φ = 0`). H5 is the only hypothesis without a directional conclusion:
-sender concentration is unobserved until the Explorer JWT census is available.
+burned (`φ = 0`). The sender-concentration hypothesis is excluded from the
+current scorecard until the Explorer JWT census is available; it remains in the
+frozen pre-registration as a deferred research question.
 
 ```bash
 git show prereg-v1:thesis/PREREGISTRATION.md
@@ -132,14 +133,25 @@ make thesis MODE=snapshot && cat thesis/thesis_results.json
 | H2 | Intents predicts non-Intents NEAR activity | `CONTRADICTED` | 52 weekly observations; no qualifying lag |
 | H3 | NEAR captures meaningful value from Intents | `SUPPORTED` | Three-way reconciliation remains partial |
 | H4 | Protocol growth benefits tokenholders | `MIXED` | Buyback is not burn (`φ = 0` observed) |
-| H5 | Adoption is becoming less concentrated | `INSUFFICIENT_DATA` | Explorer JWT sender census |
-
 H1 volume may use the DefiLlama DEX summary as a clearly labelled proxy while the
 Explorer JWT is rate-limited. Sender, concentration, and other per-transaction
 tests remain unavailable rather than estimated. H4 permits the Sluice
 supply/burn series as an issuance proxy, while preserving the observed
 buyback-versus-burn distinction. These verdicts are snapshot results, not a
 claim that correlation is causation.
+
+## Render deployment
+
+The app can run as a Render Web Service without exposing credentials:
+
+1. Create a Web Service from this repository and set **Root Directory** to `web`.
+2. Use `npm install && npm run build` as the build command.
+3. Use `npm start` as the start command.
+4. Set `NODE_VERSION` to `20`.
+
+Do not put the Render API key, Intents JWT, or cloud credentials in the
+repository or browser environment. Revoke the API key pasted into chat and
+create a replacement in Render if deployment automation is needed.
 
 ## Repo layout
 

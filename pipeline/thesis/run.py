@@ -1,4 +1,4 @@
-"""Deterministic rule-based evaluator for hypotheses H1-H5."""
+"""Deterministic rule-based evaluator for hypotheses H1-H4."""
 
 from __future__ import annotations
 
@@ -297,17 +297,6 @@ def evaluate_h4(artifacts: dict) -> dict:
     )
 
 
-def evaluate_h5(artifacts: dict) -> dict:
-    return result(
-        "H5",
-        "INSUFFICIENT_DATA",
-        [],
-        [],
-        [],
-        [{"item": "sender concentration metrics", "reason": "Requires Explorer JWT sender census"}],
-    )
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=["live", "snapshot"], default="live")
@@ -329,7 +318,6 @@ def main() -> None:
         "H2": evaluate_h2(artifacts),
         "H3": evaluate_h3(artifacts),
         "H4": evaluate_h4(artifacts),
-        "H5": evaluate_h5(artifacts),
     }
     out = {
         "evaluated_at": datetime.now(UTC).isoformat(),

@@ -293,22 +293,6 @@
      "reason": "Buyback NEAR proxy or issuance denominator unavailable"
     }
    ]
-  },
-  "H5": {
-   "id": "H5",
-   "verdict": "INSUFFICIENT_DATA",
-   "evaluated_at": "2026-11-14T19:48:50.215144+00:00",
-   "prereg_tag": "prereg-v1",
-   "tests": [],
-   "supporting": [],
-   "contradicting": [],
-   "kill_criteria_hit": [],
-   "unavailable": [
-    {
-     "item": "sender concentration metrics",
-     "reason": "Requires Explorer JWT sender census"
-    }
-   ]
   }
  }
 }
