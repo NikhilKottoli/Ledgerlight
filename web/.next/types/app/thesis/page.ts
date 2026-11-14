@@ -1,4 +1,4 @@
-// File: /home/azureuser/NEAR/near-value-intelligence/web/src/app/thesis/page.tsx
+// File: /Users/nikhilkottoli/Desktop/Projects/Ledgerlight/web/src/app/thesis/page.tsx
 import * as entry from '../../../../src/app/thesis/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

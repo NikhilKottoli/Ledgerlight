@@ -1,4 +1,4 @@
-// File: /home/azureuser/NEAR/near-value-intelligence/web/src/app/api/data/[metric]/route.ts
+// File: /Users/nikhilkottoli/Desktop/Projects/Ledgerlight/web/src/app/api/data/[metric]/route.ts
 import * as entry from '../../../../../../src/app/api/data/[metric]/route.js'
 import type { NextRequest } from 'next/server.js'
 
