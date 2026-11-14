@@ -17,70 +17,83 @@ function loadArtifact(metricId: string): MetricArtifact | null {
   }
 }
 
-const METRICS = [
-  { id: "intents.volume_usd.daily", label: "Volume (USD)", unit: "USD" },
-  { id: "intents.swaps.daily", label: "Swaps", unit: "" },
-  { id: "intents.unique_sender_addresses.daily", label: "Unique Sender Addresses", unit: "" },
-  { id: "intents.avg_swap_usd.daily", label: "Avg Swap Size", unit: "USD" },
-];
+const AVAILABLE_METRICS = [
+  { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
+  { id: "defillama.revenue.near_intents.daily", label: "Protocol Revenue (DefiLlama)", unit: "USD" },
+  { id: "defillama.holders_revenue.near_intents.daily", label: "Holders Revenue / Buybacks", unit: "USD" },
+] as const;
+
+const INTENTS_METRICS = [
+  { id: "intents.volume_usd.daily", label: "Volume (USD)", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.swaps.daily", label: "Swaps", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.unique_sender_addresses.daily", label: "Unique Sender Addresses", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.avg_swap_usd.daily", label: "Avg Swap Size", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.status_mix.daily", label: "Status Mix", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.chain_distribution.daily", label: "Chain Distribution", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.token_distribution.daily", label: "Token Distribution", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
+  { id: "intents.concentration.daily", label: "Concentration (Top-10 Share)", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
+] as const;
 
 export default function IntentsPage() {
-  const artifacts = METRICS.map(m => ({ ...m, artifact: loadArtifact(m.id) }));
-  const hasData = artifacts.some(a => a.artifact);
-
-  if (!hasData) {
-    return (
-      <div className="space-y-6">
-        <header className="mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Intents</h1>
-          <p className="text-muted mt-1">NEAR Intents activity: volume, swaps, addresses, chains, tokens</p>
-        </header>
-        <LockedPanel
-          title="Intents Data Unavailable"
-          description="No Intents Explorer data found. This requires a JWT from partners.near-intents.org."
-          missing="NEAR_INTENTS_JWT in .env"
-        />
-      </div>
-    );
-  }
+  const availableArtifacts = AVAILABLE_METRICS.map(m => ({ ...m, artifact: loadArtifact(m.id) })).filter(m => m.artifact);
 
   return (
     <div className="space-y-6">
       <header className="mb-4">
         <h1 className="text-3xl font-bold tracking-tight">Intents</h1>
-        <p className="text-muted mt-1">NEAR Intents activity: volume, swaps, addresses, chains, tokens</p>
+        <p className="text-muted mt-1">NEAR Intents protocol activity: volume, swaps, addresses, chains, tokens</p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {artifacts.map(({ artifact, label, unit }) => (
-          artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
-        ))}
-      </div>
+      {/* Available from DefiLlama */}
+      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-4">DefiLlama Aggregates (No JWT Required)</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {availableArtifacts.map(({ artifact, label, unit }) => (
+            artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
+          ))}
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 mt-6">
+          {availableArtifacts.map(({ artifact, label }) => (
+            artifact && (
+              <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+                <h3 className="text-lg font-semibold mb-4">{label}</h3>
+                <TimeSeriesChart artifact={artifact} height={300} />
+              </section>
+            )
+          ))}
+        </div>
+      </section>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {artifacts.map(({ artifact, label }) => (
-          artifact && (
-            <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-              <h2 className="text-lg font-semibold mb-4">{label}</h2>
-              <TimeSeriesChart artifact={artifact} height={350} />
-            </section>
-          )
-        ))}
-      </div>
+      {/* Intents Explorer Metrics (Requires JWT) */}
+      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-4">Intents Explorer Metrics</h2>
+        <p className="text-sm text-muted mb-4">
+          These metrics require a JWT from <code className="bg-neutral-800 px-1 rounded">partners.near-intents.org</code>.
+          Rate limit: 1 request / 5 seconds. Add <code className="bg-neutral-800 px-1 rounded">NEAR_INTENTS_JWT</code> to <code className="bg-neutral-800 px-1 rounded">.env</code> to enable.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {INTENTS_METRICS.map(({ label, unit, reason }) => (
+            <LockedPanel key={label} title={label} description={unit ? `Unit: ${unit}` : "Per-transaction metric"} missing={reason} />
+          ))}
+        </div>
+      </section>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Status Mix</h3>
-          <p className="text-sm text-muted">Success / Failed / Refunded / In-flight breakdown</p>
-        </div>
-        <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Chain Distribution</h3>
-          <p className="text-sm text-muted">Origin → Destination chain volume</p>
-        </div>
-        <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Token Distribution</h3>
-          <p className="text-sm text-muted">Origin → Destination token volume</p>
-        </div>
+      {/* Transaction Explorer Preview */}
+      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-4">Transaction Explorer (Preview)</h2>
+        <LockedPanel
+          title="Transaction Sample"
+          description="Latest 5,000 + top 1,000 by USD + referenced transactions"
+          missing="Requires NEAR_INTENTS_JWT and successful ingestion"
+        />
+      </section>
+
+      {/* Data Sources */}
+      <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
+        <p><strong>Available:</strong> DefiLlama aggregates for NEAR Intents (fees, revenue, holders revenue).</p>
+        <p className="mt-1"><strong>Requires JWT:</strong> Per-transaction metrics — volume, swaps, unique sender addresses, chain/token distributions, status mix, concentration.</p>
+        <p className="mt-1"><strong>Rate limit:</strong> 1 request / 5 seconds per partner. Ingestion is resumable day-window with dedupe.</p>
+        <p className="mt-1"><strong>Note:</strong> "Unique sender addresses" ≠ unique humans. Multi-chain users = multiple addresses.</p>
       </div>
     </div>
   );

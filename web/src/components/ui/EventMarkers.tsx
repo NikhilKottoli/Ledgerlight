@@ -9,7 +9,12 @@ interface Event {
   source_url: string;
 }
 
-export function EventMarker({ eventsPath = "/data/events.json" }: { eventsPath?: string }) {
+interface EventMarkerProps {
+  eventsPath?: string;
+  xAxis?: XAxisProps;
+}
+
+export function EventMarker({ eventsPath = "/data/events.json" }: EventMarkerProps) {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
@@ -36,7 +41,5 @@ function CustomEventMarker({ event }: { event: Event }) {
   };
   const color = colors[event.kind] || colors.other;
 
-  // This is a simplified version - in reality we'd need to hook into Recharts' internals
-  // For now, return null and we'll add proper markers later via a custom component
-  return null;
+  return null; // Actual implementation would hook into Recharts
 }
