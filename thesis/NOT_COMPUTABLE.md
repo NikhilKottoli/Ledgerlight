@@ -1,7 +1,7 @@
 # Not Computable
 
-- **H1**: intents daily metrics — Requires Intents JWT
-- **H2**: non-Intents NEAR activity — Requires BigQuery quota
-- **H3**: onchain revenue rebuild — BigQuery quota limited
-- **H4**: buyback/burn data — BigQuery quota limited
-- **H5**: concentration metrics — Requires Intents/BigQuery data
+- **H1**: unique sender address growth — UNAVAILABLE (JWT required)
+- **H1**: returning sender share — UNAVAILABLE (JWT required)
+- **H1**: top-10 sender concentration — UNAVAILABLE (JWT required)
+- **H4**: buyback_to_issuance — Buyback NEAR proxy or issuance denominator unavailable
+- **H5**: sender concentration metrics — Requires Explorer JWT sender census

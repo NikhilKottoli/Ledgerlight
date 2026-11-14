@@ -57,6 +57,23 @@ All 11 registered metrics with source, definition, calculation, unit, kind, cove
 - **Use**: Reference for three-way reconciliation
 - **Limitation**: Claims "permanently removed" for buybacks; contradicts onchain evidence
 
+## What We Borrowed
+
+To unblock the snapshot while rate-limited primary sources remain unavailable, we
+imported public aggregates and adapted them without copying upstream code:
+
+| Upstream | Commit | License | Use |
+|----------|--------|---------|-----|
+| [The-x-35/near-thesis](https://github.com/The-x-35/near-thesis) | `f62ad37300437d51fa1b55c9eea6d62efdd513b3` | MIT | Intents volume mirror |
+| [Julianf6at/headroom](https://github.com/Julianf6at/headroom) | `e1326dc5ac23179ca03b884a67dfd9a3962e1b88` | MIT | DefiLlama volume mirror |
+| [bennytimz/price-is-not-revenue](https://github.com/bennytimz/price-is-not-revenue) | `c14d19d844cd2820e898ddf9d777f328f254a859` | MIT | Buyback cross-check (quarantined after MAPE failure) |
+| [nftkingiii/sluice](https://github.com/nftkingiii/sluice) | `ba26f8318a29d9af9de0f8c5c87aaae7e037895d` | MIT | Network activity and supply/burn proxies |
+
+The DefiLlama DEX summary is imported from its public API (`summary/dexs/near-intents`)
+under its attribution terms. The repository stores source hashes and provenance in
+`data/reference/competitor/manifest.json`; proxy values are not represented as
+Explorer measurements.
+
 ---
 
 ## SQL Index (Verified BigQuery Queries)

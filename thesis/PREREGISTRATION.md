@@ -132,4 +132,8 @@ Each hypothesis gets one of: **SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_D
 
 ## Amendments
 
-*No amendments yet. All changes after tag `prereg-v1` must be appended here with date, change, and rationale.*
+### 2026-11-15
+
+H1 volume tests permit DefiLlama DEX summary volume as a proxy when Explorer JWT is
+rate-limited. Sender and concentration tests remain unobserved without JWT. H4
+issuance denominator permits the Sluice supply/burn series as a proxy.
