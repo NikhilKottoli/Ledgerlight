@@ -431,3 +431,39 @@ metrics:
     completeness: complete
     limitations: ["DefiLlama methodology may differ from onchain measurements"]
     depends_on: []
+
+  - id: pikespeak.hot_wallets_total_balance.daily
+    name: Top 100 Hot Wallets Total Balance (NEAR) — Daily
+    kind: measured
+    unit: NEAR
+    entity: near
+    source:
+      name: Pikespeak
+      url: "https://api.pikespeak.ai"
+      endpoint_or_table: "hot-wallets/near"
+    definition: "Sum of NEAR balances across top 100 wallets by total USD value"
+    calc_ref: "pipeline/connectors/pikespeak.py → pipeline/normalize/pikespeak.py"
+    granularity: day
+    coverage: {since: "2026-11", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: partial
+    limitations: ["Snapshot only — no historical backfill available", "Top 100 by USD value, not by NEAR balance"]
+    depends_on: []
+
+  - id: pikespeak.hot_wallets_count.daily
+    name: Hot Wallets Count — Daily
+    kind: measured
+    unit: count
+    entity: count
+    source:
+      name: Pikespeak
+      url: "https://api.pikespeak.ai"
+      endpoint_or_table: "hot-wallets/near"
+    definition: "Number of wallets in top 100 hot wallets list"
+    calc_ref: "pipeline/connectors/pikespeak.py → pipeline/normalize/pikespeak.py"
+    granularity: day
+    coverage: {since: "2026-11", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: partial
+    limitations: ["Snapshot only — no historical backfill available"]
+    depends_on: []

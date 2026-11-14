@@ -1,0 +1,19 @@
+{
+ "meta": {
+  "metric_id": "pikespeak.hot_wallets_count.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T10:07:38.535316Z",
+  "source_max_ts": "2026-11-14T23:59:59Z",
+  "git_commit": "67a92240",
+  "sha256_inputs": "b200aca6ec00ba2f7571aff28c8ca16b495b74d040364e411f89800bca2f1a7a",
+  "completeness": "complete",
+  "warnings": []
+ },
+ "series": [
+  {
+   "t": "2026-11-14",
+   "v": "100",
+   "null_reason": null
+  }
+ ]
+}
