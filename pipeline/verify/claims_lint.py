@@ -22,6 +22,7 @@ ALLOW_PATHS = {
     "AGENTS.md", "DECISIONS.md", "plans/", "research/", "THIRD_PARTY_NOTICES.md",
     "pipeline/verify/claims_lint.py",
     "README.md", "pipeline/types/units.py", "web/src/app/page.tsx",
+    "METHODOLOGY.md", "THESIS.md",
 }
 
 # Exclude patterns - exact directory names

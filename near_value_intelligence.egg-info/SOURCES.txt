@@ -13,10 +13,18 @@ pipeline/export/artifacts.py
 pipeline/flows/ledger.py
 pipeline/metrics/compute.py
 pipeline/metrics/revenue_wallets.py
+pipeline/model/value_capture.py
 pipeline/normalize/defillama.py
 pipeline/normalize/defillama_fees.py
 pipeline/normalize/intents.py
 pipeline/reconcile/revenue.py
+pipeline/stats/__init__.py
+pipeline/stats/breaks.py
+pipeline/stats/concentration.py
+pipeline/stats/corr.py
+pipeline/stats/stationarity.py
+pipeline/stats/transform.py
+pipeline/thesis/run.py
 pipeline/types/__init__.py
 pipeline/types/artifact.py
 pipeline/types/flow_ledger.py
@@ -25,4 +33,6 @@ pipeline/types/units.py
 pipeline/verify/artifacts.py
 pipeline/verify/claims_lint.py
 pipeline/verify/registry.py
+tests/test_model_parity.py
+tests/test_stats.py
 tests/test_units.py

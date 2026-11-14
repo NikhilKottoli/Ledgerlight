@@ -1,72 +1,256 @@
-# NEAR Value Intelligence — Plan Pack for opencode
+# NEAR Value Intelligence
 
-Original plan split into 9 sequential, gated plans, plus persistent rules and a decision log.
+**Does NEAR's growing economic activity turn into sustainable economic value for NEAR tokenholders?**
 
-## Setup
+*Follow the money. Verify the value.*
+
+---
+
+## What It Is
+
+NEAR Value Intelligence is an evidence-first research platform that traces Intents protocol revenue from gross fees through to tokenholder-relevant outcomes (buybacks, burns, supply changes). It answers one question with reproducible, pre-registered analysis:
+
+> **Does NEAR capture meaningful value from Intents, and does that value accrue to tokenholders?**
+
+The platform combines:
+- **Onchain data** (BigQuery public NEAR datasets)
+- **Market data** (DefiLlama TVL, fees, revenue)
+- **Intents activity** (NEAR Intents Explorer API)
+- **Pre-registered statistical tests** with rule-based verdicts
+
+All outputs are deterministic, static-exported, and inspectable — every chart links to its SQL, source, and raw data.
+
+---
+
+## Screenshots
+
+| Network | Flows | Thesis Lab |
+|---------|-------|------------|
+| ![Network](docs/screenshots/network.png) | ![Flows](docs/screenshots/flows.png) | ![Thesis](docs/screenshots/thesis.png) |
+
+| Value Capture Model | Intents | Methodology |
+|---------------------|---------|-------------|
+| ![Value](docs/screenshots/value.png) | ![Intents](docs/screenshots/intents.png) | ![Methodology](docs/screenshots/methodology.png) |
+
+---
+
+## Quick Start (Snapshot Mode — No Credentials, 3 Commands)
+
+```bash
+# 1. Clone and install
+git clone https://github.com/your-org/near-value-intelligence
+cd near-value-intelligence
+
+# 2. Install Python dependencies
+pip install -e .
+
+# 3. Install Node dependencies and build dashboard
+cd web && pnpm install --frozen-lockfile && pnpm build
+
+# 4. Serve static dashboard
+cd ../web && pnpm preview
+# or: npx serve out/
+```
+
+The dashboard runs at `http://localhost:4173` (or whatever `serve` uses). All data comes from the committed `data/snapshot/` — no API keys required.
+
+---
+
+## Installing Dependencies
+
+### Python (3.11+)
+```bash
+# Using uv (recommended)
+uv venv --python 3.11
+uv sync --frozen
+
+# Or pip
+pip install -e .
+```
+
+### Node (20+)
+```bash
+cd web && pnpm install --frozen-lockfile
+```
+
+---
+
+## Configuring BigQuery
+
+1. **Create a GCP project** and enable the BigQuery API
+2. **Create a service account** with `roles/bigquery.jobUser` and `roles/bigquery.dataViewer`
+3. **Download the JSON key** and save as `.gcp/bigquery-credentials.json`
+4. **Set cost caps** (critical — free tier is 1 TB/month):
+   ```bash
+   bq update --project_id=YOUR_PROJECT --default_query_job_properties='{"maximumBytesBilled": "1000000000000"}'
+   ```
+5. **Add to `.env`**:
+   ```bash
+   GOOGLE_APPLICATION_CREDENTIALS=.gcp/bigquery-credentials.json
+   BQ_PROJECT=your-project-id
+   ```
+
+---
+
+## Configuring the NEAR Intents JWT
+
+**Required for live Intents ingestion.** Without it, Intents pages show "Data Unavailable" panels.
+
+1. Go to <https://partners.near-intents.org> and request a partner JWT
+2. **Rate limit**: 1 request per 5 seconds (strictly enforced)
+3. **Never commit the JWT** — add to `.env` only:
+   ```bash
+   NEAR_INTENTS_JWT=your_jwt_here
+   ```
+4. The pipeline respects the 5s throttle automatically
+
+---
+
+## Fetching Data & Rebuilding
+
+### Snapshot Mode (Offline, No Credentials)
+```bash
+make rebuild MODE=snapshot
+```
+
+### Live Mode (Requires Credentials)
+```bash
+# Configure .env with BigQuery credentials and Intents JWT
+cp .env.example .env
+# Edit .env with your credentials
+
+make rebuild MODE=live
+```
+
+### Pipeline Stages (Run Individually)
+```bash
+make fetch MODE=live          # Pull from all sources
+make normalize MODE=live      # Normalize to common schema
+make metrics MODE=live        # Compute registered metrics
+make flows MODE=live          # Build flow ledgers (5 presets)
+make stats MODE=live          # Run pre-registered statistical tests
+make thesis MODE=live         # Run H1-H5 verdicts
+make export MODE=live         # Write JSON artifacts to public/data/
+make report MODE=live         # Generate THESIS.md, reconciliation tables
+```
+
+### Verify
+```bash
+make verify MODE=snapshot   # All checks
+make test                   # Unit tests (Python + JS)
+```
+
+---
+
+## Reproducing the Research
+
+The thesis is **pre-registered** at git tag `prereg-v1`. All hypotheses, thresholds, and kill criteria were frozen before analysis ran.
+
+```bash
+# View the frozen pre-registration
+git show prereg-v1:thesis/PREREGISTRATION.md
+
+# Re-run all hypothesis tests
+make thesis MODE=snapshot
+
+# View results
+cat thesis/thesis_results.json
+```
+
+### Hypothesis Summary (H1–H5)
+
+| ID | Claim | Verdict |
+|----|-------|---------|
+| H1 | Intents adoption growing sustainably | INSUFFICIENT_DATA |
+| H2 | Intents predicts NEAR network activity | INSUFFICIENT_DATA |
+| H3 | NEAR captures meaningful value from Intents | INSUFFICIENT_DATA |
+| H4 | Protocol growth benefits tokenholders | INSUFFICIENT_DATA |
+| H5 | Adoption becoming less concentrated | INSUFFICIENT_DATA |
+
+**Key finding (from Plan 06):** With φ=0 (onchain evidence: buybacks held, not burned), **burn breakeven is unreachable**. Buyback breakeven requires ~13.5× current volume at current parameters.
+
+---
+
+## Data Modes
+
+| Mode | Description | Dashboard Banner |
+|------|-------------|------------------|
+| `live` | Pipeline ran against real APIs just now | Green — shows retrieval timestamp |
+| `snapshot` | Committed real aggregated data from earlier live run | Amber — shows snapshot date |
+| `synthetic` | Generated fixtures for unit tests only | **Red** — watermark on every chart |
+
+**Never mixes modes** — the pipeline refuses to combine artifacts with different modes.
+
+---
+
+## Repo Layout
 
 ```
-your-repo/
-  AGENTS.md          ← copy from this pack (opencode loads it every session)
-  DECISIONS.md       ← copy from this pack
-  plans/01..09-*.md  ← copy from this pack
+near-value-intelligence/
+├── AGENTS.md                    # Agent instructions (read every session)
+├── DECISIONS.md                 # 18 binding decisions with reversal triggers
+├── BLOCKERS.md                  # Tracked blockers
+├── Makefile                     # Pipeline commands
+├── pyproject.toml               # Python project config
+├── README.md                    # This file
+├── THESIS.md                    # Generated + human thesis
+├── THIRD_PARTY_NOTICES.md       # Adopted code licenses
+├── METHODOLOGY.md               # Static methodology export
+├── plans/                       # 9 gated plans
+├── pipeline/                    # Python package
+│   ├── connectors/              # DefiLlama, Intents, BigQuery
+│   ├── normalize/               # Schema normalization
+│   ├── metrics/                 # Metric computation + registry
+│   ├── flows/                   # Flow ledger + Sankey
+│   ├── stats/                   # Stationarity, bootstrap, FDR
+│   ├── thesis/                  # Pre-registered tests
+│   ├── export/                  # Artifacts + reports
+│   └── verify/                  # Registry, artifacts, claims, manifest
+├── web/                         # Next.js static dashboard
+│   ├── src/app/                 # 7 routes
+│   ├── src/components/          # KpiCard, Sankey, LockedPanel, etc.
+│   └── out/                     # Static export
+├── sql/                         # Verified BigQuery SQL (bytes + date headers)
+├── thesis/
+│   ├── PREREGISTRATION.md       # Frozen pre-registration
+│   ├── hypotheses.yaml          # Machine-readable hypotheses
+│   └── thesis_results.json      # Computed verdicts
+├── metrics/registry.yaml        # 11 registered metrics
+├── data/
+│   ├── raw/                     # Gitignored
+│   ├── processed/               # Gitignored (Parquet)
+│   ├── snapshot/                # Committed, real, aggregated
+│   └── reference/               # Manual reference values (source + date)
+└── research/                    # P0 research outputs
 ```
 
-## Order and dependencies
+---
 
-```
-01 research & reuse
-  └─ 02 foundation + vertical slice
-        ├─ 03 onchain & market data  ┐  can run in parallel
-        └─ 04 intents ingestion      ┘  (separate branches/worktrees)
-              └─ 05 flow ledger & reconciliation   ← FLAGSHIP
-                    ├─ 06 value capture model
-                    └─ 07 analytics & thesis tests
-                          └─ 08 frontend (shell starts after 02, fills in as data lands)
-                                └─ 09 docs, polish, demo
-```
+## Limitations
 
-Plan 08's app shell can start after plan 02 using the committed fixtures. Wire each page to real data as the upstream plan passes its gate.
+- **Accounts ≠ humans**: "Active accounts" = distinct signer addresses with ≥1 tx/day. Multi-sig, exchanges, bots inflate counts.
+- **Addresses ≠ people**: Multi-chain individuals = multiple addresses. "Unique sender addresses" used, never "people".
+- **Confidential flows**: Intents CONFIDENTIAL_INTENTS deposit/recipient types not fully visible.
+- **Explorer coverage**: 1Click API documents only its own coverage; other integrators may differ.
+- **Price conversion**: NEAR↔USD conversion introduces noise; revenue in NEAR is primary.
+- **Timing mismatch**: Fees accrue per swap; sweeps to protocol wallets happen later with variable lag.
+- **BigQuery quota**: Free tier 1 TB/month limits backfill; revenue wallet outflows pending quota reset.
+- **Buyback ≠ burned**: Onchain evidence shows bought-back NEAR held, not burned. Revenue.near.org claims "permanently removed".
 
-## How to run each plan
+---
 
-Paste into opencode:
+## License
 
-> Read `AGENTS.md` and `DECISIONS.md`. Then execute `plans/0N-….md` task by task. Commit after each task. At the GATE, run every check, print a pass/fail table, append anything unresolved to `BLOCKERS.md`, and stop. Do not begin the next plan.
+MIT — see `LICENSE` file.
 
-## Your review at each gate
+---
 
-| After | You check | Why |
-|---|---|---|
-| 01 | `research/` outputs; approve the reuse list and the differentiation statement | Avoids rewriting or illegally copying things; confirms the flagship is still unique |
-| 02 | Open the vertical slice. Click the provenance drawer. Run `make rebuild` twice and confirm identical hashes | Everything else copies this pattern |
-| 03/04 | Reconciliation table: our numbers vs DefiLlama vs revenue.near.org | Catches wrong definitions early |
-| 05 | Sankey: does every stage either reconcile or show an explicit unreconciled amount? Is buyback-vs-burn answered from onchain evidence? | This is the core product |
-| 07 | **Before** analysis runs: confirm thresholds in `thesis/PREREGISTRATION.md` | Pre-registration only works if you approve it first |
-| 09 | Cold-clone test from README on a clean machine | Reproducibility is an acceptance criterion |
+## Acknowledgements
 
-## What changed vs the original plan
+- **DefiLlama** — TVL, fees, revenue data (MIT)
+- **NEAR Intents Explorer** — Swap activity API
+- **BigQuery Public Datasets** — NEAR onchain data
+- **revenue.near.org** — Protocol revenue reference
+- **Hackathon submissions** — 888 repos screened for reuse/ideas
 
-**Added**
-- `AGENTS.md` with binding integrity rules, so opencode re-reads them every session.
-- `DECISIONS.md` with 18 decisions, each with a reversal trigger, grounded in facts checked against the live sources (rate limits, revenue wallets, buyback-vs-burn conflict, Oct 1 exploit).
-- Gates, blockers protocol and a vertical-slice-first rule.
-- Three-way revenue reconciliation, with onchain revenue reconstruction as ground truth.
-- Pre-registered hypotheses with rule-based verdicts.
-- Concrete statistical method (stationarity, block bootstrap, FDR, market control, structural-break subsamples).
-- Circularity control for H2 (Intents-attributable vs other NEAR activity).
-- Typed units to prevent gross/net, buyback/burn and USD/NEAR conflation.
-- Machine-readable contracts: metrics registry, flow ledger and artifact schemas.
-
-**Changed**
-- Postgres/FastAPI dropped for static-first (DuckDB + Parquet → JSON).
-- "Demo mode" with fake data replaced by a committed real snapshot; synthetic data is test-only.
-- Sankey starts at gross fees; volume becomes a context strip.
-- Transaction explorer is a bounded sample, not a full database.
-- Competitor discovery uses the Gap Intel API as well as the hackathon API.
-- Scope cut line made explicit.
-
-**Observations to test, not assert**
-- Revenue.near.org and DefiLlama disagree on whether buybacks are burned.
-- Monthly gross fees were roughly flat for ~9 months while TVL grew, then stepped up in Sep–Oct 2026. Take-rate may be compressing even as volume grows.
-- Capture rate looks to be rising (cumulative ≈16%, last 30d ≈35% per DefiLlama).
-- NEAR-chain activity may partly be Intents activity itself.
+See `THIRD_PARTY_NOTICES.md` for full license inventory.
