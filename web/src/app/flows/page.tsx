@@ -1,24 +1,30 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
 import FlowSankey from "@/components/flows/FlowSankey";
 import { FlowLedgerModel } from "@/lib/types";
-import fs from "fs";
-import path from "path";
-
-export const metadata: Metadata = { title: "NEAR Value Intelligence — Economic Flows" };
+import { useMetrics } from "@/hooks/useMetric";
 
 const PRESETS = ["7d", "30d", "90d", "ytd", "all"] as const;
 
-function loadLedger(period: string): FlowLedgerModel | null {
-  const p = path.join(process.cwd(), `public/data/flow_ledger_${period}.json`);
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8")) as FlowLedgerModel;
-  } catch {
-    return null;
-  }
-}
-
 export default function FlowsPage() {
-  const ledgers = PRESETS.map(p => ({ period: p, ledger: loadLedger(p) })).filter(l => l.ledger);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("30d");
+  const metricIds = PRESETS.map(p => `flow_ledger_${p}`);
+  const { artifacts, isLoading } = useMetrics(metricIds);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Economic Flows</h1>
+          <p className="text-muted mt-1">Gross fees → Protocol revenue → Buyback → Destination</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
+
+  const ledgers = PRESETS.map((p, i) => ({ period: p, ledger: artifacts[i] as FlowLedgerModel | undefined })).filter(l => l.ledger);
 
   if (!ledgers.length) {
     return (
@@ -34,6 +40,12 @@ export default function FlowsPage() {
     );
   }
 
+  // Ensure selected period exists in ledgers
+  const selectedLedger = ledgers.find(l => l.period === selectedPeriod) || ledgers[0];
+  if (!ledgers.find(l => l.period === selectedPeriod)) {
+    setSelectedPeriod(selectedLedger.period);
+  }
+
   return (
     <div className="space-y-6">
       <header className="mb-4">
@@ -46,11 +58,12 @@ export default function FlowsPage() {
 
       {/* Period Selector */}
       <div className="flex items-center gap-2 flex-wrap mb-4">
-        {ledgers.map(({ period, ledger }) => (
+        {ledgers.map(({ period }) => (
           <button
             key={period}
+            onClick={() => setSelectedPeriod(period)}
             className={`px-3 py-1.5 text-sm rounded font-mono border transition-colors ${
-              period === "30d" ? "bg-blue-900/30 text-blue-300 border-blue-700" : "bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"
+              period === selectedPeriod ? "bg-blue-900/30 text-blue-300 border-blue-700" : "bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"
             }`}
           >
             {period.toUpperCase()}
@@ -59,8 +72,8 @@ export default function FlowsPage() {
       </div>
 
       {/* Sankey */}
-      {ledgers[0]?.ledger && (
-        <FlowSankey ledger={ledgers[0].ledger} />
+      {selectedLedger.ledger && (
+        <FlowSankey ledger={selectedLedger.ledger} />
       )}
 
       {/* Key Insights */}

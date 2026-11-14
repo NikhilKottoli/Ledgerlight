@@ -1,37 +1,14 @@
-import { Metadata } from "next";
-import KpiCard from "@/components/ui/KpiCard";
-import TimeSeriesChart from "@/components/ui/TimeSeriesChart";
-import { MetricArtifact } from "@/lib/types";
-import fs from "fs";
-import path from "path";
+"use client";
 
-export const metadata: Metadata = { title: "NEAR Value Intelligence — Value Capture Model" };
+import { useState } from "react";
+import KpiCard from "@/components/ui/KpiCard";
+import { useMetrics } from "@/hooks/useMetric";
 
 const METRICS = [
   { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
   { id: "defillama.revenue.near_intents.daily", label: "Protocol Revenue (DefiLlama)", unit: "USD" },
   { id: "defillama.holders_revenue.near_intents.daily", label: "Holders Revenue / Buybacks", unit: "USD" },
 ] as const;
-
-const INTENTS_METRICS = [
-  { id: "intents.volume_usd.daily", label: "Volume (USD)", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.swaps.daily", label: "Swaps", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.unique_sender_addresses.daily", label: "Unique Sender Addresses", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.avg_swap_usd.daily", label: "Avg Swap Size", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.status_mix.daily", label: "Status Mix", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.chain_distribution.daily", label: "Chain Distribution", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.token_distribution.daily", label: "Token Distribution", unit: "USD", reason: "Requires NEAR_INTENTS_JWT" },
-  { id: "intents.concentration.daily", label: "Concentration (Top-10 Share)", unit: "", reason: "Requires NEAR_INTENTS_JWT" },
-] as const;
-
-function loadArtifact(metricId: string): MetricArtifact | null {
-  const p = path.join(process.cwd(), `public/data/${metricId}.json`);
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8")) as MetricArtifact;
-  } catch {
-    return null;
-  }
-}
 
 const VALUE_MEASURED_ANCHORS = [
   { label: "Annualized Volume (V₀)", value: "$3.8B", source: "Trailing 90d × 4", metric: "intents.volume_usd.daily" },
@@ -154,34 +131,40 @@ function formatPct(n: number): string {
   return (n * 100).toFixed(1) + "%";
 }
 
-function loadArtifactVal(metricId: string) {
-  const p = path.join(process.cwd(), `public/data/${metricId}.json`);
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8")) as any;
-  } catch {
-    return null;
-  }
-}
-
-const AVAILABLE_METRICS = [
-  { id: "defillama.fees.near_intents.daily", label: "Gross Fees (DefiLlama)", unit: "USD" },
-  { id: "defillama.revenue.near_intents.daily", label: "Protocol Revenue (DefiLlama)", unit: "USD" },
-  { id: "defillama.holders_revenue.near_intents.daily", label: "Holders Revenue / Buybacks", unit: "USD" },
-] as const;
-
 export default function ValuePage() {
-  const artifacts = METRICS.map(m => ({ ...m, artifact: loadArtifact(m.id) })).filter(m => m.artifact);
-  const availableArtifacts = AVAILABLE_METRICS.map(m => ({ ...m, artifact: loadArtifactVal(m.id) })).filter(m => m.artifact);
-
-  const results = runModel(
+  const metricIds = METRICS.map(m => m.id);
+  const { artifacts, isLoading } = useMetrics(metricIds);
+  const [inputs, setInputs] = useState<Record<string, number>>(
     INITIAL_INPUTS.reduce((acc, i) => ({ ...acc, [i.key]: i.value }), {})
   );
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
+          <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
+
+  const validMetrics = METRICS.map((m, i) => ({ ...m, artifact: artifacts[i] })).filter(m => m.artifact);
+
   // Get latest data timestamp
-  const latestDates = artifacts
+  const latestDates = validMetrics
     .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
     .filter(Boolean);
   const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
+
+  const results = runModel(inputs);
+
+  const handleScenario = (scenario: keyof typeof SCENARIOS) => {
+    const s = SCENARIOS[scenario];
+    const { label, ...values } = s;
+    setInputs(prev => ({ ...prev, ...values }));
+  };
 
   return (
     <div className="space-y-6">
@@ -196,7 +179,7 @@ export default function ValuePage() {
 
       {/* KPI Row - Available Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {artifacts.map(({ artifact, label, unit }) => (
+        {validMetrics.map(({ artifact, label, unit }) => (
           artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
         ))}
       </div>
@@ -219,7 +202,8 @@ export default function ValuePage() {
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
-                    defaultValue={input.value}
+                    value={inputs[input.key]}
+                    onChange={e => setInputs(prev => ({ ...prev, [input.key]: Number(e.target.value) }))}
                     min={input.min}
                     max={input.max}
                     step={input.step}
@@ -236,7 +220,8 @@ export default function ValuePage() {
               {["bear", "base", "bull"].map(s => (
                 <button
                   key={s}
-                  className={`px-3 py-1.5 text-xs rounded font-mono transition-colors ${"bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"} border`}
+                  onClick={() => handleScenario(s as keyof typeof SCENARIOS)}
+                  className={`px-3 py-1.5 text-xs rounded font-mono transition-colors border ${"bg-neutral-800 text-muted border-neutral-700 hover:bg-neutral-700"}`}
                 >
                   {s.toUpperCase()}
                 </button>
@@ -373,7 +358,7 @@ export default function ValuePage() {
           <p>• Buyback outflows: <code>nearblocks.buyback_outflows.daily</code> — Transfers from buybacks.multisignature.near via add_request</p>
           <p>• Net revenue: <code>nearblocks.net_revenue_near.daily</code> — Revenue inflows minus buyback outflows</p>
           <p>• φ (burn fraction): 0%</p>
-<p>— Onchain trace shows buyback wallet balance grew; no transfers to dead address observed</p>
+          <p>— Onchain trace shows buyback wallet balance grew; no transfers to dead address observed</p>
         </div>
       </section>
 

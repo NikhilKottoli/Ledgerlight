@@ -3,5 +3,13 @@
     "x-nextjs-stale-time": "300",
     "x-nextjs-prerender": "1",
     "x-next-cache-tags": "_N_T_/layout,_N_T_/methodology/layout,_N_T_/methodology/page,_N_T_/methodology/"
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/7e90d30060faac15f16f9ae38237f6dd5a6f29d5872a7485aeed0146e8e8278e/$/methodology",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/methodology/page"
+    },
+    "isFallback": false
   }
 }

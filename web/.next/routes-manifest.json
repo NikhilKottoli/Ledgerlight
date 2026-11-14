@@ -31,7 +31,16 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/data/[metric]",
+      "regex": "^/api/data/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPmetric": "nxtPmetric"
+      },
+      "namedRegex": "^/api/data/(?<nxtPmetric>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",

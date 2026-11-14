@@ -3,5 +3,13 @@
     "x-nextjs-stale-time": "300",
     "x-nextjs-prerender": "1",
     "x-next-cache-tags": "_N_T_/layout,_N_T_/flows/layout,_N_T_/flows/page,_N_T_/flows/"
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/8d20e287b3c1b461f192220862860857c0abc669571899b15eef8f5f5c03e904/$/flows",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/flows/page"
+    },
+    "isFallback": false
   }
 }

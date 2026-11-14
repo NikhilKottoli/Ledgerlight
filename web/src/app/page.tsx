@@ -1,24 +1,24 @@
-import { Metadata } from "next";
+"use client";
+
 import KpiCard from "@/components/ui/KpiCard";
 import TimeSeriesChart from "@/components/ui/TimeSeriesChart";
-import { MetricArtifact } from "@/lib/types";
-import fs from "fs";
-import path from "path";
-
-export const metadata: Metadata = { title: "NEAR Value Intelligence — Overview" };
-
-function loadArtifact(): MetricArtifact | null {
-  const p = path.join(process.cwd(), "public/data/defillama.tvl.near_intents.daily.json");
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8")) as MetricArtifact;
-  } catch {
-    return null;
-  }
-}
+import { useMetric } from "@/hooks/useMetric";
 
 export default function HomePage() {
-  const artifact = loadArtifact();
+  const { artifact, isLoading } = useMetric("defillama.tvl.near_intents.daily");
   const latest = artifact?.series.findLast(s => s.v !== null);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">NEAR Value Intelligence</h1>
+          <p className="text-muted mt-1">Follow the money. Verify the value.</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

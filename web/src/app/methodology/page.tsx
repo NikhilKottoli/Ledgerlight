@@ -1,34 +1,45 @@
-import { Metadata } from "next";
+"use client";
+
 import { MetricArtifact } from "@/lib/types";
-import fs from "fs";
-import path from "path";
+import { useMetrics, useMetric } from "@/hooks/useMetric";
 
-function loadArtifact(metricId: string): MetricArtifact | null {
-  const p = path.join(process.cwd(), `public/data/${metricId}.json`);
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8")) as MetricArtifact;
-  } catch {
-    return null;
-  }
+function loadRegistryStatic() {
+  // Registry is static, we can fetch it directly
+  return fetch("/api/data/registry").then(res => res.json()).catch(() => null);
 }
-
-function loadRegistry() {
-  const p = path.join(process.cwd(), "public/data/registry.json");
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf-8"));
-  } catch {
-    return null;
-  }
-}
-
 
 export default function MethodologyPage() {
-  const registry = loadRegistry();
+  const [registry, setRegistry] = useState<any>(null);
+  const [isRegistryLoading, setIsRegistryLoading] = useState(true);
+
+  // Fetch registry on mount
+  useEffect(() => {
+    fetch("/api/data/registry")
+      .then(res => res.json())
+      .then(data => {
+        setRegistry(data);
+        setIsRegistryLoading(false);
+      })
+      .catch(() => setIsRegistryLoading(false));
+  }, []);
+
+  // Fetch artifacts for all metrics
+  const metricIds = registry?.metrics?.map((m: any) => m.id) || [];
+  const { artifacts, isLoading } = useMetrics(metricIds);
+
+  if (isRegistryLoading) {
+    return (
+      <div className="space-y-6">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Methodology</h1>
+          <p className="text-muted mt-1">Inspect every metric: source, definition, calculation, coverage, freshness, limitations</p>
+        </header>
+        <div className="text-center py-12 text-muted">Loading live data...</div>
+      </div>
+    );
+  }
+
   const metrics = registry?.metrics || [];
-  
-  // Load all artifacts
-  const artifactIds = metrics.map((m: { id: string }) => m.id);
-  const artifacts = artifactIds.map((id: string) => loadArtifact(id)).filter(Boolean);
 
   return (
     <div className="space-y-6">
@@ -370,3 +381,5 @@ export default function MethodologyPage() {
     </div>
   );
 }
+
+import { useState, useEffect } from "react";
