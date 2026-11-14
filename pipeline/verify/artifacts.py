@@ -11,7 +11,8 @@ ARTIFACTS = Path("web/public/data")
 NON_STANDARD = {
     "reconciliation.revenue.three_way", 
     "flow_ledger_7d", "flow_ledger_30d", "flow_ledger_90d", "flow_ledger_ytd", "flow_ledger_all",
-    "intents.status_mix.daily", "intents.chain_distribution.daily", "intents.token_distribution.daily"
+    "intents.status_mix.daily", "intents.chain_distribution.daily", "intents.token_distribution.daily",
+    "registry"
 }
 
 def main():

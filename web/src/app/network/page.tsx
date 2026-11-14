@@ -17,13 +17,6 @@ const METRICS = [
   { id: "pikespeak.hot_wallets_count.daily", label: "Hot Wallets Count", unit: "count" },
 ] as const;
 
-const UNAVAILABLE_METRICS = [
-  { label: "Daily Active Accounts", unit: "", reason: "Requires Flipside/Pikespeak event-historic API — network-wide active signer addresses (endpoint timeout)" },
-  { label: "Daily Transactions", unit: "", reason: "Requires Flipside/Pikespeak event-historic API — network-wide tx count (endpoint timeout)" },
-  { label: "Intents-Attributable Activity", unit: "", reason: "Requires Flipside/Pikespeak event-historic API — Intents contract receipts (endpoint timeout)" },
-  { label: "Net Supply Change (NEAR)", unit: "NEAR", reason: "Requires Flipside/Pikespeak API — blocks.total_supply" },
-] as const;
-
 export default function NetworkPage() {
   const metricIds = METRICS.map(m => m.id);
   const { artifacts, isLoading } = useMetrics(metricIds);
@@ -53,10 +46,7 @@ export default function NetworkPage() {
       <header className="mb-4">
         <h1 className="text-3xl font-bold tracking-tight">Network</h1>
         <p className="text-muted mt-1">NEAR network activity and Intents protocol metrics</p>
-        <p className="text-sm text-muted mt-2">
-          Accounts ≠ humans. "Active accounts" = distinct signer addresses with ≥1 tx/day.
-        </p>
-        <p className="text-xs text-amber-400 mt-1">Data as of {dataAsOf}</p>
+        <p className="text-xs text-muted mt-1">Data as of {dataAsOf}</p>
       </header>
 
       {/* KPI Row - Available Metrics */}
@@ -78,26 +68,8 @@ export default function NetworkPage() {
         ))}
       </div>
 
-      {/* Unavailable Metrics as plain notes */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Unavailable Metrics</h2>
-        <ul className="space-y-2 text-sm">
-          {UNAVAILABLE_METRICS.map(({ label, unit, reason }) => (
-            <li key={label} className="flex items-start gap-2 text-muted">
-              <span className="font-mono text-xs text-amber-400">•</span>
-              <span className="font-medium">{label}</span>
-              {unit && <span className="text-xs text-neutral-500">({unit})</span>}
-              <span className="ml-2">— {reason}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Data Sources */}
       <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
-        <p><strong>Available sources:</strong> DefiLlama (TVL, fees, revenue, holders revenue for NEAR Intents protocol; NEAR chain TVL); NearBlocks (onchain NEAR revenue wallet inflows and buyback outflows); Pikespeak (top 100 hot wallets by USD value).</p>
-        <p className="mt-1"><strong>Missing:</strong> Network-wide daily active accounts, daily transactions, Intents-attributable activity, net supply change (Pikespeak event-historic endpoint timeouts; BigQuery quota exhausted).</p>
-        <p className="mt-1"><strong>Note:</strong> "Active accounts" = distinct signer addresses with ≥1 transaction. Not equivalent to unique humans.</p>
+        <p><strong>Sources:</strong> DefiLlama (TVL, fees, revenue, holders revenue for NEAR Intents protocol; NEAR chain TVL); NearBlocks (onchain NEAR revenue wallet inflows and buyback outflows); Pikespeak (top 100 hot wallets by USD value).</p>
       </div>
     </div>
   );

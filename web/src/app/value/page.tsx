@@ -11,15 +11,15 @@ const METRICS = [
 ] as const;
 
 const VALUE_MEASURED_ANCHORS = [
-  { label: "Annualized Volume (V₀)", value: "$3.8B", source: "Trailing 90d × 4", metric: "intents.volume_usd.daily" },
-  { label: "Gross Take Rate (r)", value: "16 bps", source: "DefiLlama fees / volume", metric: "defillama.fees.near_intents.daily" },
-  { label: "Capture Rate (c)", value: "35%", source: "DefiLlama holders revenue / fees", metric: "defillama.holders_revenue.near_intents.daily" },
-  { label: "Buyback Allocation (b)", value: "40%", source: "Observed buyback wallet inflows / net revenue", metric: "revenue.net.near_intents.daily" },
-  { label: "Burned Fraction (φ)", value: "0%", source: "Onchain buyback wallet trace", metric: "buyback.burned_near" },
-  { label: "NEAR Price (P₀)", value: "$3.50", source: "DefiLlama/CoinGecko", metric: "defillama.near_price_current" },
-  { label: "Supply (S₀)", value: "1.31B NEAR", source: "BigQuery blocks.total_supply", metric: "supply.total_supply.daily" },
-  { label: "Issuance Rate (m)", value: "2.5%/yr", source: "NEAR protocol parameters", metric: "supply.issuance_rate" },
-  { label: "Circulating Supply", value: "1.0B NEAR", source: "DefiLlama/staking", metric: "defillama.circulating_supply" },
+  { label: "Annualized Volume (V₀)", value: "$3.8B", source: "Trailing 90d × 4" },
+  { label: "Gross Take Rate (r)", value: "16 bps", source: "DefiLlama fees / volume" },
+  { label: "Capture Rate (c)", value: "35%", source: "DefiLlama holders revenue / fees" },
+  { label: "Buyback Allocation (b)", value: "40%", source: "Observed buyback wallet inflows / net revenue" },
+  { label: "Burned Fraction (φ)", value: "0%", source: "Onchain buyback wallet trace" },
+  { label: "NEAR Price (P₀)", value: "$3.50", source: "DefiLlama/CoinGecko" },
+  { label: "Supply (S₀)", value: "1.31B NEAR", source: "Blocks total supply" },
+  { label: "Issuance Rate (m)", value: "2.5%/yr", source: "NEAR protocol parameters" },
+  { label: "Circulating Supply", value: "1.0B NEAR", source: "DefiLlama/staking" },
 ] as const;
 
 interface InputRow {
@@ -45,7 +45,7 @@ const INITIAL_INPUTS: InputRow[] = [
   { key: "phi", label: "Burn Fraction (φ)", value: 0.0, unit: "", min: 0, max: 1, step: 0.1, anchor: 0.0, measuredLabel: "Onchain trace (0%)" },
   { key: "P0", label: "NEAR Price (P₀)", value: 3.5, unit: "USD", min: 0.1, max: 50, step: 0.1, anchor: 3.5, measuredLabel: "DefiLlama/CoinGecko" },
   { key: "P_growth", label: "Price Growth", value: 0.0, unit: "", min: -0.5, max: 1.0, step: 0.05, anchor: 0.0, measuredLabel: "Flat assumption" },
-  { key: "S0", label: "Total Supply (S₀)", value: 1_310_000_000, unit: "NEAR", min: 1_000_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_310_000_000, measuredLabel: "BigQuery blocks" },
+  { key: "S0", label: "Total Supply (S₀)", value: 1_310_000_000, unit: "NEAR", min: 1_000_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_310_000_000, measuredLabel: "Blocks total supply" },
   { key: "m", label: "Gross Issuance (m)", value: 0.025, unit: "", min: 0, max: 0.1, step: 0.001, anchor: 0.025, measuredLabel: "NEAR protocol (2.5%)" },
   { key: "beta", label: "Gas Burn Offset (β)", value: 0.0, unit: "", min: 0, max: 0.5, step: 0.01, anchor: 0.0, measuredLabel: "Negligible" },
   { key: "circulating_supply", label: "Circulating Supply", value: 1_000_000_000, unit: "NEAR", min: 500_000_000, max: 2_000_000_000, step: 10_000_000, anchor: 1_000_000_000, measuredLabel: "DefiLlama/staking" },
@@ -171,10 +171,7 @@ export default function ValuePage() {
       <header className="mb-4">
         <h1 className="text-3xl font-bold tracking-tight">Value Capture Model</h1>
         <p className="text-muted mt-1">Interactive breakeven analysis: What Intents volume is needed for buybacks to offset emissions?</p>
-        <div className="mt-2 text-xs text-amber-400 bg-amber-900/20 border border-amber-800 rounded p-2 inline-block">
-          Modeled — Not a Prediction or Financial Advice
-        </div>
-        <p className="text-xs text-amber-400 mt-1">Data as of {dataAsOf}</p>
+        <p className="text-xs text-muted mt-1">Data as of {dataAsOf}</p>
       </header>
 
       {/* KPI Row - Available Metrics */}
@@ -233,10 +230,10 @@ export default function ValuePage() {
         {/* Middle: Measured Anchors */}
         <section className="lg:col-span-1 bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 space-y-4 max-h-[80vh] overflow-y-auto">
           <h2 className="text-lg font-semibold">Measured Anchors</h2>
-          <p className="text-xs text-muted">Each input shows its measured trailing value. Drag sliders to test assumptions.</p>
+          <p className="text-xs text-muted">Each input shows its measured trailing value. Adjust sliders to test assumptions.</p>
           <div className="space-y-2">
             {VALUE_MEASURED_ANCHORS.map(anchor => (
-              <div key={anchor.metric} className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
+              <div key={anchor.label} className="bg-neutral-800/50 border border-neutral-700 rounded p-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{anchor.label}</span>
                   <span className="font-mono text-lg text-green-400">{anchor.value}</span>
@@ -324,7 +321,7 @@ export default function ValuePage() {
 
       {/* Measured Anchors Table */}
       <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Measured Anchors (from Plans 03-06)</h2>
+        <h2 className="text-lg font-semibold mb-4">Measured Anchors</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -332,16 +329,14 @@ export default function ValuePage() {
                 <th className="pb-2">Parameter</th>
                 <th className="pb-2">Measured Value</th>
                 <th className="pb-2">Source</th>
-                <th className="pb-2">Metric ID</th>
               </tr>
             </thead>
             <tbody>
               {VALUE_MEASURED_ANCHORS.map(a => (
-                <tr key={a.metric} className="border-b border-neutral-800">
+                <tr key={a.label} className="border-b border-neutral-800">
                   <td className="py-2 font-medium">{a.label}</td>
                   <td className="py-2 font-mono text-green-400">{a.value}</td>
                   <td className="py-2 text-muted">{a.source}</td>
-                  <td className="py-2 font-mono text-xs">{a.metric}</td>
                 </tr>
               ))}
             </tbody>
@@ -349,23 +344,10 @@ export default function ValuePage() {
         </div>
       </section>
 
-      {/* Onchain Revenue Note */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Onchain Revenue (NearBlocks)</h2>
-        <p className="text-sm text-muted mb-2">Revenue wallet NEAR inflows from intents.near and buyback wallet outflows parsed from multisig FUNCTION_CALL actions.</p>
-        <div className="text-xs text-muted space-y-1">
-          <p>• Revenue metric: <code>nearblocks.revenue_near.daily</code> — NEAR transfers from intents.near to 3 revenue wallets</p>
-          <p>• Buyback outflows: <code>nearblocks.buyback_outflows.daily</code> — Transfers from buybacks.multisignature.near via add_request</p>
-          <p>• Net revenue: <code>nearblocks.net_revenue_near.daily</code> — Revenue inflows minus buyback outflows</p>
-          <p>• φ (burn fraction): 0%</p>
-          <p>— Onchain trace shows buyback wallet balance grew; no transfers to dead address observed</p>
-        </div>
-      </section>
-
       <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
         <p><strong>Model:</strong> V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ) for burned; without φ for buyback.</p>
-        <p className="mt-1"><strong>Assumptions:</strong> Flat price (P_growth=0), constant issuance, 5-year horizon. All outputs are <strong>modeled</strong> — not predictions.</p>
-        <p className="mt-1"><strong>Key finding:</strong> With φ=0 (onchain evidence: buybacks held, not burned), burned breakeven is unreachable. Buyback breakeven requires ~13.5× current volume at current parameters.</p>
+        <p className="mt-1"><strong>Assumptions:</strong> Flat price, constant issuance, 5-year horizon.</p>
+        <p className="mt-1"><strong>Key finding:</strong> With φ=0 (buybacks held, not burned), burned breakeven is unreachable. Buyback breakeven requires ~13.5× current volume.</p>
       </div>
     </div>
   );

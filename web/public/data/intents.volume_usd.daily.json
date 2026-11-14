@@ -2,10 +2,10 @@
  "meta": {
   "metric_id": "intents.volume_usd.daily",
   "data_mode": "live",
-  "retrieved_at": "2026-11-14T12:21:30.800881Z",
+  "retrieved_at": "2026-11-14T12:48:37.248703Z",
   "source_max_ts": "2026-11-14T23:59:59Z",
-  "git_commit": "3c76de65",
-  "sha256_inputs": "c3a6049ee84f09037551a98edc64c4ef2aacd410d96e5d9d65ac68b994d89690",
+  "git_commit": "666398f3",
+  "sha256_inputs": "d491046faf704a833fba708366a421aeab9e72ed4af01f8f22480cdd0530faee",
   "completeness": "complete",
   "warnings": [
    "Quota-limited window; confidential flows not fully visible"

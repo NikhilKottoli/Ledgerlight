@@ -39,17 +39,6 @@ export default function HomePage() {
             previousPeriodLabel="vs prior day"
           />
         )}
-        <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 col-span-2 lg:col-span-1">
-          <p className="text-sm text-muted">Vertical Slice</p>
-          <p className="mt-1 text-xl font-mono font-semibold">DefiLlama TVL</p>
-          <p className="mt-1 text-sm text-muted">
-            This is the Plan 02 vertical slice: one metric working end-to-end.
-            Source → Registry → JSON → Chart → Provenance → <code className="bg-neutral-800 px-1 rounded">make rebuild</code>
-          </p>
-          <p className="mt-3 text-xs text-muted">
-            Data mode: {artifact?.meta.data_mode} • {artifact?.series.length} daily points • Updated {artifact?.meta.retrieved_at?.split("T")[0]}
-          </p>
-        </div>
       </div>
 
       {artifact && (
@@ -61,30 +50,30 @@ export default function HomePage() {
 
       <section className="grid gap-4 md:grid-cols-3">
         <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Plan 03: Onchain & Market Data</h3>
+          <h3 className="font-semibold mb-2">Onchain & Market Data</h3>
           <ul className="text-sm text-muted space-y-1">
-            <li>• BigQuery network metrics</li>
-            <li>• Revenue wallet reconstruction</li>
-            <li>• Buyback vs burn trace</li>
-            <li>• Three-way reconciliation</li>
+            <li>Network metrics & activity</li>
+            <li>Revenue wallet reconstruction</li>
+            <li>Buyback vs burn trace</li>
+            <li>Three-way reconciliation</li>
           </ul>
         </div>
         <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Plan 04: Intents Ingestion</h3>
+          <h3 className="font-semibold mb-2">Intents Ingestion</h3>
           <ul className="text-sm text-muted space-y-1">
-            <li>• Explorer API (1 req/5s)</li>
-            <li>• Per-chain/token/sender cubes</li>
-            <li>• Fee unit verification</li>
-            <li>• DefiLlama cross-check</li>
+            <li>Explorer API (1 req/5s)</li>
+            <li>Per-chain/token/sender analysis</li>
+            <li>Fee unit verification</li>
+            <li>DefiLlama cross-check</li>
           </ul>
         </div>
         <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h3 className="font-semibold mb-2">Plan 05: Flow Ledger & Sankey</h3>
+          <h3 className="font-semibold mb-2">Flow Ledger & Sankey</h3>
           <ul className="text-sm text-muted space-y-1">
-            <li>• Gross fees → protocol revenue → buyback</li>
-            <li>• Explicit unreconciled nodes</li>
-            <li>• Typed units (USD/NEAR, gross/net)</li>
-            <li>• Buyback vs burn traced</li>
+            <li>Gross fees → protocol revenue → buyback</li>
+            <li>Explicit unreconciled amounts</li>
+            <li>Typed units (USD/NEAR, gross/net)</li>
+            <li>Buyback vs burn traced</li>
           </ul>
         </div>
       </section>

@@ -14,7 +14,7 @@ def main():
 
     registry = MetricsRegistry.model_validate(yaml.safe_load(REGISTRY.read_text()))
     metric_ids = registry.ids()
-    artifact_ids = {f.stem for f in ARTIFACTS.glob("*.json") if f.stem != "events"}
+    artifact_ids = {f.stem for f in ARTIFACTS.glob("*.json") if f.stem not in {"events", "registry"}}
 
     missing_in_artifacts = metric_ids - artifact_ids
     extra_in_artifacts = artifact_ids - metric_ids

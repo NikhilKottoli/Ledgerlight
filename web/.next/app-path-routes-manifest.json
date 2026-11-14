@@ -6,7 +6,7 @@
   "/intents/page": "/intents",
   "/methodology/page": "/methodology",
   "/network/page": "/network",
-  "/page": "/",
+  "/thesis/page": "/thesis",
   "/value/page": "/value",
-  "/thesis/page": "/thesis"
+  "/page": "/"
 }

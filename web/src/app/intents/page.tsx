@@ -62,12 +62,12 @@ export default function IntentsPage() {
       <header className="mb-4">
         <h1 className="text-3xl font-bold tracking-tight">Intents</h1>
         <p className="text-muted mt-1">NEAR Intents protocol activity: volume, swaps, addresses, chains, tokens</p>
-        <p className="text-xs text-amber-400 mt-1">Data as of {dataAsOf}</p>
+        <p className="text-xs text-muted mt-1">Data as of {dataAsOf}</p>
       </header>
 
       {/* DefiLlama Aggregates */}
       <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">DefiLlama Aggregates (No JWT Required)</h2>
+        <h2 className="text-lg font-semibold mb-4">DefiLlama Aggregates</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {validDefillama.map(({ artifact, label, unit }) => (
             artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
@@ -85,14 +85,9 @@ export default function IntentsPage() {
         </div>
       </section>
 
-      {/* Live Intents Explorer Metrics (JWT Available) */}
+      {/* Live Intents Explorer Metrics */}
       <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Intents Explorer Metrics (Live Data)</h2>
-        <p className="text-sm text-muted mb-4">
-          Sourced from <code className="bg-neutral-800 px-1 rounded">explorer.near-intents.org</code> API.
-          Rate limit: 1 request / 5 seconds. Partner: <code className="bg-neutral-800 px-1 rounded">studentindividualdeveloper</code>.
-          3,000 transactions ingested over 3 days (2026-11-12 to 2026-11-14).
-        </p>
+        <h2 className="text-lg font-semibold mb-4">Intents Explorer Metrics</h2>
         {validIntents.length > 0 ? (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -113,18 +108,15 @@ export default function IntentsPage() {
           </>
         ) : (
           <div className="text-muted text-center py-8">
-            <p>No live Intents data available. Run <code className="bg-neutral-800 px-1 rounded">pipeline.connectors.intents_explorer</code> with <code className="bg-neutral-800 px-1 rounded">NEAR_INTENTS_JWT</code> set.</p>
+            <p>No Intents Explorer data available</p>
           </div>
         )}
       </section>
 
-      {/* Distribution Metrics (Object-valued, shown as charts only) */}
+      {/* Distribution Metrics */}
       {validDistribution.length > 0 && (
         <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-          <h2 className="text-lg font-semibold mb-4">Intents Distributions (Live Data)</h2>
-          <p className="text-sm text-muted mb-4">
-            Volume breakdown by status, chain, and token. Object-valued metrics — shown as charts only.
-          </p>
+          <h2 className="text-lg font-semibold mb-4">Volume Breakdown</h2>
           <div className="grid gap-6 md:grid-cols-2 mt-6">
             {validDistribution.map(({ artifact, label }) => (
               artifact && (
@@ -137,23 +129,6 @@ export default function IntentsPage() {
           </div>
         </section>
       )}
-
-      {/* Transaction Explorer Preview */}
-      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-4">Transaction Explorer (Preview)</h2>
-        <div className="text-sm text-muted">
-          <p>Sample of latest 5,000 + top 1,000 by USD + referenced transactions.</p>
-          <p className="mt-1">Requires <code className="bg-neutral-800 px-1 rounded">NEAR_INTENTS_JWT</code> and successful ingestion.</p>
-        </div>
-      </section>
-
-      {/* Data Sources */}
-      <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4 text-sm text-muted">
-        <p><strong>Available (DefiLlama):</strong> Aggregated fees, revenue, holders revenue for NEAR Intents protocol.</p>
-        <p className="mt-1"><strong>Available (Intents Explorer):</strong> Per-transaction metrics — volume, swaps, unique sender addresses, chain/token distributions, status mix, concentration.</p>
-        <p className="mt-1"><strong>Rate limit:</strong> 1 request / 5 seconds per partner. Ingestion is resumable day-window with dedupe.</p>
-        <p className="mt-1"><strong>Note:</strong> "Unique sender addresses" ≠ unique humans. Multi-chain users = multiple addresses.</p>
-      </div>
     </div>
   );
 }
