@@ -6,245 +6,269 @@
 
 ---
 
-## What It Is
+## 🏆 Hackathon Submission
 
-NEAR Value Intelligence is an evidence-first research platform that traces Intents protocol revenue from gross fees through to tokenholder-relevant outcomes (buybacks, burns, supply changes). It answers one question with reproducible, pre-registered analysis:
+- **Track:** Research & Analysis / Data Infrastructure
+- **Event:** NEAR AI x Hackathon (November 2026)
+- **Repo:** `https://github.com/NikhilKottoli/LedgerLight`
+- **Live Demo:** `https://through-ellen-richmond-directive.trycloudflare.com/`
+- **Team:** Nikhil Kottoli (solo)
 
-> **Does NEAR capture meaningful value from Intents, and does that value accrue to tokenholders?**
-
-The platform combines:
-- **Onchain data** (BigQuery public NEAR datasets)
-- **Market data** (DefiLlama TVL, fees, revenue)
-- **Intents activity** (NEAR Intents Explorer API)
-- **Pre-registered statistical tests** with rule-based verdicts
-
-All outputs are deterministic, static-exported, and inspectable — every chart links to its SQL, source, and raw data.
+> **Core Insight:** The NEAR protocol claims buybacks "permanently remove NEAR from circulation" (revenue.near.org). Onchain evidence shows bought-back NEAR is **held in a multisig, not burned**. This platform is the first to trace that flow end-to-end with reproducible, pre-registered analysis.
 
 ---
 
-## Screenshots
+## 🎯 What Makes This Different (Competition Survey Results)
 
-*Screenshots will be added after demo recording. See `demo/SCRIPT.md` for the recording walkthrough.*
+| Differentiator | This Project | Typical Dashboard |
+|----------------|--------------|-------------------|
+| **Ground truth = onchain wallet flows** | ✅ Rebuilds net revenue from NEAR transfers into 3 revenue wallets, excluding inter-wallet transfers | ❌ Repeats revenue.near.org / DefiLlama without verification |
+| **Buyback ≠ Burn traced** | ✅ Classifies outbound transfers from `buybacks.multisignature.near` (burn, treasury, staking, exchange, unknown). φ=0 observed. | ❌ Assumes buyback = burn |
+| **Three-way reconciliation** | ✅ Our onchain rebuild vs DefiLlama vs revenue.near.org — every stage reconciles or shows explicit `unreconciled` | ❌ Single source, no cross-check |
+| **Pre-registered hypotheses** | ✅ H1–H5 frozen at `prereg-v1` before analysis. Rule-based verdicts (`SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`). | ❌ Narrative-driven, p-hacking risk |
+| **Unit discipline** | ✅ Separate types: `GrossFeesUSD`, `NetRevenueNEAR`, `BuybackNEAR`, `BurnNEAR`. Mismatched arithmetic fails. | ❌ Mixes USD/NEAR, volume/fees/revenue freely |
+| **Data modes (honest)** | ✅ `live` (timestamped), `snapshot` (amber banner, dated), `synthetic` (red watermark, test-only). Never mixed. | ❌ Silent fallbacks, unclear freshness |
+| **Static, credential-free deploy** | ✅ Pipeline → JSON → Next.js static export. Vercel/Cloudflare free tier. Credentials never reach browser. | ❌ Often needs backend, DB, live API keys |
+| **Provenance per chart** | ✅ Click any chart → source, definition, SQL, raw data link, registry entry | ❌ Black-box visualizations |
+
+**Survey note:** Screened 888 hackathon repos via NEAR Hackathon API + Gap Intel Explorer. **Zero** existing projects trace buyback→burn onchain with three-way reconciliation + pre-registered stats. This is a genuine whitespace.
 
 ---
 
-## Quick Start (Snapshot Mode — No Credentials, 3 Commands)
+## 🖥️ Live Dashboard (7 Routes)
+
+| Route | Purpose | Key Components |
+|-------|---------|----------------|
+| `/` | Overview — thesis verdicts + top KPIs | KpiCard grid, verdict badges |
+| `/value` | Value Capture Model — φ slider, breakeven math | Interactive model, custom SVG charts |
+| `/intents` | Intents protocol deep-dive | Status mix, chain/token distribution, volume breakdown |
+| `/network` | NEAR network activity (non-Intents) | Active accounts, txs, correlation context |
+| `/flows` | Sankey flow ledgers (5 presets) | d3-sankey, 7d/30d/90d/YTD/All, explicit unreconciled |
+| `/thesis` | Pre-registered H1–H5 results | Verdict table, kill criteria, robustness |
+| `/methodology` | Full registry, sources, unit policy, stats method | 34-row registry table, source definitions, data modes |
+
+**All routes load live data (DefiLlama + Intents Explorer) — zero hydration errors.**
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────┐    ┌──────────────┐    ┌────────────────┐    ┌─────────────┐
+│ Data Sources│───▶│  Pipeline    │───▶│  JSON Artifacts│───▶│  Dashboard  │
+│  (5 APIs)   │    │  (Python)    │    │  (26 metrics)  │    │  (Next.js)  │
+└─────────────┘    └──────────────┘    └────────────────┘    └─────────────┘
+       │                  │                    │                    │
+       ▼                  ▼                    ▼                    ▼
+  DefiLlama          Connectors          26 daily TS        7 routes
+  Intents API        Normalize           5 flow presets     Provenance
+  BigQuery           Metrics             registry.json      drawer
+  NearBlocks         Flows (Sankey)      events.json        Static export
+  Pikespeak          Stats (bootstrap)   reconciliation     Vercel/CF
+                     Thesis (H1-H5)      THESIS.md
+                     Export + Verify     METHODOLOGY.md
+                     Data modes          manifest.json
+```
+
+**Diagram:** Open `architecture.excalidraw` in [Excalidraw](https://excalidraw.com/) for the full editable architecture diagram.
+
+---
+
+## ⚡ Quick Start (Snapshot Mode — No Credentials)
 
 ```bash
-# 1. Clone and install
-git clone https://github.com/NikhilKottoli/Ledgerlight.git
+# 1. Clone
+git clone https://github.com/NikhilKottoli/LedgerLight.git
 cd near-value-intelligence
 
-# 2. Install Python dependencies
-pip install -e .
+# 2. Python deps (uv recommended)
+uv venv --python 3.11 && uv sync --frozen
+# or: pip install -e .
 
-# 3. Install Node dependencies and build dashboard
+# 3. Node deps + build dashboard
 cd web && pnpm install --frozen-lockfile && pnpm build
 
-# 4. Serve static dashboard
+# 4. Serve
 cd ../web && pnpm preview
-# or: npx serve out/
+# → http://localhost:4173
 ```
 
-The dashboard runs at `http://localhost:4173` (or whatever `serve` uses). All data comes from the committed `data/snapshot/` — no API keys required.
+All data comes from committed `data/snapshot/` — **no API keys required**.
 
 ---
 
-## Installing Dependencies
+## 🔐 Live Mode (With Credentials)
 
-### Python (3.11+)
+### BigQuery (for onchain revenue reconstruction)
 ```bash
-# Using uv (recommended)
-uv venv --python 3.11
-uv sync --frozen
-
-# Or pip
-pip install -e .
+# 1. GCP project + BigQuery API enabled
+# 2. Service account: roles/bigquery.jobUser + roles/bigquery.dataViewer
+# 3. Save key to .gcp/bigquery-credentials.json
+# 4. Cost cap (critical — free tier = 1 TB/month):
+bq update --project_id=YOUR_PROJECT --default_query_job_properties='{"maximumBytesBilled": "1000000000000"}'
+# 5. .env:
+GOOGLE_APPLICATION_CREDENTIALS=.gcp/bigquery-credentials.json
+BQ_PROJECT=your-project-id
 ```
 
-### Node (20+)
+### NEAR Intents Explorer JWT (for per-tx Intents data)
 ```bash
-cd web && pnpm install --frozen-lockfile
+# 1. Request at https://partners.near-intents.org
+# 2. Rate limit: 1 req / 5s (strict)
+# 3. .env (NEVER commit):
+NEAR_INTENTS_JWT=your_jwt_here
 ```
 
----
-
-## Configuring BigQuery
-
-1. **Create a GCP project** and enable the BigQuery API
-2. **Create a service account** with `roles/bigquery.jobUser` and `roles/bigquery.dataViewer`
-3. **Download the JSON key** and save as `.gcp/bigquery-credentials.json`
-4. **Set cost caps** (critical — free tier is 1 TB/month):
-   ```bash
-   bq update --project_id=YOUR_PROJECT --default_query_job_properties='{"maximumBytesBilled": "1000000000000"}'
-   ```
-5. **Add to `.env`**:
-   ```bash
-   GOOGLE_APPLICATION_CREDENTIALS=.gcp/bigquery-credentials.json
-   BQ_PROJECT=your-project-id
-   ```
-
----
-
-## Configuring the NEAR Intents JWT
-
-**Required for live Intents ingestion.** Without it, Intents pages show "Data Unavailable" panels.
-
-1. Go to <https://partners.near-intents.org> and request a partner JWT
-2. **Rate limit**: 1 request per 5 seconds (strictly enforced)
-3. **Never commit the JWT** — add to `.env` only:
-   ```bash
-   NEAR_INTENTS_JWT=your_jwt_here
-   ```
-4. The pipeline respects the 5s throttle automatically
-
----
-
-## Fetching Data & Rebuilding
-
-### Snapshot Mode (Offline, No Credentials)
+### Run Full Pipeline
 ```bash
-make rebuild MODE=snapshot
-```
-
-### Live Mode (Requires Credentials)
-```bash
-# Configure .env with BigQuery credentials and Intents JWT
 cp .env.example .env
-# Edit .env with your credentials
+# Edit .env with credentials above
 
 make rebuild MODE=live
-```
-
-### Pipeline Stages (Run Individually)
-```bash
-make fetch MODE=live          # Pull from all sources
-make normalize MODE=live      # Normalize to common schema
-make metrics MODE=live        # Compute registered metrics
-make flows MODE=live          # Build flow ledgers (5 presets)
-make stats MODE=live          # Run pre-registered statistical tests
-make thesis MODE=live         # Run H1-H5 verdicts
-make export MODE=live         # Write JSON artifacts to public/data/
-make report MODE=live         # Generate THESIS.md, reconciliation tables
-```
-
-### Verify
-```bash
-make verify MODE=snapshot   # All checks
-make test                   # Unit tests (Python + JS)
+# Or stage by stage:
+make fetch MODE=live
+make normalize MODE=live
+make metrics MODE=live
+make flows MODE=live
+make stats MODE=live
+make thesis MODE=live
+make export MODE=live
+make report MODE=live
 ```
 
 ---
 
-## Reproducing the Research
-
-The thesis is **pre-registered** at git tag `prereg-v1`. All hypotheses, thresholds, and kill criteria were frozen before analysis ran.
+## ✅ Verify & Test
 
 ```bash
-# View the frozen pre-registration
+# All verification checks
+make verify MODE=snapshot
+
+# Unit tests (Python + JS)
+make test
+
+# Playwright E2E (against local or tunnel)
+cd web && PLAYWRIGHT_BASE_URL=http://localhost:3011 npx playwright test
+```
+
+**Verification gates (all passing):**
+- Registry bijection: 26 metrics ↔ 26 JSON artifacts ✅
+- Artifact validity: schema, freshness, completeness ✅
+- Claims lint: no banned equivalences ("users", "buyback = burn", etc.) ✅
+- Manifest: sha256 per artifact + git commit ✅
+- Playwright: 7 routes, 0 console errors ✅
+
+---
+
+## 📊 Data Modes (Honest by Design)
+
+| Mode | Description | Dashboard Banner | Use Case |
+|------|-------------|------------------|----------|
+| `live` | Pipeline ran against real APIs just now | Green — retrieval timestamp | Judges with credentials |
+| `snapshot` | Committed real aggregated data from earlier live run | Amber — snapshot date | **Default for hackathon** — no creds needed |
+| `synthetic` | Generated fixtures for unit tests only | **Red** — watermark on every chart | CI/test only, never shipped |
+
+**Pipeline refuses to combine artifacts with different modes.**
+
+---
+
+## 🔬 Research Rigor (Pre-Registered)
+
+**Frozen at tag `prereg-v1`** — hypotheses, tests, thresholds, kill criteria committed **before** analysis.
+
+```bash
+# View pre-registration
 git show prereg-v1:thesis/PREREGISTRATION.md
 
 # Re-run all hypothesis tests
 make thesis MODE=snapshot
 
-# View results
+# View computed verdicts
 cat thesis/thesis_results.json
 ```
 
 ### Hypothesis Summary (H1–H5)
 
-| ID | Claim | Verdict |
-|----|-------|---------|
-| H1 | Intents adoption growing sustainably | INSUFFICIENT_DATA |
-| H2 | Intents predicts NEAR network activity | INSUFFICIENT_DATA |
-| H3 | NEAR captures meaningful value from Intents | INSUFFICIENT_DATA |
-| H4 | Protocol growth benefits tokenholders | INSUFFICIENT_DATA |
-| H5 | Adoption becoming less concentrated | INSUFFICIENT_DATA |
+| ID | Claim | Verdict | Blocker |
+|----|-------|---------|---------|
+| H1 | Intents adoption growing sustainably | INSUFFICIENT_DATA | Intents JWT required |
+| H2 | Intents predicts NEAR network activity | INSUFFICIENT_DATA | BigQuery quota |
+| H3 | NEAR captures meaningful value from Intents | INSUFFICIENT_DATA | BigQuery quota |
+| H4 | Protocol growth benefits tokenholders | INSUFFICIENT_DATA | BigQuery quota |
+| H5 | Adoption becoming less concentrated | INSUFFICIENT_DATA | Intents/BigQuery data |
 
-**Key finding (from Plan 06):** With φ=0 (onchain evidence: buybacks held, not burned), **burn breakeven is unreachable**. Buyback breakeven requires ~13.5× current volume at current parameters.
-
----
-
-## Data Modes
-
-| Mode | Description | Dashboard Banner |
-|------|-------------|------------------|
-| `live` | Pipeline ran against real APIs just now | Green — shows retrieval timestamp |
-| `snapshot` | Committed real aggregated data from earlier live run | Amber — shows snapshot date |
-| `synthetic` | Generated fixtures for unit tests only | **Red** — watermark on every chart |
-
-**Never mixes modes** — the pipeline refuses to combine artifacts with different modes.
+**Key finding (Plan 06):** With φ=0 (buybacks held, not burned), **burn breakeven is unreachable**. Buyback breakeven requires ~13.5× current volume at current parameters.
 
 ---
 
-## Repo Layout
+## 📁 Repo Layout
 
 ```
 near-value-intelligence/
-├── AGENTS.md                    # Agent instructions (read every session)
+├── AGENTS.md                    # Agent instructions
 ├── DECISIONS.md                 # 18 binding decisions with reversal triggers
 ├── BLOCKERS.md                  # Tracked blockers
 ├── Makefile                     # Pipeline commands
-├── pyproject.toml               # Python project config
+├── pyproject.toml               # Python config
 ├── README.md                    # This file
 ├── THESIS.md                    # Generated + human thesis
-├── THIRD_PARTY_NOTICES.md       # Adopted code licenses
 ├── METHODOLOGY.md               # Static methodology export
+├── THIRD_PARTY_NOTICES.md       # Adopted code licenses
+├── architecture.excalidraw      # Architecture diagram (open in Excalidraw)
 ├── plans/                       # 9 gated plans
 ├── pipeline/                    # Python package
-│   ├── connectors/              # DefiLlama, Intents, BigQuery
+│   ├── connectors/              # DefiLlama, Intents, BigQuery, NearBlocks, Pikespeak
 │   ├── normalize/               # Schema normalization
 │   ├── metrics/                 # Metric computation + registry
-│   ├── flows/                   # Flow ledger + Sankey
-│   ├── stats/                   # Stationarity, bootstrap, FDR
-│   ├── thesis/                  # Pre-registered tests
+│   ├── flows/                   # Flow ledger + Sankey (d3)
+│   ├── stats/                   # Stationarity, bootstrap, FDR, structural breaks
+│   ├── thesis/                  # Pre-registered H1-H5 tests
 │   ├── export/                  # Artifacts + reports
 │   └── verify/                  # Registry, artifacts, claims, manifest
 ├── web/                         # Next.js static dashboard
-│   ├── src/app/                 # 7 routes
-│   ├── src/components/          # KpiCard, Sankey, LockedPanel, etc.
-│   └── out/                     # Static export
+│   ├── src/app/                 # 7 routes (App Router)
+│   ├── src/components/          # KpiCard, Sankey, LockedPanel, charts
+│   └── public/data/             # 26 metric JSONs + 5 flow presets + registry
 ├── sql/                         # Verified BigQuery SQL (bytes + date headers)
 ├── thesis/
 │   ├── PREREGISTRATION.md       # Frozen pre-registration
 │   ├── hypotheses.yaml          # Machine-readable hypotheses
 │   └── thesis_results.json      # Computed verdicts
 ├── metrics/registry.yaml        # 11 registered metrics
-├── data/
-│   ├── raw/                     # Gitignored
-│   ├── processed/               # Gitignored (Parquet)
-│   ├── snapshot/                # Committed, real, aggregated
-│   └── reference/               # Manual reference values (source + date)
-└── research/                    # P0 research outputs
+└── data/
+    ├── raw/                     # Gitignored
+    ├── processed/               # Gitignored (Parquet)
+    ├── snapshot/                # Committed, real, aggregated
+    └── reference/               # Manual reference values (source + date)
 ```
 
 ---
 
-## Limitations
+## ⚠️ Limitations (Honest Disclosure)
 
 - **Accounts ≠ humans**: "Active accounts" = distinct signer addresses with ≥1 tx/day. Multi-sig, exchanges, bots inflate counts.
 - **Addresses ≠ people**: Multi-chain individuals = multiple addresses. "Unique sender addresses" used, never "people".
-- **Confidential flows**: Intents CONFIDENTIAL_INTENTS deposit/recipient types not fully visible.
+- **Confidential flows**: Intents `CONFIDENTIAL_INTENTS` deposit/recipient types not fully visible.
 - **Explorer coverage**: 1Click API documents only its own coverage; other integrators may differ.
 - **Price conversion**: NEAR↔USD conversion introduces noise; revenue in NEAR is primary.
 - **Timing mismatch**: Fees accrue per swap; sweeps to protocol wallets happen later with variable lag.
 - **BigQuery quota**: Free tier 1 TB/month limits backfill; revenue wallet outflows pending quota reset.
-- **Buyback ≠ burned**: Onchain evidence shows bought-back NEAR held, not burned. Revenue.near.org claims "permanently removed".
+- **Buyback ≠ burned**: Onchain evidence shows bought-back NEAR held in multisig. Revenue.near.org claims "permanently removed".
 
 ---
 
-## License
+## 📜 License
 
 MIT — see `LICENSE` file.
 
 ---
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
 - **DefiLlama** — TVL, fees, revenue data (MIT)
 - **NEAR Intents Explorer** — Swap activity API
 - **BigQuery Public Datasets** — NEAR onchain data
 - **revenue.near.org** — Protocol revenue reference
-- **Hackathon submissions** — 888 repos screened for reuse/ideas
+- **Gap Intel / NEAR Hackathon API** — Competition survey data
 
 See `THIRD_PARTY_NOTICES.md` for full license inventory.

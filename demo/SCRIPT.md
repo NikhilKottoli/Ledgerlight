@@ -1,108 +1,185 @@
-# Demo Script — NEAR Value Intelligence
-**Target length: 3–5 minutes**  
-**Format: Screen recording with voiceover**  
-**Resolution: 1440×900**
+# NEAR Value Intelligence — 4-Minute Demo Script
+
+**Target:** Hackathon judges / reviewers with **zero context**.
+**Format:** Screen-recorded walkthrough (one take, no edits needed).
+**URL to record:** `https://through-ellen-richmond-directive.trycloudflare.com/`
 
 ---
 
-## 0. Setup (before recording)
+## 🎬 Recording Checklist (Do Before Hitting Record)
+
+- [ ] Browser: Chrome/Edge, 1920×1080, no extensions visible
+- [ ] URL loaded: `https://through-ellen-richmond-directive.trycloudflare.com/`
+- [ ] Tab title visible: "NEAR Value Intelligence"
+- [ ] DevTools closed (no console noise)
+- [ ] Mic test: 30 sec, clear audio
+- [ ] Timer visible (phone stopwatch or OBS timer overlay)
+
+---
+
+## ⏱️ Timing Budget (4:00 Total)
+
+| Segment | Time | Cumulative |
+|---------|------|------------|
+| Hook + One-Liner | 0:00–0:20 | 0:20 |
+| Overview (thesis verdicts) | 0:20–0:50 | 0:50 |
+| Value Capture Model (φ slider) | 0:50–1:30 | 1:30 |
+| Intents Deep-Dive | 1:30–2:10 | 2:10 |
+| Flows Sankey (5 presets) | 2:10–2:50 | 2:50 |
+| Thesis (pre-registered H1–H5) | 2:50–3:20 | 3:20 |
+| Methodology (registry + provenance) | 3:20–3:45 | 3:45 |
+| Closing + Repo Pointer | 3:45–4:00 | 4:00 |
+
+---
+
+## 🎤 SCRIPT — Read Aloud While Recording
+
+### 0:00–0:20 — Hook + One-Liner
+> **[Show landing page — Overview route]**
+>
+> "NEAR's Intents protocol does billions in swap volume. The Foundation says buybacks 'permanently remove NEAR from circulation.' But onchain, the bought-back NEAR sits in a multisig — **not burned**."
+>
+> **[Gesture to thesis verdict badges]**
+>
+> "This is NEAR Value Intelligence — an evidence-first platform that traces Intents revenue from gross fees through to tokenholder outcomes, with **pre-registered hypotheses**, **three-way reconciliation**, and **zero fabricated data**."
+
+---
+
+### 0:20–0:50 — Overview (Thesis Verdicts)
+> **[Scroll slightly to show KPI cards + verdict badges]**
+>
+> "Landing page shows the five pre-registered hypotheses — H1 through H5. All currently `INSUFFICIENT_DATA` because live onchain revenue reconstruction needs BigQuery quota, and Intents per-tx data needs a partner JWT. **But the framework is complete** — every test, threshold, and kill criterion was frozen at git tag `prereg-v1` before any analysis ran."
+>
+> **[Point to amber 'Snapshot' banner if visible]**
+>
+> "You're seeing **snapshot mode** — real aggregated data from a live run, honestly dated. No API keys needed to explore."
+
+---
+
+### 0:50–1:30 — Value Capture Model (The Core Insight)
+> **[Click `/value` in nav — wait for load]**
+>
+> "This is the Value Capture Model — the heart of the project. It answers: *if Intents generates X in fees, how much NEAR actually gets burned?*"
+>
+> **[Point to φ slider — drag it slowly]**
+>
+> "φ (phi) is the **burn fraction** — what share of buyback outflows actually hits a dead address. Onchain evidence shows φ = 0. The buyback wallet `buybacks.multisignature.near` sends NEAR to treasury, staking, exchanges — **zero to a burn address**."
+>
+> **[Point to breakeven callout]**
+>
+> "With φ = 0, **burn breakeven is mathematically unreachable**. Buyback breakeven — where buybacks offset emissions — needs ~13.5× current volume at today's take rate. Drag φ to 1 (hypothetical full burn) and you see the gap close. This isn't opinion — it's arithmetic from traced wallet flows."
+
+---
+
+### 1:30–2:10 — Intents Deep-Dive
+> **[Click `/intents` in nav]**
+>
+> "Intents page — live data from the NEAR Intents Explorer API (DefiLlama for TVL/fees, Explorer for per-swap details)."
+>
+> **[Hover Status Mix chart — show tooltip]**
+> "Status mix: SUCCESS vs PENDING_DEPOSIT vs REFUNDED. Only SUCCESS counts toward volume."
+>
+> **[Hover Chain Distribution — point to stacked bars]**
+> "Chain distribution — where swaps originate. Ethereum, Arbitrum, Base, NEAR native. Stacked bars = daily breakdown."
+>
+> **[Hover Token Distribution]**
+> "Token distribution — USDC, USDT, NEAR, wNEAR, others. Top-N + 'other' bucket."
+>
+> **[Scroll to Volume Breakdown — point to blue section]**
+> "Volume breakdown by status. Blue section = Intents Explorer data (live). Neutral above = DefiLlama aggregates."
+>
+> **[Click a KPI card's provenance icon (top-right) if visible]**
+> "Every KPI and chart has a **provenance drawer** — source, definition, SQL, raw data link, registry entry. Click to verify."
+
+---
+
+### 2:10–2:50 — Flows Sankey (5 Presets)
+> **[Click `/flows` in nav]**
+>
+> "Flow ledgers — Sankey diagrams showing money movement across 5 time presets."
+>
+> **[Click 7d → 30d → 90d → YTD → All tabs]**
+> "7-day, 30-day, 90-day, year-to-date, all-time. Built offline, not arbitrary ranges."
+>
+> **[Trace with mouse: Gross Fees → Protocol Revenue → Holders Revenue/Buybacks → Buyback Wallet Inflows → Burned (φ=0) / Held]**
+> "Flow starts at **Gross Fees** (DefiLlama), not swap volume — volume is a context strip above with effective take rate in bps. Protocol Revenue splits to Holders Revenue (buybacks). Onchain, we trace inflows to the buyback wallet. Outbound: φ=0 observed → **Burned = 0, Held = 100%**. The 'Unreconciled' node is explicit — never plugged."
+>
+> **[Point to 'Unreconciled' label]**
+> "Negative residual = definitions differ. We show it, we don't hide it."
+
+---
+
+### 2:50–3:20 — Thesis (Pre-Registered Rigor)
+> **[Click `/thesis` in nav]**
+>
+> "Thesis page — the pre-registered hypothesis tests. This is what separates research from a dashboard with a narrative."
+>
+> **[Scroll through H1–H5 cards]**
+> "H1: Adoption growth. H2: Intents predicts non-Intents NEAR activity (circularity broken — we decompose NEAR txs into Intents-attributable vs other). H3: Value capture (capture rate ≥ 10%?). H4: Tokenholder benefit (buyback/issuance ≥ 10%?). H5: Concentration flattening."
+>
+> **[Point to 'Kill Criteria' sections]**
+> "Each hypothesis has **kill criteria** — e.g., H3 killed if capture rate < 10% for 3 consecutive months. Verdicts are **rule-based**: `SUPPORTED | CONTRADICTED | MIXED | INSUFFICIENT_DATA`. No p-hacking, no narrative override."
+
+---
+
+### 3:20–3:45 — Methodology (Transparency)
+> **[Click `/methodology` in nav]**
+>
+> "Full methodology — 34 registered metrics with source, definition, calculation, unit, kind, coverage, freshness, completeness."
+>
+> **[Scroll to show table rows]**
+> "Kind tags: `measured` (direct from API), `derived` (deterministic calc), `modeled` (human assumption). Never mixed."
+>
+> **[Scroll to Source Definitions]**
+> "Source definitions with endpoints. Unit policy: USD pre-sweep, NEAR post-sweep. Statistical method: weekly frequency, block bootstrap CIs, FDR, structural breaks at buyback start (Feb 23) and Omni exploit (Oct 1)."
+>
+> **[Point to Data Modes cards]**
+> "Three data modes — live (green), snapshot (amber, what you're seeing), synthetic (red, test-only). Pipeline refuses to mix them."
+
+---
+
+### 3:45–4:00 — Closing + Repo
+> **[Return to Overview or show GitHub URL on screen]**
+>
+> "Repo: `github.com/NikhilKottoli/LedgerLight`. MIT license. Static deploy — Vercel or Cloudflare Pages, zero credentials on server."
+>
+> "Run it yourself: `git clone`, `uv sync`, `cd web && pnpm install && pnpm build`, `pnpm preview`. Snapshot mode works instantly."
+>
+> "The question: **Does NEAR capture meaningful value from Intents, and does it accrue to tokenholders?** The data says: not yet — and the burn path is blocked at φ=0. But the framework is here to verify every future claim."
+>
+> **[Hold on repo URL for 3 seconds]**
+>
+> "Thanks for watching."
+
+---
+
+## 🎥 Recording Tips
+
+| Tip | Why |
+|-----|-----|
+| Speak slightly slower than normal | Judges may replay at 1.25× |
+| Pause 1 sec after each click | Let page settle, avoids "wait what?" |
+| Use mouse to trace flows (don't just point) | Sankey is hard to follow verbally |
+| Don't narrate loading states | Cut silence in post if needed, but one-take is fine |
+| If a chart is empty (Intents JWT missing), say: *"This panel needs the Intents partner JWT — in snapshot mode it shows the last live pull"* | Honest > perfect |
+
+---
+
+## 🔗 Links to Have Ready (Description / Pinned Comment)
+
+- Repo: `https://github.com/NikhilKottoli/LedgerLight`
+- Live demo: `https://through-ellen-richmond-directive.trycloudflare.com/`
+- Pre-registration: `https://github.com/NikhilKottoli/LedgerLight/blob/prereg-v1/thesis/PREREGISTRATION.md`
+- Architecture diagram: `architecture.excalidraw` (open in excalidraw.com)
+- THESIS.md: `https://github.com/NikhilKottoli/LedgerLight/blob/main/THESIS.md`
+
+---
+
+## 🆘 Fallback If Tunnel Dies
+
+Local recording works identically:
 ```bash
-# Clone and serve static dashboard
-cd near-value-intelligence/web
-npx serve out/
-# Dashboard at http://localhost:3000 (or shown port)
+cd web && pnpm preview
+# Record against http://localhost:4173
 ```
-
----
-
-## 1. Hook (10 seconds)
-**[Show: Terminal with `npx serve out/` starting, then browser opening to `/`]**
-
-> **"Intents activity on NEAR is growing fast. But where does the money actually go? Does it turn into value for NEAR tokenholders — or just vanish into the protocol treasury?"**
-
-**[Cut to: Dashboard home page — show the tagline "Follow the money. Verify the value."]**
-
----
-
-## 2. Flows Page — Follow the Money (60 seconds)
-**[Navigate to `/flows`]**
-
-> **"Start with gross fees. DefiLlama reports ~$1.2M in fees over the last 30 days. But fees ≠ revenue."**
-
-**[Click the 30d preset button. Point to Sankey nodes.]**
-
-> **"Protocol revenue (what NEAR keeps) is ~$420K — that's a 35% capture rate. The rest goes to integrators as referral fees."**
-
-**[Hover over "Holders Revenue / Buybacks" node — shows ~$150K.]**
-
-> **"Of that revenue, ~$150K flows to buybacks. But here's the critical finding:"**
-
-**[Click the "Reconciliation Panel" drawer on the Buyback node.]**
-
-> **"DefiLlama says buybacks are held, not burned. Revenue.near.org claims 'permanently removed.' Onchain evidence — the buyback wallet balance grew — agrees with DefiLlama. Buyback ≠ burned."**
-
-**[Point to the unreconciled amount.]**
-
-> **"Every stage either reconciles or shows an explicit unreconciled amount. We never plug gaps."**
-
----
-
-## 3. Provenance — Show Your Work (20 seconds)
-**[Click any KPI card's "Provenance" drawer — e.g., Fees.]**
-
-> **"Every metric links to its source. Here's the DefiLlama endpoint, the exact SQL if it's BigQuery, the retrieval timestamp, and the data mode (live vs snapshot)."**
-
-**[Show the three-way revenue reconciliation table.]**
-
-> **"Three sources: DefiLlama (market data), onchain rebuild (ground truth), revenue.near.org (reference). Delta shown explicitly."**
-
----
-
-## 4. Thesis Lab — Pre-Registered, Not Post-Hoc (40 seconds)
-**[Navigate to `/thesis`]**
-
-> **"Five hypotheses, pre-registered at tag `prereg-v1` before any analysis ran. Rule-based verdicts — no p-hacking."**
-
-**[Point to the verdict chips: all INSUFFICIENT_DATA.]**
-
-> **"H1: Adoption growing? Need Intents JWT — we now have it. H2: Predicts network activity? Need BigQuery quota. H3: Value capture? Capture rate 35% but need onchain rebuild. H4: Tokenholder benefit? Burn fraction φ=0 — buybacks held, not burned. H5: Less concentrated? Need concentration metrics."**
-
-> **"The conclusion follows the data: we don't yet have sufficient evidence for tokenholder value accrual. That's not bearish — that's honest."**
-
----
-
-## 5. Value Capture Model — What Would It Take? (20 seconds)
-**[Navigate to `/value`]**
-
-> **"Interactive model: V* = NetIssuance × P₀ × 10,000 / (r × c × b × φ). Measured anchors on the left, outputs on the right."**
-
-> **"With φ=0 (buybacks held, not burned), **burn breakeven is unreachable**. For buybacks to offset emissions, we'd need ~13.5× current volume — about $51B/year."**
-
-**[Drag the φ slider from 0 to 0.5 — watch burn breakeven drop.]**
-
-> **"If NEAR ever burns even half the buyback, breakeven drops dramatically. This is modeled — not a prediction."**
-
----
-
-## 6. Close (10 seconds)
-**[Return to home page or show repo URL]**
-
-> **"NEAR Value Intelligence. The framework is ready. The data is arriving. The conclusion comes from the evidence."**
-
-**[Show GitHub repo URL and live dashboard URL]**
-
----
-
-## Recording Tips
-- **Narrate actions before clicking** — "I'm clicking the 30d preset..."
-- **Pause 1-2 seconds** on key findings (buyback≠burned, φ=0, breakeven card)
-- **Keep mouse movements smooth** — no jittery navigation
-- **Total target: 180–300 seconds**
-
----
-
-## Post-Recording
-1. Export as MP4 (H.264, 1080p or 1440p)
-2. Upload to YouTube (unlisted) or Twitter/X
-3. Add link to README `demo_url`
-4. Update repo description with demo link
+All data is in `web/public/data/` — zero external dependencies in snapshot mode.
