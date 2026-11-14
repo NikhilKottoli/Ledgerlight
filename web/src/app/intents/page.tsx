@@ -15,20 +15,25 @@ const INTENTS_LIVE_METRICS = [
   { id: "intents.swaps.daily", label: "Swaps", unit: "count" },
   { id: "intents.unique_sender_addresses.daily", label: "Unique Sender Addresses", unit: "count" },
   { id: "intents.avg_swap_usd.daily", label: "Avg Swap Size (USD)", unit: "USD" },
+  { id: "intents.concentration.daily", label: "Concentration (Top-10 Share)", unit: "ratio" },
+] as const;
+
+const INTENTS_DISTRIBUTION_METRICS = [
   { id: "intents.status_mix.daily", label: "Status Mix", unit: "ratio" },
   { id: "intents.chain_distribution.daily", label: "Chain Distribution", unit: "USD" },
   { id: "intents.token_distribution.daily", label: "Token Distribution", unit: "USD" },
-  { id: "intents.concentration.daily", label: "Concentration (Top-10 Share)", unit: "ratio" },
 ] as const;
 
 export default function IntentsPage() {
   const defillamaIds = DEFI_LLAMA_METRICS.map(m => m.id);
   const intentsIds = INTENTS_LIVE_METRICS.map(m => m.id);
+  const distributionIds = INTENTS_DISTRIBUTION_METRICS.map(m => m.id);
 
   const { artifacts: defillamaArtifacts, isLoading: defillamaLoading } = useMetrics(defillamaIds);
   const { artifacts: intentsArtifacts, isLoading: intentsLoading } = useMetrics(intentsIds);
+  const { artifacts: distributionArtifacts, isLoading: distributionLoading } = useMetrics(distributionIds);
 
-  const isLoading = defillamaLoading || intentsLoading;
+  const isLoading = defillamaLoading || intentsLoading || distributionLoading;
 
   if (isLoading) {
     return (
@@ -44,9 +49,10 @@ export default function IntentsPage() {
 
   const validDefillama = DEFI_LLAMA_METRICS.map((m, i) => ({ ...m, artifact: defillamaArtifacts[i] })).filter(m => m.artifact);
   const validIntents = INTENTS_LIVE_METRICS.map((m, i) => ({ ...m, artifact: intentsArtifacts[i] })).filter(m => m.artifact);
+  const validDistribution = INTENTS_DISTRIBUTION_METRICS.map((m, i) => ({ ...m, artifact: distributionArtifacts[i] })).filter(m => m.artifact);
 
   // Get latest data timestamp
-  const latestDates = [...validDefillama, ...validIntents]
+  const latestDates = [...validDefillama, ...validIntents, ...validDistribution]
     .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
     .filter(Boolean);
   const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
@@ -111,6 +117,26 @@ export default function IntentsPage() {
           </div>
         )}
       </section>
+
+      {/* Distribution Metrics (Object-valued, shown as charts only) */}
+      {validDistribution.length > 0 && (
+        <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+          <h2 className="text-lg font-semibold mb-4">Intents Distributions (Live Data)</h2>
+          <p className="text-sm text-muted mb-4">
+            Volume breakdown by status, chain, and token. Object-valued metrics — shown as charts only.
+          </p>
+          <div className="grid gap-6 md:grid-cols-2 mt-6">
+            {validDistribution.map(({ artifact, label }) => (
+              artifact && (
+                <section key={artifact.meta.metric_id} className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold mb-4">{label}</h3>
+                  <TimeSeriesChart artifact={artifact} height={300} />
+                </section>
+              )
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Transaction Explorer Preview */}
       <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
