@@ -1,0 +1,13 @@
+{
+ "meta": {
+  "metric_id": "nearblocks.buyback_outflows.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T09:06:32.731023Z",
+  "source_max_ts": null,
+  "git_commit": "47d3cb53",
+  "sha256_inputs": "6559877f4024dd3437cb80a66e6ad41013aeb07062e228dfeb4d6792ea8bc933",
+  "completeness": "empty",
+  "warnings": []
+ },
+ "series": []
+}

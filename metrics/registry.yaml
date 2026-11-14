@@ -341,3 +341,75 @@ metrics:
     completeness: partial
     limitations: ["Derived; requires Intents JWT; addresses ≠ humans; confidential flows excluded"]
     depends_on: ["intents.volume_usd.daily"]
+
+  - id: nearblocks.revenue_near.daily
+    name: NEAR Revenue Wallet Inflows (NEAR) — Daily
+    kind: measured
+    unit: NEAR
+    entity: near
+    source:
+      name: NearBlocks API
+      url: "https://api.nearblocks.io"
+      endpoint_or_table: "v1/account/{wallet}/txns"
+    definition: "Daily NEAR transfers into the three revenue wallets from intents.near, excluding inter-wallet transfers"
+    calc_ref: "pipeline/connectors/nearblocks.py → pipeline/normalize/nearblocks.py"
+    granularity: day
+    coverage: {since: "2026-07", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: partial
+    limitations: ["NearBlocks free tier rate limit; only captures transfers from intents.near; inter-wallet transfers excluded"]
+    depends_on: []
+
+  - id: nearblocks.buyback_outflows.daily
+    name: Buyback Wallet Outflows (NEAR) — Daily
+    kind: measured
+    unit: NEAR
+    entity: near
+    source:
+      name: NearBlocks API
+      url: "https://api.nearblocks.io"
+      endpoint_or_table: "v1/account/buybacks.multisignature.near/txns"
+    definition: "Daily NEAR outflows from buybacks.multisignature.near parsed from FUNCTION_CALL add_request actions"
+    calc_ref: "pipeline/connectors/nearblocks.py → pipeline/normalize/nearblocks.py"
+    granularity: day
+    coverage: {since: "2026-07", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: partial
+    limitations: ["NearBlocks free tier rate limit; only captures transfers via multisig add_request; older history may be incomplete"]
+    depends_on: []
+
+  - id: nearblocks.wnear_transfers.daily
+    name: wNEAR Transfers from 1csfundsadmin (wNEAR) — Daily
+    kind: measured
+    unit: wNEAR
+    entity: near
+    source:
+      name: NearBlocks API
+      url: "https://api.nearblocks.io"
+      endpoint_or_table: "v1/account/1csfundsadmin.sputnik-dao.near/txns"
+    definition: "Daily wNEAR mt_transfer actions from 1csfundsadmin.sputnik-dao.near"
+    calc_ref: "pipeline/connectors/nearblocks.py → pipeline/normalize/nearblocks.py"
+    granularity: day
+    coverage: {since: "2026-09", until: "2026-11"}
+    freshness: {max_lag_days: 1}
+    completeness: partial
+    limitations: ["NearBlocks free tier rate limit; only wNEAR mt_transfer from 1csfundsadmin"]
+    depends_on: []
+
+  - id: nearblocks.net_revenue_near.daily
+    name: Net NEAR Revenue (NEAR) — Daily
+    kind: derived
+    unit: NEAR
+    entity: near
+    source:
+      name: Internal
+      url: "https://github.com/near-value-intelligence"
+      endpoint_or_table: "pipeline/normalize/nearblocks.py"
+    definition: "NEAR revenue inflows minus buyback wallet outflows per day"
+    calc_ref: "pipeline/normalize/nearblocks.py"
+    granularity: day
+    coverage: {}
+    freshness: {}
+    completeness: partial
+    limitations: ["Derived; assumes buyback outflows are the only outflows from revenue wallets"]
+    depends_on: ["nearblocks.revenue_near.daily", "nearblocks.buyback_outflows.daily"]

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import KpiCard from "@/components/ui/KpiCard";
 import TimeSeriesChart from "@/components/ui/TimeSeriesChart";
-import LockedPanel from "@/components/ui/LockedPanel";
 import { MetricArtifact } from "@/lib/types";
 import fs from "fs";
 import path from "path";
@@ -173,11 +172,16 @@ const AVAILABLE_METRICS = [
 export default function ValuePage() {
   const artifacts = METRICS.map(m => ({ ...m, artifact: loadArtifact(m.id) })).filter(m => m.artifact);
   const availableArtifacts = AVAILABLE_METRICS.map(m => ({ ...m, artifact: loadArtifactVal(m.id) })).filter(m => m.artifact);
-  const lockedMetrics = INTENTS_METRICS;
 
   const results = runModel(
     INITIAL_INPUTS.reduce((acc, i) => ({ ...acc, [i.key]: i.value }), {})
   );
+
+  // Get latest data timestamp
+  const latestDates = artifacts
+    .map(a => a.artifact?.series?.[a.artifact.series.length - 1]?.t)
+    .filter(Boolean);
+  const dataAsOf = latestDates.length > 0 ? latestDates[0] : "N/A";
 
   return (
     <div className="space-y-6">
@@ -187,6 +191,7 @@ export default function ValuePage() {
         <div className="mt-2 text-xs text-amber-400 bg-amber-900/20 border border-amber-800 rounded p-2 inline-block">
           Modeled — Not a Prediction or Financial Advice
         </div>
+        <p className="text-xs text-amber-400 mt-1">Data as of {dataAsOf}</p>
       </header>
 
       {/* KPI Row - Available Metrics */}
@@ -195,15 +200,6 @@ export default function ValuePage() {
           artifact && <KpiCard key={artifact.meta.metric_id} artifact={artifact} label={label} unit={unit} previousPeriodLabel="vs prior day" />
         ))}
       </div>
-
-      {/* Locked Metrics Row */}
-      {lockedMetrics.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {lockedMetrics.map(({ label, unit, reason }) => (
-            <LockedPanel key={label} title={label} description={`Unit: ${unit}`} missing={reason} />
-          ))}
-        </div>
-      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left: Inputs with Measured Anchors */}
@@ -365,6 +361,19 @@ export default function ValuePage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      {/* Onchain Revenue Note */}
+      <section className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-4">Onchain Revenue (NearBlocks)</h2>
+        <p className="text-sm text-muted mb-2">Revenue wallet NEAR inflows from intents.near and buyback wallet outflows parsed from multisig FUNCTION_CALL actions.</p>
+        <div className="text-xs text-muted space-y-1">
+          <p>• Revenue metric: <code>nearblocks.revenue_near.daily</code> — NEAR transfers from intents.near to 3 revenue wallets</p>
+          <p>• Buyback outflows: <code>nearblocks.buyback_outflows.daily</code> — Transfers from buybacks.multisignature.near via add_request</p>
+          <p>• Net revenue: <code>nearblocks.net_revenue_near.daily</code> — Revenue inflows minus buyback outflows</p>
+          <p>• φ (burn fraction): 0%</p>
+<p>— Onchain trace shows buyback wallet balance grew; no transfers to dead address observed</p>
         </div>
       </section>
 

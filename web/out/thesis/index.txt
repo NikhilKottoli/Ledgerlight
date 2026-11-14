@@ -1,21 +1,22 @@
 1:"$Sreact.fragment"
-2:I[5250,["177","static/chunks/app/layout-c9f14e1afa6476e0.js"],"DateRangeProvider"]
-3:I[88709,["177","static/chunks/app/layout-c9f14e1afa6476e0.js"],"default"]
-4:I[9766,[],""]
-5:I[98924,[],""]
-6:I[81959,[],"ClientPageRoot"]
-7:I[89720,["971","static/chunks/app/thesis/page-8a272944e7dd74b7.js"],"default"]
-a:I[24431,[],"OutletBoundary"]
-c:I[15278,[],"AsyncMetadataOutlet"]
-e:I[24431,[],"ViewportBoundary"]
-10:I[24431,[],"MetadataBoundary"]
-11:"$Sreact.suspense"
-13:I[57150,[],""]
-:HL["/_next/static/css/f177aace7a39f469.css","style"]
-0:{"P":null,"b":"NaeA_RamFQVxu8nQxBqQG","p":"","c":["","thesis",""],"i":false,"f":[[["",{"children":["thesis",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/f177aace7a39f469.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":[["$","head",null,{"children":["$","link",null,{"rel":"icon","href":"/favicon.ico"}]}],["$","body",null,{"className":"min-h-screen","children":["$","$L2",null,{"children":[["$","$L3",null,{"mode":"snapshot","snapshotDate":"2026-11-13"}],["$","div",null,{"className":"pt-12 pb-8 px-4 md:px-8","children":["$","div",null,{"className":"mx-auto max-w-7xl","children":["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}]}]]}]]}],{"children":["thesis",["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","$L6",null,{"Component":"$7","searchParams":{},"params":{},"promises":["$@8","$@9"]}],null,["$","$La",null,{"children":["$Lb",["$","$Lc",null,{"promise":"$@d"}]]}]]}],{},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$Le",null,{"children":"$Lf"}],null],["$","$L10",null,{"children":["$","div",null,{"hidden":true,"children":["$","$11",null,{"fallback":null,"children":"$L12"}]}]}]]}],false]],"m":"$undefined","G":["$13",[]],"s":false,"S":true}
-8:{}
-9:"$0:f:0:1:2:children:2:children:1:props:children:0:props:params"
-f:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-b:null
-d:{"metadata":[["$","title","0",{"children":"NEAR Value Intelligence"}],["$","meta","1",{"name":"description","content":"Follow the money. Verify the value."}]],"error":null,"digest":"$undefined"}
-12:"$d:metadata"
+2:I[5250,["177","static/chunks/app/layout-7c1bfd7af8b87008.js"],"DateRangeProvider"]
+3:I[56178,["177","static/chunks/app/layout-7c1bfd7af8b87008.js"],"default"]
+4:I[88709,["177","static/chunks/app/layout-7c1bfd7af8b87008.js"],"default"]
+5:I[9766,[],""]
+6:I[98924,[],""]
+7:I[81959,[],"ClientPageRoot"]
+8:I[89720,["971","static/chunks/app/thesis/page-8a272944e7dd74b7.js"],"default"]
+b:I[24431,[],"OutletBoundary"]
+d:I[15278,[],"AsyncMetadataOutlet"]
+f:I[24431,[],"ViewportBoundary"]
+11:I[24431,[],"MetadataBoundary"]
+12:"$Sreact.suspense"
+14:I[57150,[],""]
+:HL["/_next/static/css/ea4a115869a84296.css","style"]
+0:{"P":null,"b":"_4Kmyt2yeUtQvcPeFQ64p","p":"","c":["","thesis",""],"i":false,"f":[[["",{"children":["thesis",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/ea4a115869a84296.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":[["$","head",null,{"children":["$","link",null,{"rel":"icon","href":"/favicon.ico"}]}],["$","body",null,{"className":"min-h-screen","children":["$","$L2",null,{"children":[["$","$L3",null,{}],["$","$L4",null,{"mode":"snapshot","snapshotDate":"2026-11-13"}],["$","div",null,{"className":"pt-12 pb-8 px-4 md:px-8","children":["$","div",null,{"className":"mx-auto max-w-7xl","children":["$","$L5",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}]}]]}]]}],{"children":["thesis",["$","$1","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","$L7",null,{"Component":"$8","searchParams":{},"params":{},"promises":["$@9","$@a"]}],null,["$","$Lb",null,{"children":["$Lc",["$","$Ld",null,{"promise":"$@e"}]]}]]}],{},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$Lf",null,{"children":"$L10"}],null],["$","$L11",null,{"children":["$","div",null,{"hidden":true,"children":["$","$12",null,{"fallback":null,"children":"$L13"}]}]}]]}],false]],"m":"$undefined","G":["$14",[]],"s":false,"S":true}
+9:{}
+a:"$0:f:0:1:2:children:2:children:1:props:children:0:props:params"
+10:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+c:null
+e:{"metadata":[["$","title","0",{"children":"NEAR Value Intelligence"}],["$","meta","1",{"name":"description","content":"Follow the money. Verify the value."}]],"error":null,"digest":"$undefined"}
+13:"$e:metadata"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { DateRangeProvider } from "@/lib/DateRangeProvider";
 import ModeBanner from "@/components/ui/ModeBanner";
+import Navbar from "@/components/ui/Navbar";
 
 export const metadata: Metadata = {
   title: "NEAR Value Intelligence",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen">
         <DateRangeProvider>
+          <Navbar />
           <ModeBanner mode="snapshot" snapshotDate="2026-11-13" />
           <div className="pt-12 pb-8 px-4 md:px-8">
             <div className="mx-auto max-w-7xl">{children}</div>

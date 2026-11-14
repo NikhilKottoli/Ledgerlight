@@ -1,0 +1,13 @@
+{
+ "meta": {
+  "metric_id": "nearblocks.wnear_transfers.daily",
+  "data_mode": "live",
+  "retrieved_at": "2026-11-14T09:06:32.731023Z",
+  "source_max_ts": null,
+  "git_commit": "47d3cb53",
+  "sha256_inputs": "ce89e2d62ca8fa59592dab1c944dce996520e6d4aa90ab55226f7c36a0c26934",
+  "completeness": "empty",
+  "warnings": []
+ },
+ "series": []
+}
